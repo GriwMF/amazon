@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  number: MyString
+  cvv: 1
+  expiration_month: 1
+  expiration_year: 1
+  firstname: MyString
+  lastname: MyString
+  customer_id: 
+  order_id: 
+
+two:
+  number: MyString
+  cvv: 1
+  expiration_month: 1
+  expiration_year: 1
+  firstname: MyString
+  lastname: MyString
+  customer_id: 
+  order_id: 

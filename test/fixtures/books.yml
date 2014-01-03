@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  Descirption: MyString
+  Author_id: 
+  Category_id: 
+  price: 
+  scale: 
+  in_stock: false
+
+two:
+  title: MyString
+  Descirption: MyString
+  Author_id: 
+  Category_id: 
+  price: 
+  scale: 
+  in_stock: false
