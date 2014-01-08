@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Country do
-  it "fails without name" do
-    expect(FactoryGirl.build :country, name: nil).to_not be_valid
+  let(:country) { FactoryGirl.create :country }
+  
+  it "validates presence of name" do
+    expect(country).to validate_presence_of(:name)
   end
   
   it "has many addresses" do
-    expect(FactoryGirl.build :country).to respond_to :addresses
+    expect(country).to have_many(:addresses)
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :credit_card do
-    number "12345678901234"
+    number "1234567890123456"
     cvv "123"
     expiration_month 12
     expiration_year 2016

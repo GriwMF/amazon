@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140103110548) do
+ActiveRecord::Schema.define(version: 20140107204342) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -34,19 +34,30 @@ ActiveRecord::Schema.define(version: 20140103110548) do
 
   add_index "authors", ["firstname", "lastname"], name: "index_authors_on_firstname_and_lastname"
 
+  create_table "authors_books", id: false, force: true do |t|
+    t.integer "book_id",   null: false
+    t.integer "author_id", null: false
+  end
+
+  add_index "authors_books", ["author_id", "book_id"], name: "index_authors_books_on_author_id_and_book_id"
+  add_index "authors_books", ["book_id", "author_id"], name: "index_authors_books_on_book_id_and_author_id"
+
   create_table "books", force: true do |t|
     t.string   "title"
     t.string   "descirption"
-    t.integer  "author_id"
-    t.integer  "category_id"
     t.decimal  "price",       precision: 8, scale: 2
     t.integer  "in_stock"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "books", ["author_id"], name: "index_books_on_author_id"
-  add_index "books", ["category_id"], name: "index_books_on_category_id"
+  create_table "books_categories", id: false, force: true do |t|
+    t.integer "book_id",     null: false
+    t.integer "category_id", null: false
+  end
+
+  add_index "books_categories", ["book_id", "category_id"], name: "index_books_categories_on_book_id_and_category_id"
+  add_index "books_categories", ["category_id", "book_id"], name: "index_books_categories_on_category_id_and_book_id"
 
   create_table "categories", force: true do |t|
     t.string   "title"

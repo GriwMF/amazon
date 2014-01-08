@@ -3,28 +3,27 @@ require 'spec_helper'
 describe Customer do
   let(:customer) { FactoryGirl.create :customer }
   
-  it "fails without firstname" do
-    expect(FactoryGirl.build :customer, firstname: nil).to_not be_valid
+  it "validates presence of firstname" do
+    expect(customer).to validate_presence_of(:firstname)
   end
   
-  it "fails without lastname" do
-    expect(FactoryGirl.build :customer, lastname: nil).to_not be_valid
+  it "validates presence of lastname" do
+    expect(customer).to validate_presence_of(:lastname)
   end
   
   it "has unique email" do
-    expect(FactoryGirl.create :customer, email: "john@gmail.com").to be_valid
-    expect(FactoryGirl.build :customer, email: "john@gmail.com").to_not be_valid
+    expect(customer).to validate_uniqueness_of(:email)
   end
 
   it "has many credit cards" do
-    expect(customer).to respond_to :credit_cards
+    expect(customer).to have_many(:credit_cards)
   end
   
   it "has many credit orders" do
-    expect(customer).to respond_to :orders
+    expect(customer).to have_many(:orders)
   end
   
   it "has many ratings" do
-    expect(customer).to respond_to :ratings
+    expect(customer).to have_many(:ratings)
   end
 end

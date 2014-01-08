@@ -3,31 +3,32 @@ require 'spec_helper'
 describe Book do
   let(:book) { FactoryGirl.create :book }
   
-  it "fails without title" do
-    expect(FactoryGirl.build :book, title: nil).to_not be_valid
+  it "validates presence of title" do
+    expect(book).to validate_presence_of(:title)
   end
  
-  it "fails without in_stock" do
-    expect(FactoryGirl.build :book, in_stock: nil).to_not be_valid
+  it "validates presence of in_stock" do
+    expect(book).to validate_presence_of(:in_stock)
   end
   
-  it "fails if in_stock < 0" do
-    expect(FactoryGirl.build :book, in_stock: -1).to_not be_valid
+  it "validates that in_stock is integer >= 0" do
+    expect(book).to validate_numericality_of(:in_stock).only_integer
+    expect(book).to validate_numericality_of(:in_stock).is_greater_than_or_equal_to(0)
   end    
   
-  it "belongs to category" do
-    expect(book).to respond_to :category
+  it "has many categories through books_categories" do
+    expect(book).to have_and_belong_to_many(:categories)
   end  
   
-  it "belongs to author" do
-    expect(book).to respond_to :author
+  it "has many authors through authors_books" do
+    expect(book).to have_and_belong_to_many(:authors)
   end  
   
   it "has many order_items" do
-    expect(book).to respond_to :order_items
+    expect(book).to have_many(:order_items)
   end  
 
   it "has many ratings" do
-    expect(book).to respond_to :ratings
+    expect(book).to have_many(:ratings)
   end    
 end

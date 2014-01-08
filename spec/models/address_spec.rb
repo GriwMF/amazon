@@ -3,23 +3,23 @@ require 'spec_helper'
 describe Address do
   let(:address) { FactoryGirl.create :address }
     
-  it "fails without address" do
-    expect(FactoryGirl.build :address, address: nil).to_not be_valid
+  it "validates presence of address" do
+    expect(address).to validate_presence_of(:address)
   end
   
-  it "fails without city" do
-    expect(FactoryGirl.build :address, city: nil).to_not be_valid
+  it "validates presence of city" do
+    expect(address).to validate_presence_of(:city)
   end
   
-  it "fails without phone" do
-    expect(FactoryGirl.build :address, phone: nil).to_not be_valid
+  it "validates presence of phone" do
+    expect(address).to validate_presence_of(:phone)
   end
 
   it "has many bill_orders" do
-    expect(address).to respond_to :bill_orders
+    expect(address).to have_many(:bill_orders).with_foreign_key('bill_addr_id').class_name('Order')
   end  
  
   it "has many ship_orders" do
-    expect(address).to respond_to :ship_orders
+    expect(address).to have_many(:ship_orders).with_foreign_key('ship_addr_id').class_name('Order')
   end   
 end

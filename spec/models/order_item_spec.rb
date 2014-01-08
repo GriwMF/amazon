@@ -13,10 +13,10 @@ describe OrderItem do
   end
   
   it "belongs to order" do
-    expect(order_item).to respond_to :order
+    expect(order_item).to belong_to(:order)
   end
   
   it "belongs to book" do
-    expect(order_item).to respond_to :book
+    expect(order_item).to belong_to(:book)
   end
 end

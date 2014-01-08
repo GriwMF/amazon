@@ -7,5 +7,13 @@ FactoryGirl.define do
     customer
     bill_addr
     ship_addr
+    factory :order_with_items do
+      ignore do
+        customer nil
+      end
+      after :create do |order, _|
+        create_list :order_item, 3, order: order
+      end
+    end
   end
 end

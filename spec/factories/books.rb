@@ -3,9 +3,7 @@
 FactoryGirl.define do
   factory :book do
     title "War and Peace"
-    price 19.99
+    price 5
     in_stock 5
-    author
-    category
   end
 end

@@ -13,15 +13,14 @@ describe Rating do
   end
   
   it "rating should be in 1..5" do
-    expect(FactoryGirl.build :rating, rating: 6).to_not be_valid
-    expect(FactoryGirl.build :rating, rating: 0).to_not be_valid
+    expect(rating).to ensure_inclusion_of(:rating).in_range(1..5)
   end  
   
   it "belongs to customer" do
-    expect(rating).to respond_to :customer
+    expect(rating).to belong_to(:customer)
   end
   
   it "belongs to book" do
-    expect(rating).to respond_to :book
+    expect(rating).to belong_to(:book)
   end
 end

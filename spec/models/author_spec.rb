@@ -1,15 +1,17 @@
 require 'spec_helper'
 
 describe Author do
-  it "fails without firstname" do
-    expect(FactoryGirl.build :author, firstname: nil).to_not be_valid
+  let(:author) { FactoryGirl.create :author }
+  
+  it "validates presence of firstname" do
+    expect(author).to validate_presence_of(:firstname)
   end
   
-  it "fails without lastname" do
-    expect(FactoryGirl.build :author, lastname: nil).to_not be_valid
+  it "validates presence of lastname" do
+    expect(author).to validate_presence_of(:lastname)
   end
   
-  it "has many books" do
-    expect(FactoryGirl.build :author).to respond_to :books
+  it "has many books through authors_books" do
+    expect(author).to have_and_belong_to_many(:books)
   end
 end

@@ -3,43 +3,50 @@ require 'spec_helper'
 describe CreditCard do
   let(:credit_card) { FactoryGirl.create :credit_card }
   
-  it "fails without firstname" do
-    expect(FactoryGirl.build :credit_card, firstname: nil).to_not be_valid
+  it "validates presence of firstname" do
+    expect(credit_card).to validate_presence_of(:firstname)
   end
   
-  it "fails without lastname" do
-    expect(FactoryGirl.build :credit_card, lastname: nil).to_not be_valid
+  it "validates presence of lastname" do
+    expect(credit_card).to validate_presence_of(:lastname)
   end
   
-  it "fails without cvv" do
-    expect(FactoryGirl.build :credit_card, cvv: nil).to_not be_valid
+  it "validates presence of cvv" do
+    expect(credit_card).to validate_presence_of(:cvv)
   end
   
-  it "fails without card number" do
-    expect(FactoryGirl.build :credit_card, number: nil).to_not be_valid
+  it "validates presence of number" do
+    expect(credit_card).to validate_presence_of(:number)
   end
   
-  it "card number has 14 digits" do
-    expect(FactoryGirl.build :credit_card, number: "345").to_not be_valid
+  it "validates presence of expiration month" do
+    expect(credit_card).to validate_presence_of(:expiration_month)
+  end
+
+  it "validates presence of expiration year" do
+    expect(credit_card).to validate_presence_of(:expiration_year)
+  end
+    
+  it "card number has 16 digits" do
+    expect(credit_card).to allow_value('1234567890123456').for(:number)
+    expect(credit_card).to_not allow_value('123456789012345').for(:number)
+    expect(credit_card).to_not allow_value('12345678901234567').for(:number)
   end
   
-  it "expiration_month fails if not in 1..12" do
-    expect(FactoryGirl.build :credit_card, expiration_month: 13).to_not be_valid
+  it "validates expiration month in 1..12" do
+    expect(credit_card).to ensure_inclusion_of(:expiration_month).in_range(1..12)
   end
- 
-  it "fails without expiration_month" do
-    expect(FactoryGirl.build :credit_card, expiration_month: nil).to_not be_valid
-  end 
   
-  it "fails without expiration_year" do
-    expect(FactoryGirl.build :credit_card, expiration_year: nil).to_not be_valid
+  it "validates expiration year in current and current + 20" do
+    year = Time.now.year
+    expect(credit_card).to ensure_inclusion_of(:expiration_year).in_range(year..year+20)
   end
 
   it "belongs to customer" do
-    expect(credit_card).to respond_to :customer
+    expect(credit_card).to belong_to(:customer)
   end
 
   it "belongs to order" do
-    expect(credit_card).to respond_to :order
+    expect(credit_card).to belong_to(:order)
   end  
 end
