@@ -9,7 +9,12 @@ class Order < ActiveRecord::Base
   validates :total_price, presence: true
   
   def add_item(book, quantity: 1)
-    order_items.create(book: book, quantity: quantity)
+    if ord = order_items.find_by_book_id(book)
+      ord.quantity += quantity
+      ord.save
+    else
+      order_items.create(book: book, quantity: quantity)
+    end
   end
   
   def refresh_prices

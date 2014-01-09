@@ -35,32 +35,37 @@ describe Order do
     let(:order) {FactoryGirl.create(:order_with_items)}
 
     context "#refresh_prices" do
-      before { order.__send__(:refresh_prices) }
+      before { order.refresh_prices }
       
       it "updates total_price" do
         expect(Order.find(order).total_price).to eq(15)
       end
       
       it "updates prices in order_items" do
-        
         expect(order.order_items[0].price).to eq(5)
       end
     end
     
     context "#add_item" do
+      let(:book) {FactoryGirl.create(:book)}
+      
       it "add one item" do
-        expect { order.add_item(Book.first) }.to change { order.order_items.count}.by(1)
+        expect { order.add_item(book) }.to change { order.order_items.count}.by(1)
       end
       
       it "saves proper quantity" do
-        order.add_item(Book.first, quantity: 21)
+        order.add_item(book, quantity: 21)
         expect(OrderItem.last.quantity).to eq(21)
-
       end
       
       it "asociate item with order" do
-        order.add_item(Book.first)
+        order.add_item(book)
         expect(OrderItem.last.order).to eq(order)        
+      end
+      
+      it "increses quantity if order exist" do
+        order.add_item(book)
+        expect { order.add_item(book, quantity: 5) }.to change { order.order_items.find_by_book_id(book).quantity }.by(5)
       end
     end
 
