@@ -27,8 +27,8 @@ describe Order do
     expect(order).to have_one(:credit_card)
   end    
   
-  it "has many order items" do
-    expect(order).to have_many(:order_items)
+  it "has many order items, dependent destroy" do
+    expect(order).to have_many(:order_items).dependent(:destroy)
   end    
   
   describe "order_items methods" do
