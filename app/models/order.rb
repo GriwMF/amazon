@@ -28,4 +28,21 @@ class Order < ActiveRecord::Base
     self.total_price = sum
     save
   end
+  
+  def refresh_in_stock
+    Book.transaction do
+      order_items.includes(:book).each do |ord|
+        ord.book.in_stock -= ord.quantity
+        ord.book.save!
+      end
+    end
+  end
+  
+  def complete_order
+    refresh_in_stock
+    refresh_prices
+    self.state = "Processing"
+    self.completed_at = DateTime.now
+    save!
+  end
 end
