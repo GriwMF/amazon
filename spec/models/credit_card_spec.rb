@@ -46,7 +46,7 @@ describe CreditCard do
     expect(credit_card).to belong_to(:customer)
   end
 
-  it "belongs to order" do
-    expect(credit_card).to belong_to(:order)
+  it "has many orders" do
+    expect(credit_card).to have_many(:orders)
   end  
 end

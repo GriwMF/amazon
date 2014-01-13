@@ -9,6 +9,5 @@ FactoryGirl.define do
     firstname "John"
     lastname "Galt"
     customer
-    order
   end
 end
