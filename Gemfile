@@ -22,7 +22,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+#gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
@@ -32,6 +32,14 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+gem 'devise'
+
+gem "haml" 
+gem 'haml-rails', :group => :development
+
+gem "erb2haml", :group => :development
+
+gem 'bootstrap-sass'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
@@ -48,4 +56,5 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'shoulda-matchers'
+  gem "capybara"
 end

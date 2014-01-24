@@ -1,0 +1,36 @@
+@import "bootstrap";
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0px 10% 0px 10%;
+} 
+#logo {
+  font-size: 1.7em;
+  text-transform: uppercase;
+  color: gray;
+  font-weight: bold;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.alert-alert {
+  @extend .alert-warning;
+}
+
+.alert-notice {
+  @extend .alert-info;
+}
+
+.center {
+  text-align: center;
+}
+
+.center_box
+{
+  width: 80%;
+  align: center;
+} 

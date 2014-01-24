@@ -1,6 +1,4 @@
 class Book < ActiveRecord::Base
-  # has_many :authors, through: :authors_books
-  # has_many :categories, through: :books_categories
   has_and_belongs_to_many :authors
   has_and_belongs_to_many :categories
   has_many :ratings

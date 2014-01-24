@@ -7,7 +7,7 @@ FactoryGirl.define do
   
   factory :customer do
     email { FactoryGirl.generate(:email) } 
-    password "123123"
+    password "123123123"
     firstname "Leo"
     lastname "Richi"
   end

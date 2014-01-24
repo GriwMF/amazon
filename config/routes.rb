@@ -1,4 +1,6 @@
 FirstModel::Application.routes.draw do
+  devise_for :customers
+  root 'customer#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -53,4 +55,6 @@ FirstModel::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+  
+  resources :customer, only: [:index, :new]
 end

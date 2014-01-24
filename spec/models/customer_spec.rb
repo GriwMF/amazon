@@ -3,14 +3,6 @@ require 'spec_helper'
 describe Customer do
   let(:customer) { FactoryGirl.create :customer }
   
-  it "validates presence of firstname" do
-    expect(customer).to validate_presence_of(:firstname)
-  end
-  
-  it "validates presence of lastname" do
-    expect(customer).to validate_presence_of(:lastname)
-  end
-  
   it "has unique email" do
     expect(customer).to validate_uniqueness_of(:email)
   end
