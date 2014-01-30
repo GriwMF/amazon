@@ -6,7 +6,8 @@ html {
 
 body {
   margin: 0px 10% 0px 10%;
-} 
+}
+
 #logo {
   font-size: 1.7em;
   text-transform: uppercase;
@@ -29,8 +30,21 @@ body {
   text-align: center;
 }
 
-.center_box
-{
+.center_box {
   width: 80%;
   align: center;
-} 
+}
+
+.tab {
+  margin-left: 1.5em
+}
+
+#cart {
+  background-color: #C9F0D1;
+  outline: 0;
+  &:hover {
+    background-color: #A9E8B6;
+  }
+}
+
+

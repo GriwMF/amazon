@@ -1,0 +1,14 @@
+%h1 Listing orders
+
+%h3 Order items
+
+- @orders.each do |order|
+  .hero-unit
+    = render 'order', order: order
+    Status:
+    = order.state
+    %br
+    = link_to 'Show', order
+%br
+
+= link_to 'Continue shopping', root_path

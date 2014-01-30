@@ -5,8 +5,8 @@ class OrderItem < ActiveRecord::Base
   validate :book_should_be_in_stock
   
   private def book_should_be_in_stock
-    if book.in_stock <= quantity
-      errors.add(:book, "not in stock")
+    if book.in_stock < quantity
+      errors.add(:book, "are not in stock")
     end
   end
 end

@@ -1,0 +1,27 @@
+%h1 Listing addresses
+
+%table
+  %tr
+    %th Country
+    %th Address
+    %th Zipcode
+    %th City
+    %th Phone
+    %th
+    %th
+    %th
+
+  - @addresses.each do |address|
+    %tr
+      %td= address.country
+      %td= address.address
+      %td= address.zipcode
+      %td= address.city
+      %td= address.phone
+      %td= link_to 'Show', address
+      %td= link_to 'Edit', edit_address_path(address)
+      %td= link_to 'Destroy', address, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Address', new_address_path

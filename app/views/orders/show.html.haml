@@ -1,0 +1,30 @@
+- can_cancel = @order.state == "selecting"
+  
+%b Order items:
+= render 'order', order: @order, can_cancel: can_cancel
+%br
+= link_to 'Continue shopping', root_path
+
+%br
+%br
+
+- if can_cancel
+  %b Check out:
+  = form_tag check_out_orders_path, method: "post", id: "check_out" do
+    .form-group
+      = label_tag "Shipping address:"
+      = collection_select(:ship_addr, :id, current_customer.addresses, 
+                          :id, :full, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+    .form-group
+      = label_tag "Billing address:"
+      = collection_select(:bill_addr, :id, current_customer.addresses,
+                          :id, :full, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+      %br
+      = link_to "Addresses", addresses_path, class: "tab"
+    .form-group
+      = label_tag "Credit card:"
+      = collection_select(:credit_card, :id, current_customer.credit_cards,
+                          :id, :number, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+      %br
+      = link_to "Credit cards", credit_cards_path, class: "tab"                     
+    = submit_tag "Check out", class: "btn btn-default"     

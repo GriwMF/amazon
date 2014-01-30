@@ -11,6 +11,10 @@ describe Customer do
     expect(customer).to have_many(:credit_cards)
   end
   
+  it "has many addresses" do
+    expect(customer).to have_many(:addresses)
+  end
+  
   it "has many credit orders" do
     expect(customer).to have_many(:orders)
   end

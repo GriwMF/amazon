@@ -10,9 +10,21 @@
       .navbar-header
         = link_to 'Amazon', root_path, class: 'navbar-brand', id: "logo"
       %ul.nav.navbar-nav.pull-right
-        %li= link_to "Home",    '#'
+        %li= link_to "Navigation",  navigation_show_path
+        - if customer_signed_in?
+          %li= link_to "Recent orders", orders_path
+          %li= link_to "Profile", customer_path
+          %li= link_to "Cart", order_path(current_customer.cart), id: "cart" #if something in cart
+          %li= link_to "Logout", destroy_customer_session_path, :method => :delete
+        - else
+          %li= link_to "Login", new_customer_session_path
+          %li= link_to "Register", new_customer_registration_path
     .container.center_box
-      - flash.each do |key, value|
-        .alert{class: "alert-#{key}"}= value
+      - flash.each do |key, message|
+        - if message.is_a? Array
+          - message.each do |m|
+            .alert{class: "alert-#{key}"}= m
+        - else
+          .alert{class: "alert-#{key}"}= message
       = yield
       =debug(params) if Rails.env.development?

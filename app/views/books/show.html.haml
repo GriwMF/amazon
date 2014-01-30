@@ -1,0 +1,56 @@
+%p
+  %h2.center
+    = @book.title
+%p
+  = render layout: "parse", locals: { collection: @book.authors, name: "Author" } do |author|
+    = "#{author.full_name}"
+%p
+  = render layout: "parse", locals: { collection: @book.categories, name: "Category" } do |category|
+    = "#{category.title}"
+%p
+  %b Descirption:
+  = @book.descirption
+%p
+  %b Price:
+  = @book.price
+%p
+  %b In stock:
+  = @book.in_stock
+%p
+  %b Wished by:
+  = @book.wished
+
+- if customer_signed_in?
+  - unless @book.wished_by?(current_customer)
+    = link_to 'Add to wish list', add_wished_book_path(@book), method: 'patch'
+    %br
+  - if @book.unrated?(current_customer)
+    %h3 Rate the book
+    = form_tag rate_book_path(@book), id: 'book_rating' do
+      .form_group
+        = label_tag "Description:"
+        = text_field_tag :text
+      .form_group
+        = label_tag "Rating (1-5):"
+        = number_field_tag :rating   
+        
+      .actions
+        = submit_tag 'Rate', class: "btn btn-default"  
+        
+  - if current_customer.admin?
+    = link_to 'Edit', edit_book_path(@book)
+    \|
+= link_to 'Back', books_path
+
+%h3 Book ratings:
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Description
+      %th Rating
+  %tbody
+    -@book_ratings.each do |rating|
+      %tr
+        %td= rating.text
+        %td= rating.rating

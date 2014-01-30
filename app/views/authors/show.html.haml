@@ -1,0 +1,13 @@
+%p
+  %b Firstname:
+  = @author.firstname
+%p
+  %b Lastname:
+  = @author.lastname
+
+= link_to 'New book', new_book_path
+\|
+= link_to 'Edit', edit_author_path(@author)
+\|
+= link_to 'Back', authors_path
+

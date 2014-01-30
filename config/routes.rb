@@ -1,6 +1,6 @@
 FirstModel::Application.routes.draw do
   devise_for :customers
-  root 'customer#index'
+  root 'books#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -56,5 +56,44 @@ FirstModel::Application.routes.draw do
   #     resources :products
   #   end
   
-  resources :customer, only: [:index, :new]
+  get "navigation/show"
+    
+  resource :customer, only: [:show, :edit, :update]
+  resources :books do
+    member do
+      delete "author/:author_id", action: "un_author"
+      delete "category/:category_id", action: "un_category"
+      delete "wished"
+      post "assign_author"
+      post "assign_category"
+      post "rate"
+      patch "add_wished"
+    end
+    collection do
+      post "filter_author"
+      post "filter_title"
+      get "category_select/:category_id", action: "filter_category"
+    end
+  end
+
+  namespace :ratings do
+    get "check_ratings"
+    patch "approve/:id", action: "approve"
+    delete "decline/:id", action: "destroy"
+  end
+
+  resources :authors
+  resources :categories
+  
+  resources :addresses
+  resources :credit_cards
+  
+  resources :orders do
+    collection do
+      post "add_item/:id", action: "add_item"
+      delete "remove_item/:id", action: "remove_item"
+      post "check_out"
+    end
+  end
+
 end

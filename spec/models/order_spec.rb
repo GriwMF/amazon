@@ -3,10 +3,6 @@ require 'spec_helper'
 describe Order do
   let(:order) { FactoryGirl.create :order }
   
-  it "validates presence of total price" do
-    expect(order).to validate_presence_of(:total_price)
-  end
-  
   it "has many books through order_items" do
     expect(order).to have_many(:books).through(:order_items)
   end
@@ -35,8 +31,8 @@ describe Order do
     let(:order) { FactoryGirl.create(:order_with_book_price_5_and_quantity_3) }
     let(:book) { FactoryGirl.create(:book, price: 7, in_stock: 50) }
 
-    context "#refresh_prices!" do
-      before { order.refresh_prices! }
+    context "#refresh_prices" do
+      before { order.refresh_prices }
       
       it "updates total_price" do
         expect(Order.find(order).total_price).to eq(15)
@@ -52,22 +48,22 @@ describe Order do
     context "#add_item" do
       
       it "add one item" do
-        expect { order.add_item!(book) }.to change { order.order_items.count}.by(1)
+        expect { order.add_item(book) }.to change { order.order_items.count}.by(1)
       end
       
       it "saves proper quantity" do
-        item = order.add_item!(book, quantity: 21)
+        item = order.add_item(book, quantity: 21)
         expect(OrderItem.find(item).quantity).to eq(21)
       end
       
       it "asociate item with order" do
-        item = order.add_item!(book)
+        item = order.add_item(book)
         expect(OrderItem.find(item).order).to eq(order)
       end
       
       it "increses quantity if order exist" do
-        order.add_item!(book)
-        expect { order.add_item!(book, quantity: 5) }.to change { order.order_items.find_by(book_id: book.id).quantity }.by(5)
+        order.add_item(book)
+        expect { order.add_item(book, quantity: 5) }.to change { order.order_items.find_by(book_id: book.id).quantity }.by(5)
       end
     end
     
@@ -80,7 +76,7 @@ describe Order do
       end
       
       it "raise error if no book in stock and rollback changes" do
-        order.add_item!(book, quantity: 4)
+        order.add_item(book, quantity: 4)
         book.in_stock = 3
         book.save
         expect { order.refresh_in_stock! }.to raise_error(ActiveRecord::RecordInvalid)    
@@ -95,21 +91,21 @@ describe Order do
       end
       
       it "calls #refresh_prices!" do
-        expect(order).to receive(:refresh_prices!)
-        order.complete_order
+        expect(order).to receive(:refresh_prices)
+        order.complete_order!
       end
       
       it "calls #refresh_in_stock!" do
         expect(order).to receive(:refresh_in_stock!)
-        order.complete_order
+        order.complete_order!
       end
 
       it "change completed_at to now" do
-        expect { order.complete_order }.to change { order.completed_at }
+        expect { order.complete_order! }.to change { order.completed_at }
       end
       
       it "change state to 'Processing'" do
-        expect { order.complete_order }.to change { order.state }.to("processing")
+        expect { order.complete_order! }.to change { order.state }.to("processing")
       end
       
     end

@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe Address do
   let(:address) { FactoryGirl.create :address }
-    
+ 
+  it "validates presence of country" do
+    expect(address).to validate_presence_of(:country)
+  end
+      
   it "validates presence of address" do
     expect(address).to validate_presence_of(:address)
   end

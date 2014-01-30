@@ -40,6 +40,7 @@ gem 'haml-rails', :group => :development
 gem "erb2haml", :group => :development
 
 gem 'bootstrap-sass'
+# gem 'bootstrap-select-rails'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
@@ -55,6 +56,11 @@ gem 'bootstrap-sass'
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+end
+
+group :test do
+  gem 'capybara'
+#  gem 'database_cleaner'
   gem 'shoulda-matchers'
-  gem "capybara"
+#  gem 'faker'
 end

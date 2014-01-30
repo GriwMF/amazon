@@ -1,0 +1,20 @@
+- can_cancel ||= false
+%table.table.table-striped
+  %thead
+    %tr
+      %th Book
+      %th Price
+      %th Quantity
+      - if can_cancel
+        %th 
+  %tbody
+    - order.order_items.each do |item|
+      %tr
+        %td
+          = item.book.title
+          = "(#{item.book.authors[0].full_name})" if item.book.authors.any?
+        %td= item.price
+        %td= item.quantity
+        - if can_cancel
+          %td= link_to 'Cancel', "#{orders_path}/remove_item/#{item.id}", :method => :delete, :data => { :confirm => 'Are you sure?' }
+= link_to 'Decline order', order, :method => :delete, :data => { :confirm => 'Are you sure?' } if can_cancel

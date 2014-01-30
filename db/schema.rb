@@ -11,19 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140123140050) do
+ActiveRecord::Schema.define(version: 20140129155802) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
     t.string   "zipcode"
     t.string   "city"
     t.string   "phone"
-    t.integer  "country_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "country"
+    t.integer  "customer_id"
   end
 
-  add_index "addresses", ["country_id"], name: "index_addresses_on_country_id"
+  add_index "addresses", ["country"], name: "index_addresses_on_country"
+  add_index "addresses", ["customer_id"], name: "index_addresses_on_customer_id"
 
   create_table "authors", force: true do |t|
     t.string   "firstname"
@@ -59,14 +61,16 @@ ActiveRecord::Schema.define(version: 20140123140050) do
   add_index "books_categories", ["book_id", "category_id"], name: "index_books_categories_on_book_id_and_category_id"
   add_index "books_categories", ["category_id", "book_id"], name: "index_books_categories_on_category_id_and_book_id"
 
-  create_table "categories", force: true do |t|
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "books_customers", id: false, force: true do |t|
+    t.integer "book_id",     null: false
+    t.integer "customer_id", null: false
   end
 
-  create_table "countries", force: true do |t|
-    t.string   "name"
+  add_index "books_customers", ["book_id", "customer_id"], name: "index_books_customers_on_book_id_and_customer_id"
+  add_index "books_customers", ["customer_id", "book_id"], name: "index_books_customers_on_customer_id_and_book_id"
+
+  create_table "categories", force: true do |t|
+    t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -146,6 +150,7 @@ ActiveRecord::Schema.define(version: 20140123140050) do
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "approved"
   end
 
   add_index "ratings", ["book_id"], name: "index_ratings_on_book_id"

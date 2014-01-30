@@ -6,9 +6,7 @@ class Order < ActiveRecord::Base
   has_many :order_items, dependent: :destroy
   has_many :books, through: :order_items
   
-  validates :total_price, presence: true
-  
-  def add_item!(book, quantity: 1)
+  def add_item(book, quantity: 1)
     if order_item = order_items.find_by(book_id: book.id)
       order_item.quantity += quantity
       order_item.save
@@ -18,7 +16,7 @@ class Order < ActiveRecord::Base
     end
   end
   
-  def refresh_prices!
+  def refresh_prices
     orderitems = order_items.includes(:book)
     sum = 0
     orderitems.each do |t|
@@ -39,9 +37,9 @@ class Order < ActiveRecord::Base
     end
   end
   
-  def complete_order
+  def complete_order!
     refresh_in_stock!
-    refresh_prices!
+    refresh_prices
     self.state = "processing"
     self.completed_at = DateTime.now
     save!
