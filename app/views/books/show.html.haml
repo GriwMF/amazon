@@ -1,3 +1,4 @@
+- provide(:title, 'Show book')
 %p
   %h2.center
     = @book.title
@@ -25,18 +26,20 @@
     = link_to 'Add to wish list', add_wished_book_path(@book), method: 'patch'
     %br
   - if @book.unrated?(current_customer)
-    %h3 Rate the book
-    = form_tag rate_book_path(@book), id: 'book_rating' do
-      .form_group
-        = label_tag "Description:"
-        = text_field_tag :text
-      .form_group
-        = label_tag "Rating (1-5):"
-        = number_field_tag :rating   
-        
-      .actions
-        = submit_tag 'Rate', class: "btn btn-default"  
-        
+    .panel.panel-default.form-group.row
+      .col-xs-12
+        %h3 Rate the book
+        = form_tag rate_book_path(@book), id: 'book_rating' do
+          .form_group
+            = label_tag "Description:"
+            = text_field_tag :text, "", class: 'form-control'
+          .form_group
+            = label_tag "Rating (1-5):"
+            = number_field_tag :rating, "", class: 'form-control'
+          %br
+          .actions
+            = submit_tag 'Rate', class: "btn btn-default"  
+          %br
   - if current_customer.admin?
     = link_to 'Edit', edit_book_path(@book)
     \|
@@ -46,7 +49,7 @@
 
 %table.table.table-striped
   %thead
-    %tr
+    %tr.heading
       %th Description
       %th Rating
   %tbody

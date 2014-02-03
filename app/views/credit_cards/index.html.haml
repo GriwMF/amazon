@@ -1,28 +1,30 @@
-%h1 Listing credit_cards
+- provide(:title, 'Listing credit cards')
+%h1 Listing credit cards
 
-%table
-  %tr
-    %th Firstname
-    %th Lastname
-    %th Number
-    %th Cvv
-    %th Expiration month
-    %th Expiration year
-    %th
-    %th
-    %th
-
-  - @credit_cards.each do |credit_card|
-    %tr
-      %td= credit_card.firstname
-      %td= credit_card.lastname
-      %td= credit_card.number
-      %td= credit_card.cvv
-      %td= credit_card.expiration_month
-      %td= credit_card.expiration_year
-      %td= link_to 'Show', credit_card
-      %td= link_to 'Edit', edit_credit_card_path(credit_card)
-      %td= link_to 'Destroy', credit_card, :method => :delete, :data => { :confirm => 'Are you sure?' }
+%table.table.table-striped
+  %thead
+    %tr.heading
+      %th Firstname
+      %th Lastname
+      %th Number
+      %th Cvv
+      %th Expiration month
+      %th Expiration year
+      %th
+      %th
+      %th
+  %tbody
+    - @credit_cards.each do |credit_card|
+      %tr
+        %td= credit_card.firstname
+        %td= credit_card.lastname
+        %td= credit_card.number
+        %td= credit_card.cvv
+        %td= credit_card.expiration_month
+        %td= credit_card.expiration_year
+        %td= link_to 'Show', credit_card
+        %td= link_to 'Edit', edit_credit_card_path(credit_card)
+        %td= link_to 'Destroy', credit_card, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 

@@ -1,14 +1,29 @@
 %h1 Listing orders
 
 %h3 Order items
-
 - @orders.each do |order|
-  .hero-unit
-    = render 'order', order: order
-    Status:
-    = order.state
-    %br
-    = link_to 'Show', order
+  .panel.panel-default.row
+    .col-xs-12
+      - if current_customer.admin?
+        %b Admin actions:
+        = link_to 'Ship', ship_order_path(order), method: 'patch'
+        = link_to 'Cancel', cancel_order_path(order), method: 'patch'
+      %br
+      = render 'order', order: order
+      %br
+      %b Shipping address:
+      = order.ship_addr.full
+      %br
+      %b Billing address:
+      = order.bill_addr.full
+      %br
+      %b State:
+      = order.state
+      %br
+      %b Completed at:
+      = order.completed_at
+      %br
+
 %br
 
 = link_to 'Continue shopping', root_path

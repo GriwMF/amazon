@@ -6,23 +6,23 @@
         - @credit_card.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
+  .form-group
     = f.label :firstname
-    = f.text_field :firstname
-  .field
+    = f.text_field :firstname, class: 'form-control'
+  .form-group
     = f.label :lastname
-    = f.text_field :lastname
-  .field
+    = f.text_field :lastname, class: 'form-control'
+  .form-group
     = f.label :number
-    = f.text_field :number
-  .field
+    = f.text_field :number, class: 'form-control'
+  .form-group
     = f.label :cvv
-    = f.text_field :cvv
-  .field
+    = f.text_field :cvv, class: 'form-control'
+  .form-group
     = f.label :expiration_month
-    = f.text_field :expiration_month
-  .field
+    = f.text_field :expiration_month, class: 'form-control'
+  .form-group
     = f.label :expiration_year
-    = f.text_field :expiration_year
+    = f.text_field :expiration_year, class: 'form-control'
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', class: 'btn btn-default'

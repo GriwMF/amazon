@@ -6,6 +6,8 @@ class Order < ActiveRecord::Base
   has_many :order_items, dependent: :destroy
   has_many :books, through: :order_items
   
+  validates :state, inclusion: { in: %w(processing selecting shipped cancelled) }
+  
   def add_item(book, quantity: 1)
     if order_item = order_items.find_by(book_id: book.id)
       order_item.quantity += quantity

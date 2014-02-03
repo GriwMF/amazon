@@ -1,9 +1,5 @@
-- if collection.count == 1
-  %b #{name}:
-  = yield collection[0]
-- elsif collection.count > 1
-  %b= "#{name.pluralize}:"
-  .padded
-    - collection.each do |elem|
-      = yield elem
-      %br
+%b= "#{name.pluralize}:"
+.padded
+  - collection.each do |elem|
+    = yield elem
+    %br

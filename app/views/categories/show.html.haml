@@ -1,7 +1,8 @@
+- provide(:title, 'Show category')
 %p
   %b Title:
   = @category.title
 
 = link_to 'Edit', edit_category_path(@category)
 \|
-= link_to 'Back', categories_path
+= link_to 'Categories', categories_path

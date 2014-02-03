@@ -27,6 +27,10 @@ describe Order do
     expect(order).to have_many(:order_items).dependent(:destroy)
   end    
   
+  its "state are in %w(processing selecting shipped)" do
+    expect(order).to ensure_inclusion_of(:state).in_array(%w(processing selecting shipped cancelled))
+  end
+  
   describe "order_items methods" do
     let(:order) { FactoryGirl.create(:order_with_book_price_5_and_quantity_3) }
     let(:book) { FactoryGirl.create(:book, price: 7, in_stock: 50) }

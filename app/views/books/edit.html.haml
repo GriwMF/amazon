@@ -1,3 +1,4 @@
+- provide(:title, 'Editing book')
 %h1 Editing book
 
 = render 'form'
@@ -6,18 +7,20 @@
   = render layout: "parse", locals: { collection: @book.authors, name: "Author" } do |author|
     = "#{author.full_name}"
     = link_to 'unassign', "#{book_path(@book)}/author/#{author.id}", :method => :delete, :data => { :confirm => 'Are you sure?' }
-  = form_tag assign_author_book_path(@book), method: "post", id: "assign_authors" do
-    = collection_select(:authors, :id, Author.all - @book.authors, :id, :full_name, :include_blank => 'Please Select')
-    = submit_tag "Assign"
+  = form_tag assign_author_book_path(@book), method: "post", id: "assign_authors", class: "form-inline" do
+    .form-group
+      = collection_select(:authors, :id, Author.all - @book.authors, :id, :full_name, {:include_blank => 'Please Select'}, { class: 'selectpicker' })
+      = submit_tag "Assign", class: 'btn btn-default'
   = link_to 'New author', new_author_path
 
 %p
   = render layout: "parse", locals: { collection: @book.categories, name: "Category" } do |category|
     = "#{category.title}"
     = link_to 'unassign', "#{book_path(@book)}/category/#{category.id}", :method => :delete, :data => { :confirm => 'Are you sure?' }
-  = form_tag assign_category_book_path(@book), method: "post", id: "assign_categories" do
-    = collection_select(:categories, :id, Category.all - @book.categories, :id, :title, :include_blank => 'Please Select')
-    = submit_tag "Assign"
+  = form_tag assign_category_book_path(@book), method: "post", id: "assign_categories", class: "form-inline" do
+    .form-group
+      = collection_select(:categories, :id, Category.all - @book.categories, :id, :title, {:include_blank => 'Please Select'}, { class: 'selectpicker' })
+      = submit_tag "Assign", class: 'btn btn-default'
   = link_to 'New category', new_category_path
 
 = link_to 'Show', @book

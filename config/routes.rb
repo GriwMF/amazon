@@ -55,9 +55,7 @@ FirstModel::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-  
-  get "navigation/show"
-    
+
   resource :customer, only: [:show, :edit, :update]
   resources :books do
     member do
@@ -70,6 +68,7 @@ FirstModel::Application.routes.draw do
       patch "add_wished"
     end
     collection do
+      post "filter"
       post "filter_author"
       post "filter_title"
       get "category_select/:category_id", action: "filter_category"
@@ -88,11 +87,15 @@ FirstModel::Application.routes.draw do
   resources :addresses
   resources :credit_cards
   
-  resources :orders do
+  resources :orders, except: [:destroy] do
+    member do
+      patch 'ship'
+      patch 'cancel'
+    end
+    
     collection do
       post "add_item/:id", action: "add_item"
       delete "remove_item/:id", action: "remove_item"
-      post "check_out"
     end
   end
 

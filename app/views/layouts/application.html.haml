@@ -9,8 +9,11 @@
     %nav.navbar.navbar-default{:role => "navigation"}
       .navbar-header
         = link_to 'Amazon', root_path, class: 'navbar-brand', id: "logo"
+      - if customer_signed_in? && current_customer.admin?
+        %ul.nav.navbar-nav
+          %li= link_to 'New Book', new_book_path
+          %li= link_to 'Check ratings', ratings_check_ratings_path
       %ul.nav.navbar-nav.pull-right
-        %li= link_to "Navigation",  navigation_show_path
         - if customer_signed_in?
           %li= link_to "Recent orders", orders_path
           %li= link_to "Profile", customer_path

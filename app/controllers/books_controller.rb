@@ -133,6 +133,14 @@ class BooksController < ApplicationController
     redirect_to current_customer
   end
   
+  # POST /books/filter
+  def filter
+    redirect_to root_path and return if params[:commit] == "Reset"
+    
+    @books = Book.filter(*prepare_filter).includes(:ratings)
+    render "index"
+  end
+  
   def filter_author
     @books = Author.find_by(id: params[:authors_filter][:id]).books
     render "index"
@@ -173,5 +181,11 @@ class BooksController < ApplicationController
       else
         flash_message :warning, "Please, select category"
       end
+    end
+    
+    def prepare_filter
+      filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
+      filter_opts.each { |item| item.shift }
+      filter_opts
     end
 end

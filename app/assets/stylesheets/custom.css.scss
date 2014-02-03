@@ -18,6 +18,10 @@ body {
   }
 }
 
+.heading {
+  background-color: #F5F7FF;
+}
+
 .alert-alert {
   @extend .alert-warning;
 }
@@ -39,6 +43,9 @@ body {
   margin-left: 1.5em
 }
 
+.hidden {
+  display: none;
+}
 #cart {
   background-color: #C9F0D1;
   outline: 0;

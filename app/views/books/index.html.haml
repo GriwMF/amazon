@@ -1,12 +1,29 @@
-- if customer_signed_in? && current_customer.admin?
-  = link_to 'New Book', new_book_path
-  = link_to 'Check ratings', ratings_check_ratings_path
+- provide(:title, 'Listing books')
+.panel.panel-default
+  .panel-heading Books filtering
+  .panel-body.container
+    = form_tag "/books/filter", id: "filter", class: "form-inline" do
 
-%h1 Listing books
+      = collection_select(nil, "authors_id", Author.all, :id, :full_name, {:selected => params[:authors_id]},
+                          { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                            "data-live-search" => true, title: 'Authors filter' })
+               
+      = collection_select(nil, "categories_id", Category.all, :id, :title, {:selected => params[:categories_id]},
+                          { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                            "data-live-search" => true, title: 'Categories filter' })
+                            
+      = collection_select(nil, "books_id", Book.all, :id, :title, {:selected => params[:books_id]},
+                          { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                            "data-live-search" => true, title: "Book's titles filter" })
+      
+      %span.btn-group
+        = submit_tag "Apply", class: "btn btn-default"
+        = submit_tag 'Reset', class: "btn btn-default"
+      
 
 %table.table.table-striped
   %thead
-    %tr
+    %tr.heading
       %th Title
       %th Price
       %th Rating
@@ -17,17 +34,18 @@
           %th
       %th
   %tbody
-    - @books.each do |book|
-      %tr
-        %td= link_to book.title, book
-        %td= book.price
-        %td= book.rating
-        - if customer_signed_in?
-          %td= book.in_stock
-          - if current_customer.admin?
-            %td= link_to 'Edit', edit_book_path(book)
-            %td= link_to 'Destroy', book, :method => :delete, :data => { :confirm => 'Are you sure?' }
-        %td= link_to 'Add to cart', "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
+    - if @books
+      - @books.each do |book|
+        %tr
+          %td= link_to book.title, book
+          %td= book.price
+          %td= book.rating || "not rated"
+          - if customer_signed_in?
+            %td= book.in_stock
+            - if current_customer.admin?
+              %td= link_to 'Edit', edit_book_path(book)
+              %td= link_to 'Destroy', book, :method => :delete, :data => { :confirm => 'Are you sure?' }
+          %td= link_to 'Add to cart', "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
 
 %br
 

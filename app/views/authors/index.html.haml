@@ -1,20 +1,23 @@
+- provide(:title, 'Listing authors')
 %h1 Listing authors
 
-%table
-  %tr
-    %th Firstname
-    %th Lastname
-    %th
-    %th
-    %th
+%table.table.table-striped
+  %thead
+    %tr.heading
+      %th Firstname
+      %th Lastname
+      %th
+      %th
+      %th
 
-  - @authors.each do |author|
-    %tr
-      %td= author.firstname
-      %td= author.lastname
-      %td= link_to 'Show', author
-      %td= link_to 'Edit', edit_author_path(author)
-      %td= link_to 'Destroy', author, :method => :delete, :data => { :confirm => 'Are you sure?' }
+  %tbody
+    - @authors.each do |author|
+      %tr
+        %td= author.firstname
+        %td= author.lastname
+        %td= link_to 'Show', author
+        %td= link_to 'Edit', edit_author_path(author)
+        %td= link_to 'Destroy', author, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
 
