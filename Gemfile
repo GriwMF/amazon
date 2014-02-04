@@ -39,7 +39,7 @@ gem 'cancan'
 gem 'state_machine'
 
 gem "haml" 
-gem 'haml-rails'
+gem 'haml-rails', :group => :development
 
 gem "erb2haml", :group => :development
 
