@@ -22,4 +22,15 @@ describe Customer do
   it "has many ratings" do
     expect(customer).to have_many(:ratings)
   end
+
+  it "has and belongs to many wished_books" do
+    expect(customer).to have_and_belong_to_many(:wished_books)
+  end
+  
+  context ".cart" do
+    it "creates or returns cart" do
+      order = customer.cart
+      expect(customer.orders.where(state: "selecting")).to match_array([order])
+    end
+  end
 end

@@ -19,16 +19,24 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe BooksController do
+  include Devise::TestHelpers
 
+  let(:customer) { FactoryGirl.create :admin_customer }
+  
   # This should return the minimal set of attributes required to create a valid
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "title" => "MyString" } }
+  let(:valid_attributes) { { title: "War And Peace", descirption: "Blah blah blah-blah ",
+                           price: "9.99", in_stock: "24" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # BooksController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+  
+  before do
+    sign_in customer
+  end
 
   describe "GET index" do
     it "assigns all books as @books" do
@@ -39,10 +47,17 @@ describe BooksController do
   end
 
   describe "GET show" do
+    let!(:book) {  Book.create! valid_attributes }
+    
     it "assigns the requested book as @book" do
-      book = Book.create! valid_attributes
       get :show, {:id => book.to_param}, valid_session
       assigns(:book).should eq(book)
+    end
+    
+    it "assigns last 10 approved rationgs as @book_ratings" do
+      rating = book.ratings.create!(text: "good book", rating: "3", approved: true)
+      get :show, {:id => book.to_param}, valid_session
+      assigns(:book_ratings).should eq([rating])
     end
   end
 
@@ -62,6 +77,11 @@ describe BooksController do
   end
 
   describe "POST create" do
+    before do
+      allow(@controller).to receive(:new_author)
+      allow(@controller).to receive(:new_category)
+    end
+    
     describe "with valid params" do
       it "creates a new Book" do
         expect {
@@ -157,4 +177,178 @@ describe BooksController do
     end
   end
 
+  describe "DELETE un_author" do
+    let(:book) { Book.create! valid_attributes }
+    let(:author) { Author.create!(firstname: "John", lastname: "Galt") }
+    it "destroys connection of the requested author to book" do
+      book.authors << author
+      expect {
+        delete :un_author, {:id => book.to_param, :author_id => author.to_param}, valid_session
+      }.to change(book.authors, :count).by(-1)
+    end
+
+    it "redirects to edit book path" do
+      delete :un_author, {:id => book.to_param, :author_id => author.to_param}, valid_session
+      response.should redirect_to(edit_book_path(book))
+    end
+  end
+  
+  describe "DELETE un_category" do
+    let(:book) { Book.create! valid_attributes }
+    let(:category) { Category.create!(title: "Discounts") }
+    it "destroys connection of the requested author to book" do
+      book.categories << category
+      expect {
+        delete :un_category, {:id => book.to_param, :category_id => category.to_param}, valid_session
+      }.to change(book.categories, :count).by(-1)
+    end
+
+    it "redirects to edit book path" do
+      delete :un_category, {:id => book.to_param,  :category_id => category.to_param}, valid_session
+      response.should redirect_to(edit_book_path(book))
+    end
+  end
+
+  describe "POST assign_author" do
+    let(:book) { Book.create! valid_attributes }
+    let(:author) { Author.create!(firstname: "John", lastname: "Galt") }
+    
+    it "Assigns author to book" do
+      expect {
+        post :assign_author, {:id => book.to_param, :authors => {id: author.id}}, valid_session
+      }.to change(book.authors, :count).by(1)
+    end
+    
+    it "redirects to edit book path" do
+      post :assign_author, {:id => book.to_param}, valid_session
+      response.should redirect_to(edit_book_path(book))
+    end
+  end
+    
+  describe "POST assign_category" do
+    let(:book) { Book.create! valid_attributes }
+    let(:category) { Category.create! title: "some category" }
+    
+    it "Assigns category to book" do
+      expect {
+        post :assign_category, {:id => book.to_param, :categories => {id: category.id}}, valid_session
+      }.to change(book.categories, :count).by(1)
+    end
+    
+    it "redirects to edit book path" do
+      post :assign_category, {:id => book.to_param}, valid_session
+      response.should redirect_to(edit_book_path(book))
+    end    
+  end
+  
+  describe "POST rate" do
+    let(:book) { Book.create! valid_attributes }
+    
+    describe "valid attributes" do
+      it "adds new rating" do
+        expect {
+          post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
+        }.to change(book.ratings, :count).by(1)
+      end
+      
+      it "adds successed flash message" do
+        post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
+        expect(flash[:info]).to eq("Success! Please, wait for rating confirmation")
+      end
+      
+      it "redirects to root path" do
+        post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
+         response.should redirect_to(root_url)
+      end
+    end
+    
+    describe "invalid attributes" do
+      it "adds error flash message" do
+        post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
+        expect(flash[:info]).to_not eq("Success! Please, wait for rating confirmation")
+        expect(flash[:danger]).to_not be_empty
+      end
+      
+      it "redirects to root path" do
+       post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
+       response.should redirect_to(root_url)
+      end
+    end
+  end
+  
+  describe "DELETE wished" do
+    let(:book) { Book.create! valid_attributes }
+
+    it "delete book from wished list" do
+      book.wish_add(customer)
+      expect {
+        delete :wished, {:id => book.to_param}, valid_session
+      }.to change(book.wished_customers, :count).by(-1)
+    end
+
+    it "redirects to customer profile" do
+      delete :wished, {:id => book.to_param}, valid_session
+      response.should redirect_to(customer)
+    end
+  end
+  
+  describe "POST add_wished" do
+    let(:book) { Book.create! valid_attributes }
+    before do
+      allow_any_instance_of(Book).to receive(:wish_add)
+    end
+    
+    it "calls wish_add" do
+      expect_any_instance_of(Book).to receive(:wish_add)
+      post :add_wished, {:id => book.to_param}, valid_session
+    end
+    
+    it "redirects to show book path" do
+      post :add_wished, {:id => book.to_param}, valid_session
+      response.should redirect_to(book_path(book))
+    end
+      
+    describe "all valid" do
+      it "adds success flash message" do
+        allow_any_instance_of(Book).to receive(:wish_add).and_return(true)
+        post :add_wished, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to eq "Successefully added"
+      end
+    end
+    
+    describe "already rated" do
+      it "adds error flash message" do
+        allow_any_instance_of(Book).to receive(:wish_add).and_return(false)
+        post :add_wished, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to_not eq "Successefully added"
+        expect(flash[:danger]).to eq "Already rated"
+      end
+    end   
+  end  
+  
+  describe "POST filter" do
+    let(:book) { Book.create! valid_attributes }
+    
+    it "redirects to root path if params[:commit] == 'Reset'" do
+      post :filter, {:id => book.to_param, :commit => 'Reset'}, valid_session
+      expect(response).to redirect_to(root_path)
+    end
+    
+    before do
+      Book.stub_chain("filter.includes").and_return([book])
+    end
+    
+    it "filtering books by parameters" do
+      expect(Book).to receive(:filter)
+      expect(Book.filter).to receive(:includes)
+      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      expect(assigns(:books)).to eq([book])
+    end
+    
+    it "renders index template" do
+      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      expect(response).to render_template("index")
+    end
+  end
+  
 end

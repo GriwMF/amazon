@@ -2,12 +2,12 @@
 
 FactoryGirl.define do
   factory :credit_card do
-    number "1234567890123456"
+    number Faker::Number.number(16)
     cvv "123"
     expiration_month 12
     expiration_year 2016
-    firstname "John"
-    lastname "Galt"
+    firstname Faker::Name.first_name
+    lastname Faker::Name.last_name
     customer
   end
 end

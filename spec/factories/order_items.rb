@@ -2,8 +2,7 @@
 
 FactoryGirl.define do
   factory :order_item do
-    price 19.99
-    quantity 1
+    quantity Faker::Number.digit
     book
     order
   end

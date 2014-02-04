@@ -25,5 +25,11 @@ describe Address do
  
   it "has many ship_orders" do
     expect(address).to have_many(:ship_orders).with_foreign_key('ship_addr_id').class_name('Order')
-  end   
+  end  
+  
+  context "#full" do
+    it "returns full address" do
+      expect(address.full).to eq(address.country + " " + address.city + " " + address.address)
+    end
+  end 
 end

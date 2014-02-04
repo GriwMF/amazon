@@ -59,16 +59,9 @@ describe BooksController do
       patch("/books/1/add_wished").should route_to("books#add_wished", :id => "1")
     end 
     
-    it "routes to #filter_author" do
-      post("/books/filter_author").should route_to("books#filter_author")
+    it "routes to #filter" do
+      post("/books/filter").should route_to("books#filter")
     end
-    
-    it "routes to #filter_title" do
-      post("/books/filter_title").should route_to("books#filter_title")
-    end
-
-    it "routes to #filter_category" do
-      get("/books/category_select/1").should route_to("books#filter_category", :category_id => "1")
-    end
+ 
   end
 end

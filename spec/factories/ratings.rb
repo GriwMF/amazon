@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :rating do
     rating 3
-    text "not good"
+    text Faker::Lorem.sentence
     book
     customer
   end

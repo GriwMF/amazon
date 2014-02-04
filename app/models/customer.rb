@@ -1,8 +1,7 @@
 class Customer < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :validatable
+  devise :database_authenticatable, :registerable, :rememberable, :validatable
   has_many :ratings
   has_many :credit_cards
   has_many :addresses
@@ -13,7 +12,4 @@ class Customer < ActiveRecord::Base
     orders.find_or_create_by(state: "selecting")
   end
 
-  def admin?
-    admin
-  end
 end

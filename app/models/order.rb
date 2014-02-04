@@ -8,6 +8,22 @@ class Order < ActiveRecord::Base
   
   validates :state, inclusion: { in: %w(processing selecting shipped cancelled) }
   
+  state_machine :initial => :selecting do
+    before_transition :on => :check_out!, :do => :complete_order!
+    
+    event :check_out! do
+      transition :selecting => :processing
+    end
+    
+    event :ship do
+      transition :processing => :shipped
+    end
+    
+    event :cancel do
+      transition :processing => :cancelled
+    end
+  end
+  
   def add_item(book, quantity: 1)
     if order_item = order_items.find_by(book_id: book.id)
       order_item.quantity += quantity
@@ -42,7 +58,6 @@ class Order < ActiveRecord::Base
   def complete_order!
     refresh_in_stock!
     refresh_prices
-    self.state = "processing"
     self.completed_at = DateTime.now
     save!
   end

@@ -2,6 +2,6 @@
 
 FactoryGirl.define do
   factory :category do
-    title "Horrors"
+    title Faker::Name.title
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :author do
-    firstname "Ivan"
-    lastname "Ivanov"
+    firstname Faker::Name.first_name
+    lastname Faker::Name.last_name
   end
 end

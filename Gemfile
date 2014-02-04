@@ -33,6 +33,8 @@ group :doc do
 end
 
 gem 'devise'
+gem 'cancan'
+gem 'state_machine'
 
 gem "haml" 
 gem 'haml-rails', :group => :development
@@ -56,11 +58,12 @@ gem 'bootstrap-sass'
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 group :test do
   gem 'capybara'
-#  gem 'database_cleaner'
+  gem 'database_cleaner'
   gem 'shoulda-matchers'
-#  gem 'faker'
+
 end

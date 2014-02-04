@@ -8,7 +8,11 @@ FactoryGirl.define do
   factory :customer do
     email { FactoryGirl.generate(:email) } 
     password "123123123"
-    firstname "Leo"
-    lastname "Richi"
+    firstname Faker::Name.first_name
+    lastname Faker::Name.last_name
+    
+    factory :admin_customer do
+      admin true
+    end
   end
 end

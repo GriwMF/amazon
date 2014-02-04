@@ -69,9 +69,6 @@ FirstModel::Application.routes.draw do
     end
     collection do
       post "filter"
-      post "filter_author"
-      post "filter_title"
-      get "category_select/:category_id", action: "filter_category"
     end
   end
 

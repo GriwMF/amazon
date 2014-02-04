@@ -38,8 +38,6 @@ describe CreditCardsController do
 
   
   before do
-    customer.confirmed_at = Time.now
-    customer.save
     sign_in customer
   end
   

@@ -40,7 +40,7 @@
           .actions
             = submit_tag 'Rate', class: "btn btn-default"  
           %br
-  - if current_customer.admin?
+  - if can? :update, Book
     = link_to 'Edit', edit_book_path(@book)
     \|
 = link_to 'Back', books_path

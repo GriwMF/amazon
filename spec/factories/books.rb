@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :book do
-    title "War and Peace"
-    descirption "bla bla bla" 
+    title  Faker::Name.title
+    descirption Faker::Lorem.sentence
     price 5
     in_stock 3
   end

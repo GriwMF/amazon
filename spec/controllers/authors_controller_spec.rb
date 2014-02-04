@@ -21,7 +21,7 @@ require 'spec_helper'
 describe AuthorsController do
   include Devise::TestHelpers
   
-  let(:customer) { FactoryGirl.create :customer }
+  let(:customer) { FactoryGirl.create :admin_customer }
   
   # This should return the minimal set of attributes required to create a valid
   # Author. As you add validations to Author, be sure to
@@ -34,10 +34,6 @@ describe AuthorsController do
   let(:valid_session) { {} }
   
   before do
-    customer.confirmed_at = Time.now
-    customer.admin = true
-    customer.save
-    
     sign_in customer
   end
   

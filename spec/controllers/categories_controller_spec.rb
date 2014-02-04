@@ -21,7 +21,7 @@ require 'spec_helper'
 describe CategoriesController do
   include Devise::TestHelpers
   
-  let(:customer) { FactoryGirl.create :customer }
+  let(:customer) { FactoryGirl.create :admin_customer }
   
   # This should return the minimal set of attributes required to create a valid
   # Category. As you add validations to Category, be sure to
@@ -34,10 +34,6 @@ describe CategoriesController do
   let(:valid_session) { {} }
 
   before do
-    customer.confirmed_at = Time.now
-    customer.admin = true
-    customer.save
-    
     sign_in customer
   end
   

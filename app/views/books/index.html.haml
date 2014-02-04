@@ -27,11 +27,10 @@
       %th Title
       %th Price
       %th Rating
-      - if customer_signed_in?
-        %th In stock
-        - if current_customer.admin?
-          %th
-          %th
+      %th In stock
+      - if can? :manage, Book
+        %th
+        %th
       %th
   %tbody
     - if @books
@@ -40,11 +39,10 @@
           %td= link_to book.title, book
           %td= book.price
           %td= book.rating || "not rated"
-          - if customer_signed_in?
-            %td= book.in_stock
-            - if current_customer.admin?
-              %td= link_to 'Edit', edit_book_path(book)
-              %td= link_to 'Destroy', book, :method => :delete, :data => { :confirm => 'Are you sure?' }
+          %td= book.in_stock
+          - if can? :manage, Book
+            %td= link_to 'Edit', edit_book_path(book)
+            %td= link_to 'Destroy', book, :method => :delete, :data => { :confirm => 'Are you sure?' }
           %td= link_to 'Add to cart', "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
 
 %br

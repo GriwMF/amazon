@@ -2,8 +2,6 @@
 
 FactoryGirl.define do
   factory :order do
-    total_price 666
-    state "waiting for confirmation"
     customer
     credit_card
     bill_addr
@@ -13,7 +11,7 @@ FactoryGirl.define do
        customer nil
       end
       after :create do |order, evaluator|
-        create_list :order_item, 3, order: order
+        create_list :order_item, 3, {order: order, quantity: 3}
       end
     end
   end

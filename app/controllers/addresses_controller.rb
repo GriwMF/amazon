@@ -1,6 +1,7 @@
 class AddressesController < ApplicationController
   before_action :set_address, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_customer!
+  authorize_resource
 
   # GET /addresses
   # GET /addresses.json
@@ -25,8 +26,8 @@ class AddressesController < ApplicationController
   # POST /addresses
   # POST /addresses.json
   def create
-    @address = current_customer.addresses.build(address_params)
-
+    @address = Address.new(address_params)
+    
     respond_to do |format|
       if @address.save
         format.html { redirect_to @address, notice: 'Address was successfully created.' }

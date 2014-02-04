@@ -1,14 +1,15 @@
-%b Order items:
-= render 'order', order: @order, can_cancel: true
-%br
-%h2
-  Total price:
-  .label.label-info
-    = @order.total_price
+- unless @order.order_items.any?
+  %h1.center Add item to cart first
+- else
+  %b Order items:
+  = render 'order', order: @order, can_cancel: true
+  %br
+  %h2
+    Total price:
+    .label.label-info
+      = @order.total_price
+  
 
-
-
-- if @order.order_items.any?
   %h2.center Check out
   = form_for @order do |f|
     .panel.panel-default.form-group.row

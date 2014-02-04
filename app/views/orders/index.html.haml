@@ -4,7 +4,7 @@
 - @orders.each do |order|
   .panel.panel-default.row
     .col-xs-12
-      - if current_customer.admin?
+      - if  can? [:ship, :cancel], Order
         %b Admin actions:
         = link_to 'Ship', ship_order_path(order), method: 'patch'
         = link_to 'Cancel', cancel_order_path(order), method: 'patch'

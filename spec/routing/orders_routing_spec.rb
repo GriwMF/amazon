@@ -27,10 +27,6 @@ describe OrdersController do
       put("/orders/1").should route_to("orders#update", :id => "1")
     end
 
-    it "routes to #destroy" do
-      delete("/orders/1").should route_to("orders#destroy", :id => "1")
-    end
-
     it "routes to #add_item" do
       post("/orders/add_item/1").should route_to("orders#add_item", :id => "1")
     end
@@ -39,8 +35,12 @@ describe OrdersController do
       delete("/orders/remove_item/1").should route_to("orders#remove_item", :id => "1")
     end    
     
-    it "routes to #check_out" do
-      post("/orders/check_out").should route_to("orders#check_out")
-    end       
+    it "routes to #ship" do
+      patch("/orders/1/ship").should route_to("orders#ship", :id => "1")
+    end      
+    
+    it "routes to #cancel" do
+      patch("/orders/1/cancel").should route_to("orders#cancel", :id => "1")
+    end      
   end
 end

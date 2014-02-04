@@ -1,14 +1,14 @@
 class OrdersController < ApplicationController
-  include Concerns::SessionManagement
+  before_filter :authenticate_customer!
+  authorize_resource
+  load_resource only: [:ship, :cancel]
     
   before_action :set_order, only: [:show, :update]
-  before_filter :authenticate_customer!
-  before_filter :check_admin, only: [:ship, :cancel]
-
+  
   # GET /orders
   # GET /orders.json
   def index
-    @orders = if current_customer.admin?
+    @orders = if can? :manage, Order
                 Order.where(state: "processing")
               else
                 current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
@@ -42,12 +42,14 @@ class OrdersController < ApplicationController
       @order.update_attributes!(ship_addr_id: ship_addr,
                                bill_addr_id: bill_addr,
                                credit_card_id: credit_card)
-      @order.complete_order!
+      @order.check_out!
       flash_message :success, 'Success! Your order is under processing.'                               
       
     rescue ActiveRecord::RecordInvalid => ex
       flash_message :danger, ex.message
-      flash_message :danger, "Propably not enought books in stock or wrong fields filled :("
+    rescue ActiveRecord::StatementInvalid => ex
+      flash_message :danger, ex.message
+      flash_message :danger, "Propably not enought books left:("     
     end
     redirect_to root_path
   end
@@ -70,13 +72,13 @@ class OrdersController < ApplicationController
   
   #PATCH /orders/1/ship
   def ship
-    Order.find(params[:id]).update(state: "shipped")
+    @order.ship
     redirect_to orders_path
   end
   
   #PATCH /orders/1/cancel
   def cancel
-    Order.find(params[:id]).update(state: "cancelled")
+    @order.cancel
     redirect_to orders_path
   end
 
@@ -96,7 +98,7 @@ class OrdersController < ApplicationController
     end
 
     def credit_card_params
-      params.require(:order).require(:bill_addr).permit(:firstname, :lastname, :number, :cvv, :expiration_month, :expiration_year)
+      params.require(:order).require(:credit_card).permit(:firstname, :lastname, :number, :cvv, :expiration_month, :expiration_year)
     end    
 
 end

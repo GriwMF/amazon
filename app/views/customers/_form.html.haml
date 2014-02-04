@@ -6,11 +6,11 @@
         - current_customer.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
+  .form-group
     = f.label :firstname
-    = f.text_field :firstname
-  .field
+    = f.text_field :firstname, class: 'form-control'
+  .form-group
     = f.label :lastname
-    = f.text_field :lastname
+    = f.text_field :lastname, class: 'form-control'
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', class: 'btn btn-default'
