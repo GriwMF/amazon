@@ -8,11 +8,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = if can? :manage, Order
-                Order.where(state: "processing")
-              else
-                current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
-              end
+    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
   end
 
   # GET /orders/1

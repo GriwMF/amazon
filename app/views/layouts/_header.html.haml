@@ -1,10 +1,11 @@
 %nav.navbar.navbar-default
   .navbar-header
     = link_to 'Amazon', root_path, class: 'navbar-brand', id: "logo"
-  - if can? :manage, Book
+  - if can? :manage, Rating
     %ul.nav.navbar-nav
-      %li= link_to 'New Book', new_book_path
-      %li= link_to 'Check ratings', ratings_check_ratings_path
+      - if can? :access, :rails_admin
+        %li.admin= link_to 'Admin Panel', rails_admin_path
+      %li.admin= link_to 'Check ratings', ratings_check_ratings_path
   %ul.nav.navbar-nav.pull-right
     - if customer_signed_in?
       %li= link_to "Recent orders", orders_path

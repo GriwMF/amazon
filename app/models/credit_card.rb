@@ -1,6 +1,6 @@
 class CreditCard < ActiveRecord::Base
-  belongs_to :customer
-  has_many :orders
+  belongs_to :customer, :inverse_of => :credit_cards
+  has_many :orders, :inverse_of => :credit_card
   
   validates :firstname, :lastname, :cvv, :number, presence: true
   validates_format_of  :number, with: /\A\d{16}\z/

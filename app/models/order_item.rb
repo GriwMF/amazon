@@ -1,6 +1,6 @@
 class OrderItem < ActiveRecord::Base
-  belongs_to :book
-  belongs_to :order
+  belongs_to :book, :inverse_of => :order_items
+  belongs_to :order, :inverse_of => :order_items
   
   validate :book_should_be_in_stock
   

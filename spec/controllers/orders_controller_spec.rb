@@ -22,7 +22,6 @@ describe OrdersController do
   include Devise::TestHelpers
 
   let(:customer) { FactoryGirl.create :customer }
-  let(:admin_customer) { FactoryGirl.create :admin_customer }
   # This should return the minimal set of attributes required to create a valid
   # Order. As you add validations to Order, be sure to
   # adjust the attributes here as well.
@@ -32,40 +31,22 @@ describe OrdersController do
   # in order to pass any filters (e.g. authentication) defined in
   # OrdersController. Be sure to keep this updated too.
   let(:valid_session) { {} }
-
-  describe "GET index" do
-    context "admin" do
-      it "assigns all processing orders as @orders" do
-        sign_in admin_customer
-        
-        FactoryGirl.create :order
-        order = FactoryGirl.create :order, customer: admin_customer, state: "processing"
-        get :index, {}, valid_session
-        assigns(:orders).should eq([order])
-        
-        sign_out admin_customer
-      end     
-    end
-    
-    context "user" do
-      it "assigns completed orders of customer in last 3 month as @orders" do
-        sign_in customer
-        
-        FactoryGirl.create :order
-        order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
-        get :index, {}, valid_session
-        assigns(:orders).should eq([order])
-        
-        sign_out customer
-      end     
-    end    
-
-  end
-
+  
   before do
     sign_in customer
   end
   
+  describe "GET index" do
+    context "user" do
+      it "assigns completed orders of customer in last 3 month as @orders" do
+        FactoryGirl.create :order
+        order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+        get :index, {}, valid_session
+        assigns(:orders).should eq([order])
+      end     
+    end    
+  end
+
   describe "GET show" do
     it "assigns the requested order as @order" do
       order = FactoryGirl.create :order, customer: customer, state: "selecting"

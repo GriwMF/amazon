@@ -2,8 +2,8 @@ class Book < ActiveRecord::Base
   has_and_belongs_to_many :authors
   has_and_belongs_to_many :categories
   has_and_belongs_to_many :wished_customers, class_name: "Customer"
-  has_many :ratings
-  has_many :order_items
+  has_many :ratings, :inverse_of => :book
+  has_many :order_items, :inverse_of => :book
   
   validates :title, presence: true
   validates :in_stock,

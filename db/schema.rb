@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140129155802) do
+ActiveRecord::Schema.define(version: 20140206174414) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -91,7 +91,6 @@ ActiveRecord::Schema.define(version: 20140129155802) do
 
   create_table "customers", force: true do |t|
     t.string   "email",                  default: "",    null: false
-    t.string   "password"
     t.string   "firstname"
     t.string   "lastname"
     t.datetime "created_at"
@@ -106,10 +105,6 @@ ActiveRecord::Schema.define(version: 20140129155802) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
   end
 
   add_index "customers", ["email"], name: "index_customers_on_email", unique: true

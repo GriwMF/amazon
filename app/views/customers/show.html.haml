@@ -1,5 +1,8 @@
 - provide(:title, 'Profile')
 %p
+  %b E-mail:
+  = current_customer.email
+%p
   %b Firstname:
   = current_customer.firstname
 %p
@@ -10,7 +13,7 @@
 = link_to "Credit cards", credit_cards_path
 \|
 
-= link_to 'Edit', edit_customer_path
+= link_to 'Edit', edit_customer_registration_path
 \|
 = link_to 'Back', root_path
 
