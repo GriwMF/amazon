@@ -6,6 +6,8 @@ class Rating < ActiveRecord::Base
   validates :book_id, uniqueness: { scope: :customer_id,
             message: "can't rate twice" }
   
+  validates :approved, inclusion: { in: %w(false true deleted) }
+  
   # validate :rate_book_only_once
 #   
   # def rate_book_only_once
