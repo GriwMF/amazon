@@ -30,7 +30,7 @@ describe Customer do
   context ".cart" do
     it "creates or returns cart" do
       order = customer.cart
-      expect(customer.orders.where(state: "selecting")).to match_array([order])
+      expect(customer.orders.where(state: "in_progress")).to match_array([order])
     end
   end
 end

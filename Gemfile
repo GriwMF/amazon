@@ -38,6 +38,7 @@ gem 'devise'
 gem 'cancan'
 gem 'state_machine'
 gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
+gem 'rails_admin_state'
 
 gem "haml" 
 gem 'haml-rails', :group => :development

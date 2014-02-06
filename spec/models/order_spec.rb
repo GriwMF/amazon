@@ -27,8 +27,8 @@ describe Order do
     expect(order).to have_many(:order_items).dependent(:destroy)
   end    
   
-  its "state are in %w(processing selecting shipped)" do
-    expect(order).to ensure_inclusion_of(:state).in_array(%w(processing selecting shipped cancelled))
+  its "state are in %w(in_queue in_progress in_delivery delivered)" do
+    expect(order).to ensure_inclusion_of(:state).in_array(%w(in_queue in_progress in_delivery delivered))
   end
   
   describe "order_items methods" do
@@ -116,9 +116,9 @@ describe Order do
     end
     
     context "check_out" do
-      it "changes state from selecting to processing" do
-        expect(order.state).to eq("selecting")
-        expect { order.check_out! }.to change { order.state }.to("processing")
+      it "changes state from in_progress to in_queue" do
+        expect(order.state).to eq("in_progress")
+        expect { order.check_out! }.to change { order.state }.to("in_queue")
       end
       
       it "calls #complete_order!" do
@@ -128,16 +128,17 @@ describe Order do
     end
     
     context "ship" do
-      it "changes state from processing to shipped" do
+      it "changes state from in_queue to in_delivery" do
         order.check_out!
-        expect { order.ship }.to change { order.state }.to("shipped")
+        expect { order.ship }.to change { order.state }.to("in_delivery")
       end
     end
     
-    context "cancel" do
-      it "changes state from processing to cancelled" do
+    context "shipped" do
+      it "changes state from in_deliver to delivered" do
         order.check_out!
-        expect { order.cancel }.to change { order.state }.to("cancelled")
+        order.ship
+        expect { order.shipped }.to change { order.state }.to("delivered")
       end
     end
   end

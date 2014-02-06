@@ -49,13 +49,13 @@ describe OrdersController do
 
   describe "GET show" do
     it "assigns the requested order as @order" do
-      order = FactoryGirl.create :order, customer: customer, state: "selecting"
+      order = FactoryGirl.create :order, customer: customer, state: "in_progress"
       get :show, {:id => order.to_param}, valid_session
       assigns(:order).should eq(order)
     end
     
-    it "raises routing error if state is not selecting" do
-      order = FactoryGirl.create :order, customer: customer, state: "processing"
+    it "raises routing error if state is not in_progress" do
+      order = FactoryGirl.create :order, customer: customer, state: "in_queue"
       expect {
         get :show, {:id => order.to_param}, valid_session
       }.to raise_error ActionController::RoutingError

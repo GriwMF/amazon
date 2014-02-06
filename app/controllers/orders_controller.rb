@@ -82,7 +82,7 @@ class OrdersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.state == "selecting"
+      not_found unless @order.state == "in_progress"
     end
     
     def ship_addr_params

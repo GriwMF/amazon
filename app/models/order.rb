@@ -4,24 +4,47 @@ class Order < ActiveRecord::Base
   belongs_to :bill_addr, class_name: "Address", :inverse_of => :bill_orders
   belongs_to :ship_addr, class_name: "Address", :inverse_of => :ship_orders
   has_many :order_items, dependent: :destroy, :inverse_of => :order
+  
   has_many :books, through: :order_items
   
-  validates :state, inclusion: { in: %w(processing selecting shipped cancelled) }
+  validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   
-  state_machine :initial => :selecting do
+  state_machine :initial => :in_progress do
     before_transition :on => :check_out!, :do => :complete_order!
     
     event :check_out! do
-      transition :selecting => :processing
+      transition :in_progress => :in_queue
     end
     
     event :ship do
-      transition :processing => :shipped
+      transition :in_queue => :in_delivery
     end
     
-    event :cancel do
-      transition :processing => :cancelled
+    event :shipped do
+      transition :in_delivery => :delivered
     end
+  end
+  
+  rails_admin do
+    list do
+      filters [:state]
+      field :id
+      field :state do
+        column_width 80
+      end
+      field :customer
+      field :order_items
+      field :completed_at
+      #field :books
+      # include_all_fields
+      # exclude_fields :id
+    end
+    
+    show do
+      field :state, :state
+      include_all_fields      
+    end
+
   end
   
   def add_item(book, quantity: 1)

@@ -4,6 +4,10 @@ class OrderItem < ActiveRecord::Base
   
   validate :book_should_be_in_stock
   
+  def title
+    "#{book.title}, Quantity: #{quantity.to_s}"
+  end
+  
   private 
   
   def book_should_be_in_stock
