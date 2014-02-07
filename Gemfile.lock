@@ -249,6 +249,7 @@ DEPENDENCIES
   rails (= 4.0.2)
   rails_admin!
   rails_admin_state
+  rake
   redcarpet
   rspec-rails
   sass-rails (~> 4.0.0)
