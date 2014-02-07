@@ -44,6 +44,9 @@ gem 'rails_admin_state'
 gem 'carrierwave'
 gem 'mini_magick'
 
+#markup tool
+gem 'redcarpet'
+
 gem "haml" 
 gem 'haml-rails', :group => :development
 

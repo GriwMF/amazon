@@ -11,7 +11,20 @@ class Book < ActiveRecord::Base
   validates :in_stock,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-      
+
+  rails_admin do
+    show do
+      field :full_description do
+        pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
+          markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true,
+                                                                      :strikethrough => true)
+          markdown.render(ERB::Util.html_escape value).html_safe
+        end
+      end
+      include_all_fields      
+    end
+  end
+
   def self.filter(authors_id, categories_id, books_id)
     relation = Book.includes(:authors, :categories)
     

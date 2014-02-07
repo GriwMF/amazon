@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140207111436) do
+ActiveRecord::Schema.define(version: 20140207123531) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20140207111436) do
     t.string   "lastname"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "desctiption"
   end
 
   add_index "authors", ["firstname", "lastname"], name: "index_authors_on_firstname_and_lastname"
@@ -47,11 +48,12 @@ ActiveRecord::Schema.define(version: 20140207111436) do
   create_table "books", force: true do |t|
     t.string   "title"
     t.string   "descirption"
-    t.decimal  "price",       precision: 8, scale: 2
+    t.decimal  "price",            precision: 8, scale: 2
     t.integer  "in_stock"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "shot"
+    t.text     "full_description"
   end
 
   create_table "books_categories", id: false, force: true do |t|
