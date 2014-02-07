@@ -26,7 +26,7 @@ describe BooksController do
   # This should return the minimal set of attributes required to create a valid
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { title: "War And Peace", descirption: "Blah blah blah-blah ",
+  let(:valid_attributes) { { title: "War And Peace", description: "Blah blah blah-blah ",
                            price: "9.99", in_stock: "24" } }
 
   # This should return the minimal set of values that should be in the session

@@ -7,7 +7,7 @@ feature "detailed information" do
     visit books_path
     click_link book.title
     expect(page).to have_content book.title
-    expect(page).to have_content book.descirption
+    expect(page).to have_content book.description
     expect(page).to have_content book.in_stock
     expect(page).to have_content book.price
     expect(page).to have_content "Wished by:"

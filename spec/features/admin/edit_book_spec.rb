@@ -17,7 +17,7 @@ feature "Edit books", :js => true do
 
     within("#edit_book") do
       fill_in 'Title', :with => 'War and Peace'
-      fill_in 'Descirption', :with => 'something about war and peace'
+      fill_in 'Description', :with => 'something about war and peace'
       fill_in 'Price', :with => '24.99'
       fill_in 'In stock', :with => '5'
 
