@@ -1,4 +1,6 @@
 class Book < ActiveRecord::Base
+  mount_uploader :shot, ShotUploader
+  
   has_and_belongs_to_many :authors
   has_and_belongs_to_many :categories
   has_and_belongs_to_many :wished_customers, class_name: "Customer"

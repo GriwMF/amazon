@@ -40,6 +40,10 @@ gem 'state_machine'
 gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
 gem 'rails_admin_state'
 
+#images processing
+gem 'carrierwave'
+gem 'mini_magick'
+
 gem "haml" 
 gem 'haml-rails', :group => :development
 
