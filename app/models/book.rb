@@ -16,9 +16,9 @@ class Book < ActiveRecord::Base
     show do
       field :full_description do
         pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
-          markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true,
-                                                                      :strikethrough => true)
-          markdown.render(ERB::Util.html_escape value).html_safe
+          markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html => true, :hard_wrap => true),
+                                             :autolink => true, :space_after_headers => true, :strikethrough => true)
+          markdown.render(value).html_safe
         end
       end
       include_all_fields      
