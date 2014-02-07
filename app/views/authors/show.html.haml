@@ -5,10 +5,9 @@
 %p
   %b Lastname:
   = @author.lastname
-
-= link_to 'New book', new_book_path
-\|
-= link_to 'Edit', edit_author_path(@author)
-\|
-= link_to 'Authors', authors_path
-
+- if @author.description
+  %p
+    %b Description:
+    .tab
+      = simple_format(@author.description)
+= link_to 'Back', :back

@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :book do
     title  Faker::Name.title
-    descirption Faker::Lorem.sentence
+    description Faker::Lorem.sentence
     price 5
     in_stock 3
   end

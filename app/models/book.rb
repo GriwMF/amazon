@@ -48,7 +48,7 @@ class Book < ActiveRecord::Base
   end
   
   def rating
-    ratings.where(approved: true).average(:rating)
+    ratings.where(approved: "true").average(:rating)
   end
   
   def unrated?(customer)

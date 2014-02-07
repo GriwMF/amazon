@@ -1,5 +1,5 @@
 class UnapprovedRating < Rating
-  default_scope where(approved: :false)
+  default_scope { where(approved: :false) }
 
   state_machine :approved, :initial => :false do
     after_transition :on => :decline, :do => :destroy

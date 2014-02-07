@@ -58,14 +58,10 @@ FirstModel::Application.routes.draw do
   #     resources :products
   #   end
 
-  resource :customer, only: [:show, :edit, :update]
-  resources :books do
+  resource :customer, only: [:show]
+  resources :books, only: [:show, :index] do
     member do
-      delete "author/:author_id", action: "un_author"
-      delete "category/:category_id", action: "un_category"
       delete "wished"
-      post "assign_author"
-      post "assign_category"
       post "rate"
       patch "add_wished"
     end
@@ -74,24 +70,12 @@ FirstModel::Application.routes.draw do
     end
   end
 
-  namespace :ratings do
-    get "check_ratings"
-    patch "approve/:id", action: "approve"
-    delete "decline/:id", action: "destroy"
-  end
-
-  resources :authors
-  resources :categories
+  resources :authors, only: [:show]
   
   resources :addresses
   resources :credit_cards
   
-  resources :orders, except: [:destroy] do
-    member do
-      patch 'ship'
-      patch 'cancel'
-    end
-    
+  resources :orders, except: [:destroy, :create, :new, :edit] do
     collection do
       post "add_item/:id", action: "add_item"
       delete "remove_item/:id", action: "remove_item"

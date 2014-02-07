@@ -29,7 +29,7 @@ class Order < ActiveRecord::Base
     list do
       filters [:state]
       field :id
-      field :state, :state do
+      field :state do
         column_width 80
       end
       field :customer

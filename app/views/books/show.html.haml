@@ -4,7 +4,7 @@
     = @book.title
 %p
   = render layout: "parse", locals: { collection: @book.authors, name: "Author" } do |author|
-    = "#{author.full_name}"
+    = link_to "#{author.full_name}", author_path(author)
 %p
   = render layout: "parse", locals: { collection: @book.categories, name: "Category" } do |category|
     = "#{category.title}"

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature "detailed information" do
 
-  scenario "A user can view detailed information on a book" do
+  scenario "A user viewing detailed information of a book" do
     book = FactoryGirl.create :book
     visit books_path
     click_link book.title

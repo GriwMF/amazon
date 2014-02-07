@@ -101,5 +101,67 @@ describe OrdersController do
     end
   end
 
+  describe "POST add_item" do
+    it "redirects to the root path" do
+      book = FactoryGirl.create :book
+      post :add_item, {:id => book.to_param}, valid_session
+      expect(response).to redirect_to(books_path)
+    end
+             
+    describe "with valid params" do
+      let(:book) { FactoryGirl.create :book }
 
+      it "adds book to cart" do
+        post :add_item, {:id => book.to_param}, valid_session
+        expect(customer.cart.order_items[0].book).to eq(book)
+      end
+      
+      it "adds successefull flash message" do
+        post :add_item, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to eq('Book was successefully added')
+      end
+      
+      it "calls :refresh_prices on order" do
+        expect_any_instance_of(Order).to receive(:refresh_prices)
+        post :add_item, {:id => book.to_param}, valid_session
+      end
+
+    end
+    
+    describe "with invalid params" do
+      let(:book) { FactoryGirl.create :book, in_stock: 0 }
+      
+      it "adds arror message" do
+        post :add_item, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to_not eq('Book was successefully added')
+        expect(flash[:danger]).to eq(['Book are not in stock'])
+      end
+      
+      it "does not change cart" do
+        expect {
+          post :add_item, {:id => book.to_param}, valid_session
+        }.to_not change { customer.cart.order_items.count }
+      end
+    end
+  end
+  
+  describe "DELETE remove_item" do
+    let(:book) { FactoryGirl.create :book }
+    
+    before do
+      request.env["HTTP_REFERER"] = books_path
+      customer.cart.add_item(book)
+    end
+    
+    it "redirects back" do
+      delete :remove_item, {:id => book.to_param}, valid_session
+      expect(response).to redirect_to(books_path)
+    end
+    
+    it "remove item from cart" do
+        expect {
+          delete :remove_item, {:id => book.to_param}, valid_session
+        }.to change { customer.cart.order_items.count }.by(-1)
+    end
+  end
 end

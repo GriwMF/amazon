@@ -1,7 +1,6 @@
 class OrdersController < ApplicationController
   before_filter :authenticate_customer!
   authorize_resource
-  load_resource only: [:ship, :cancel]
     
   before_action :set_order, only: [:show, :update]
   
@@ -50,6 +49,7 @@ class OrdersController < ApplicationController
     redirect_to root_path
   end
   
+  # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
     if (err = current_customer.cart.add_item(book).errors).any?
@@ -61,21 +61,10 @@ class OrdersController < ApplicationController
     redirect_to books_path
   end
 
+  # DELETE /orders/remove_item/1
   def remove_item
     current_customer.cart.order_items.find(params[:id]).destroy
     redirect_to :back
-  end
-  
-  #PATCH /orders/1/ship
-  def ship
-    @order.ship
-    redirect_to orders_path
-  end
-  
-  #PATCH /orders/1/cancel
-  def cancel
-    @order.cancel
-    redirect_to orders_path
   end
 
   private

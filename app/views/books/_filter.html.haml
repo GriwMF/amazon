@@ -1,0 +1,18 @@
+= form_tag "/books/filter", id: "filter", class: "form-inline" do
+
+  = collection_select(nil, "authors_id", Author.all, :id, :full_name, {:selected => params[:authors_id]},
+                      { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                        "data-live-search" => true, title: 'Authors filter' })
+           
+  = collection_select(nil, "categories_id", Category.all, :id, :title, {:selected => params[:categories_id]},
+                      { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                        "data-live-search" => true, title: 'Categories filter' })
+                        
+  = collection_select(nil, "books_id", Book.all, :id, :title, {:selected => params[:books_id]},
+                      { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",
+                        "data-live-search" => true, title: "Book's titles filter" })
+  
+  %span.btn-group
+    = submit_tag "Apply", class: "btn btn-default"
+    = submit_tag 'Reset', class: "btn btn-default"
+  
