@@ -8,6 +8,8 @@ class Rating < ActiveRecord::Base
   
   validates :state, inclusion: { in: %w(pending approved declined) }
   
+  scope :approved, -> { where(state: "approved")  }
+  
   # validate :rate_book_only_once
 #   
   # def rate_book_only_once
