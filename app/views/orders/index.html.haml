@@ -1,29 +1,25 @@
-%h1 Listing orders
+%h1= t('list_orders')
 
-%h3 Order items
+%h3= t('order_items')
 - @orders.each do |order|
   .panel.panel-default.row
     .col-xs-12
-      - if  can? [:ship, :cancel], Order
-        %b Admin actions:
-        = link_to 'Ship', ship_order_path(order), method: 'patch'
-        = link_to 'Cancel', cancel_order_path(order), method: 'patch'
       %br
       = render 'order', order: order
       %br
-      %b Shipping address:
+      %b= t('ship_addr')
       = order.ship_addr.full
       %br
-      %b Billing address:
+      %b= t(bill_addr')
       = order.bill_addr.full
       %br
-      %b State:
+      %b= t('state')
       = order.state
       %br
-      %b Completed at:
+      %b= t('completed_at')
       = order.completed_at
       %br
 
 %br
 
-= link_to 'Continue shopping', root_path
+= link_to t('continue_shopping'), root_path

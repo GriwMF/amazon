@@ -23,4 +23,19 @@ describe Rating do
   it "belongs to book" do
     expect(rating).to belong_to(:book)
   end
+  
+  its "state are in %w(pending approved declined)" do
+    expect(rating).to ensure_inclusion_of(:state).in_array(%w(pending approved declined))
+  end
+  
+  context "approved scope" do
+    it "includes approved rating" do
+      rating = FactoryGirl.create :rating, state: 'approved'
+      expect(Rating.approved).to include rating
+    end
+    
+    it "excludes ratings with state not equal approved" do
+      expect(Rating.approved).to_not include rating      
+    end
+  end
 end

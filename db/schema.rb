@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140129155802) do
+ActiveRecord::Schema.define(version: 20140214150321) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20140129155802) do
     t.string   "lastname"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description"
   end
 
   add_index "authors", ["firstname", "lastname"], name: "index_authors_on_firstname_and_lastname"
@@ -46,11 +47,13 @@ ActiveRecord::Schema.define(version: 20140129155802) do
 
   create_table "books", force: true do |t|
     t.string   "title"
-    t.string   "descirption"
-    t.decimal  "price",       precision: 8, scale: 2
+    t.decimal  "price",            precision: 8, scale: 2
     t.integer  "in_stock"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "shot"
+    t.text     "full_description"
+    t.text     "description"
   end
 
   create_table "books_categories", id: false, force: true do |t|
@@ -91,7 +94,6 @@ ActiveRecord::Schema.define(version: 20140129155802) do
 
   create_table "customers", force: true do |t|
     t.string   "email",                  default: "",    null: false
-    t.string   "password"
     t.string   "firstname"
     t.string   "lastname"
     t.datetime "created_at"
@@ -106,10 +108,6 @@ ActiveRecord::Schema.define(version: 20140129155802) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
   end
 
   add_index "customers", ["email"], name: "index_customers_on_email", unique: true
@@ -150,7 +148,7 @@ ActiveRecord::Schema.define(version: 20140129155802) do
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "approved"
+    t.string   "state",                 default: "pending"
   end
 
   add_index "ratings", ["book_id"], name: "index_ratings_on_book_id"

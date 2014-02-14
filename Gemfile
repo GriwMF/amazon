@@ -37,6 +37,15 @@ end
 gem 'devise'
 gem 'cancan'
 gem 'state_machine'
+gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
+gem 'rails_admin_state'
+
+#images processing
+gem 'carrierwave'
+gem 'mini_magick'
+
+#markup tool
+gem 'redcarpet'
 
 gem "haml" 
 gem 'haml-rails', :group => :development
@@ -66,7 +75,8 @@ end
 
 group :test do
   gem 'capybara'
+  # gem 'capybara-webkit'
+  gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'shoulda-matchers'
-
 end

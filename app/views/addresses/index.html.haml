@@ -1,4 +1,4 @@
-- provide(:title, 'Listing addresses')
+- provide(:title, t('list_address'))
 %h1 Listing addresses
 
 %table.table.table-striped
@@ -20,10 +20,10 @@
         %td= address.zipcode
         %td= address.city
         %td= address.phone
-        %td= link_to 'Show', address
-        %td= link_to 'Edit', edit_address_path(address)
-        %td= link_to 'Destroy', address, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        %td= link_to t('show'), address
+        %td= link_to t('edit'), edit_address_path(address)
+        %td= link_to t('destroy'), address, :method => :delete, :data => { :confirm => t('confirm') }
 
 %br
 
-= link_to 'New Address', new_address_path
+= link_to t('new_address'), new_address_path

@@ -4,12 +4,12 @@
 %table.table.table-striped
   %thead
     %tr.heading
-      %th Firstname
-      %th Lastname
-      %th Number
-      %th Cvv
-      %th Expiration month
-      %th Expiration year
+      %th= t('firstname')
+      %th= t('lastname')
+      %th= t('number')
+      %th= t('cvv')
+      %th= t('expiration_month')
+      %th= t('expiration_year')
       %th
       %th
       %th
@@ -22,10 +22,10 @@
         %td= credit_card.cvv
         %td= credit_card.expiration_month
         %td= credit_card.expiration_year
-        %td= link_to 'Show', credit_card
-        %td= link_to 'Edit', edit_credit_card_path(credit_card)
-        %td= link_to 'Destroy', credit_card, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        %td= link_to t('show'), credit_card
+        %td= link_to t('edit'), edit_credit_card_path(credit_card)
+        %td= link_to t('destroy'), credit_card, :method => :delete, :data => { :confirm => t('comfirm') }
 
 %br
 
-= link_to 'New Credit card', new_credit_card_path
+= link_to t('new_card'), new_credit_card_path

@@ -1,20 +1,20 @@
-- provide(:title, 'Showing address')
+- provide(:title, t('show_address'))
 %p
-  %b Country:
+  %b= t('country')
   = @address.country
 %p
-  %b Address:
+  %b= t('address')
   = @address.address
 %p
-  %b Zipcode:
+  %b= t('zipcode')
   = @address.zipcode
 %p
-  %b City:
+  %b= t('city')
   = @address.city
 %p
-  %b Phone:
+  %b= t('phone')
   = @address.phone
 
-= link_to 'Edit', edit_address_path(@address)
+= link_to t('edit'), edit_address_path(@address)
 \|
-= link_to 'Back', addresses_path
+= link_to t('back'), addresses_path

@@ -22,7 +22,6 @@ describe OrdersController do
   include Devise::TestHelpers
 
   let(:customer) { FactoryGirl.create :customer }
-  let(:admin_customer) { FactoryGirl.create :admin_customer }
   # This should return the minimal set of attributes required to create a valid
   # Order. As you add validations to Order, be sure to
   # adjust the attributes here as well.
@@ -32,49 +31,37 @@ describe OrdersController do
   # in order to pass any filters (e.g. authentication) defined in
   # OrdersController. Be sure to keep this updated too.
   let(:valid_session) { {} }
-
-  describe "GET index" do
-    context "admin" do
-      it "assigns all processing orders as @orders" do
-        sign_in admin_customer
-        
-        FactoryGirl.create :order
-        order = FactoryGirl.create :order, customer: admin_customer, state: "processing"
-        get :index, {}, valid_session
-        assigns(:orders).should eq([order])
-        
-        sign_out admin_customer
-      end     
-    end
-    
-    context "user" do
-      it "assigns completed orders of customer in last 3 month as @orders" do
-        sign_in customer
-        
-        FactoryGirl.create :order
-        order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
-        get :index, {}, valid_session
-        assigns(:orders).should eq([order])
-        
-        sign_out customer
-      end     
-    end    
-
-  end
-
+  
   before do
     sign_in customer
   end
   
+  describe "GET index" do
+    it "assigns completed orders of customer as @orders" do
+      order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+      get :index, {}, valid_session
+      assigns(:orders).should eq([order])
+    end     
+  end
+  
+  describe "GET recent" do
+    it "assigns completed orders of customer in last 3 month as @orders" do
+      order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+      FactoryGirl.create :order, customer: customer, completed_at: Time.now - 1.year
+      get :recent, {}, valid_session
+      assigns(:orders).should eq([order])
+    end     
+  end
+
   describe "GET show" do
     it "assigns the requested order as @order" do
-      order = FactoryGirl.create :order, customer: customer, state: "selecting"
+      order = FactoryGirl.create :order, customer: customer, state: "in_progress"
       get :show, {:id => order.to_param}, valid_session
       assigns(:order).should eq(order)
     end
     
-    it "raises routing error if state is not selecting" do
-      order = FactoryGirl.create :order, customer: customer, state: "processing"
+    it "raises routing error if state is not in_progress" do
+      order = FactoryGirl.create :order, customer: customer, state: "in_queue"
       expect {
         get :show, {:id => order.to_param}, valid_session
       }.to raise_error ActionController::RoutingError
@@ -120,5 +107,72 @@ describe OrdersController do
     end
   end
 
+  describe "POST add_item" do
+    it "redirects to the root path" do
+      book = FactoryGirl.create :book
+      post :add_item, {:id => book.to_param}, valid_session
+      expect(response).to redirect_to(books_path)
+    end
+             
+    describe "with valid params" do
+      let(:book) { mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: []) }
+      
+      before do
+        allow_any_instance_of(Order).to receive(:add_item).and_return(book)
+        allow_any_instance_of(Order).to receive(:refresh_prices)
+        allow(Book).to receive(:find).and_return(book)
+      end
+      
+      it "calls add_item method of model" do
+        expect_any_instance_of(Order).to receive(:add_item)
+        post :add_item, {:id => book.to_param}, valid_session
+      end
+      
+      it "adds successefull flash message" do
+        post :add_item, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to eq('Book was successefully added')
+      end
+      
+      it "calls :refresh_prices on order" do
+        expect_any_instance_of(Order).to receive(:refresh_prices)
+        post :add_item, {:id => book.to_param}, valid_session
+      end
 
+    end
+    
+    describe "with invalid params" do
+      it "adds error message" do
+        err = ["error"]
+        allow(err).to receive(:full_messages).and_return(["error"])
+        book = mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: err)
+        allow_any_instance_of(Order).to receive(:add_item).and_return(book)
+        allow_any_instance_of(Order).to receive(:refresh_prices)
+        allow(Book).to receive(:find).and_return(book)
+        
+        post :add_item, {:id => book.to_param}, valid_session
+        expect(flash[:info]).to_not eq(I18n.t 'suc_book_added')
+        expect(flash[:danger]).to eq(['error'])
+      end
+    end
+  end
+  
+  describe "DELETE remove_item" do
+    let(:book) { FactoryGirl.create :book }
+    
+    before do
+      request.env["HTTP_REFERER"] = books_path
+      customer.cart.add_item(book)
+    end
+    
+    it "redirects back" do
+      delete :remove_item, {:id => book.to_param}, valid_session
+      expect(response).to redirect_to(books_path)
+    end
+    
+    it "remove item from cart" do
+        expect {
+          delete :remove_item, {:id => book.to_param}, valid_session
+        }.to change { customer.cart.order_items.count }.by(-1)
+    end
+  end
 end

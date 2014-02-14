@@ -1,14 +1,13 @@
-- provide(:title, 'Show author')
+- provide(:title, t('show_author'))
 %p
-  %b Firstname:
+  %b= t('firstname')
   = @author.firstname
 %p
-  %b Lastname:
+  %b= t('lastname')
   = @author.lastname
-
-= link_to 'New book', new_book_path
-\|
-= link_to 'Edit', edit_author_path(@author)
-\|
-= link_to 'Authors', authors_path
-
+- if @author.description
+  %p
+    %b= t('description')
+    .tab
+      = simple_format(@author.description)
+= link_to t('back'), :back

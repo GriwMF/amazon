@@ -31,7 +31,7 @@ class CreditCardsController < ApplicationController
 
     respond_to do |format|
       if @credit_card.save
-        format.html { redirect_to @credit_card, notice: 'Credit card was successfully created.' }
+        format.html { redirect_to @credit_card, notice: I18n.t('suc_card_create') }
         format.json { render action: 'show', status: :created, location: @credit_card }
       else
         format.html { render action: 'new' }
@@ -45,7 +45,7 @@ class CreditCardsController < ApplicationController
   def update
     respond_to do |format|
       if @credit_card.update(credit_card_params)
-        format.html { redirect_to @credit_card, notice: 'Credit card was successfully updated.' }
+        format.html { redirect_to @credit_card, notice: I18n.t('suc_card_update') }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

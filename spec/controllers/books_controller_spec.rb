@@ -26,7 +26,7 @@ describe BooksController do
   # This should return the minimal set of attributes required to create a valid
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { title: "War And Peace", descirption: "Blah blah blah-blah ",
+  let(:valid_attributes) { { title: Faker::Name.title, description: Faker::Lorem.sentence,
                            price: "9.99", in_stock: "24" } }
 
   # This should return the minimal set of values that should be in the session
@@ -54,191 +54,11 @@ describe BooksController do
       assigns(:book).should eq(book)
     end
     
-    it "assigns last 10 approved rationgs as @book_ratings" do
-      rating = book.ratings.create!(text: "good book", rating: "3", approved: true)
+    it "assigns last 10 approved ratings as @book_ratings" do
+      rating = book.ratings.create!(text: "good book", rating: "3", state: 'approved')
       get :show, {:id => book.to_param}, valid_session
       assigns(:book_ratings).should eq([rating])
     end
-  end
-
-  describe "GET new" do
-    it "assigns a new book as @book" do
-      get :new, {}, valid_session
-      assigns(:book).should be_a_new(Book)
-    end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested book as @book" do
-      book = Book.create! valid_attributes
-      get :edit, {:id => book.to_param}, valid_session
-      assigns(:book).should eq(book)
-    end
-  end
-
-  describe "POST create" do
-    before do
-      allow(@controller).to receive(:new_author)
-      allow(@controller).to receive(:new_category)
-    end
-    
-    describe "with valid params" do
-      it "creates a new Book" do
-        expect {
-          post :create, {:book => valid_attributes}, valid_session
-        }.to change(Book, :count).by(1)
-      end
-
-      it "assigns a newly created book as @book" do
-        post :create, {:book => valid_attributes}, valid_session
-        assigns(:book).should be_a(Book)
-        assigns(:book).should be_persisted
-      end
-
-      it "redirects to the created book" do
-        post :create, {:book => valid_attributes}, valid_session
-        response.should redirect_to(Book.last)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved book as @book" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        post :create, {:book => { "title" => "invalid value" }}, valid_session
-        assigns(:book).should be_a_new(Book)
-      end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        post :create, {:book => { "title" => "invalid value" }}, valid_session
-        response.should render_template("new")
-      end
-    end
-  end
-
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested book" do
-        book = Book.create! valid_attributes
-        # Assuming there are no other books in the database, this
-        # specifies that the Book created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Book.any_instance.should_receive(:update).with({ "title" => "MyString" })
-        put :update, {:id => book.to_param, :book => { "title" => "MyString" }}, valid_session
-      end
-
-      it "assigns the requested book as @book" do
-        book = Book.create! valid_attributes
-        put :update, {:id => book.to_param, :book => valid_attributes}, valid_session
-        assigns(:book).should eq(book)
-      end
-
-      it "redirects to the book" do
-        book = Book.create! valid_attributes
-        put :update, {:id => book.to_param, :book => valid_attributes}, valid_session
-        response.should redirect_to(book)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns the book as @book" do
-        book = Book.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book.to_param, :book => { "title" => "invalid value" }}, valid_session
-        assigns(:book).should eq(book)
-      end
-
-      it "re-renders the 'edit' template" do
-        book = Book.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book.to_param, :book => { "title" => "invalid value" }}, valid_session
-        response.should render_template("edit")
-      end
-    end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested book" do
-      book = Book.create! valid_attributes
-      expect {
-        delete :destroy, {:id => book.to_param}, valid_session
-      }.to change(Book, :count).by(-1)
-    end
-
-    it "redirects to the books list" do
-      book = Book.create! valid_attributes
-      delete :destroy, {:id => book.to_param}, valid_session
-      response.should redirect_to(books_url)
-    end
-  end
-
-  describe "DELETE un_author" do
-    let(:book) { Book.create! valid_attributes }
-    let(:author) { Author.create!(firstname: "John", lastname: "Galt") }
-    it "destroys connection of the requested author to book" do
-      book.authors << author
-      expect {
-        delete :un_author, {:id => book.to_param, :author_id => author.to_param}, valid_session
-      }.to change(book.authors, :count).by(-1)
-    end
-
-    it "redirects to edit book path" do
-      delete :un_author, {:id => book.to_param, :author_id => author.to_param}, valid_session
-      response.should redirect_to(edit_book_path(book))
-    end
-  end
-  
-  describe "DELETE un_category" do
-    let(:book) { Book.create! valid_attributes }
-    let(:category) { Category.create!(title: "Discounts") }
-    it "destroys connection of the requested author to book" do
-      book.categories << category
-      expect {
-        delete :un_category, {:id => book.to_param, :category_id => category.to_param}, valid_session
-      }.to change(book.categories, :count).by(-1)
-    end
-
-    it "redirects to edit book path" do
-      delete :un_category, {:id => book.to_param,  :category_id => category.to_param}, valid_session
-      response.should redirect_to(edit_book_path(book))
-    end
-  end
-
-  describe "POST assign_author" do
-    let(:book) { Book.create! valid_attributes }
-    let(:author) { Author.create!(firstname: "John", lastname: "Galt") }
-    
-    it "Assigns author to book" do
-      expect {
-        post :assign_author, {:id => book.to_param, :authors => {id: author.id}}, valid_session
-      }.to change(book.authors, :count).by(1)
-    end
-    
-    it "redirects to edit book path" do
-      post :assign_author, {:id => book.to_param}, valid_session
-      response.should redirect_to(edit_book_path(book))
-    end
-  end
-    
-  describe "POST assign_category" do
-    let(:book) { Book.create! valid_attributes }
-    let(:category) { Category.create! title: "some category" }
-    
-    it "Assigns category to book" do
-      expect {
-        post :assign_category, {:id => book.to_param, :categories => {id: category.id}}, valid_session
-      }.to change(book.categories, :count).by(1)
-    end
-    
-    it "redirects to edit book path" do
-      post :assign_category, {:id => book.to_param}, valid_session
-      response.should redirect_to(edit_book_path(book))
-    end    
   end
   
   describe "POST rate" do
@@ -253,7 +73,7 @@ describe BooksController do
       
       it "adds successed flash message" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
-        expect(flash[:info]).to eq("Success! Please, wait for rating confirmation")
+        expect(flash[:info]).to eq(I18n.t 'suc_rating_add')
       end
       
       it "redirects to root path" do
@@ -265,7 +85,7 @@ describe BooksController do
     describe "invalid attributes" do
       it "adds error flash message" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
-        expect(flash[:info]).to_not eq("Success! Please, wait for rating confirmation")
+        expect(flash[:info]).to_not eq(I18n.t 'suc_rating_add')
         expect(flash[:danger]).to_not be_empty
       end
       
@@ -312,7 +132,7 @@ describe BooksController do
       it "adds success flash message" do
         allow_any_instance_of(Book).to receive(:wish_add).and_return(true)
         post :add_wished, {:id => book.to_param}, valid_session
-        expect(flash[:info]).to eq "Successefully added"
+        expect(flash[:info]).to eq I18n.t 'suc_wish_add'
       end
     end
     
@@ -320,8 +140,8 @@ describe BooksController do
       it "adds error flash message" do
         allow_any_instance_of(Book).to receive(:wish_add).and_return(false)
         post :add_wished, {:id => book.to_param}, valid_session
-        expect(flash[:info]).to_not eq "Successefully added"
-        expect(flash[:danger]).to eq "Already rated"
+        expect(flash[:info]).to_not eq I18n.t 'suc_wish_add'
+        expect(flash[:danger]).to eq I18n.t 'err_wish_add'
       end
     end   
   end  
@@ -329,8 +149,8 @@ describe BooksController do
   describe "POST filter" do
     let(:book) { Book.create! valid_attributes }
     
-    it "redirects to root path if params[:commit] == 'Reset'" do
-      post :filter, {:id => book.to_param, :commit => 'Reset'}, valid_session
+    it "redirects to root path if reset button was clicked" do
+      post :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
       expect(response).to redirect_to(root_path)
     end
     

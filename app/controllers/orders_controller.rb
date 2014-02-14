@@ -1,20 +1,21 @@
 class OrdersController < ApplicationController
   before_filter :authenticate_customer!
   authorize_resource
-  load_resource only: [:ship, :cancel]
     
   before_action :set_order, only: [:show, :update]
   
   # GET /orders
   # GET /orders.json
   def index
-    @orders = if can? :manage, Order
-                Order.where(state: "processing")
-              else
-                current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
-              end
+    @orders = current_customer.orders.order("completed_at DESC")
   end
-
+  
+  # GET /orders/recent
+  def recent
+    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
+    render :index
+  end  
+  
   # GET /orders/1
   # GET /orders/1.json
   def show
@@ -43,50 +44,40 @@ class OrdersController < ApplicationController
                                bill_addr_id: bill_addr,
                                credit_card_id: credit_card)
       @order.check_out!
-      flash_message :success, 'Success! Your order is under processing.'                               
+      flash_message :success, I18n.t('suc_ord_check_out')                             
       
     rescue ActiveRecord::RecordInvalid => ex
       flash_message :danger, ex.message
     rescue ActiveRecord::StatementInvalid => ex
       flash_message :danger, ex.message
-      flash_message :danger, "Propably not enought books left:("     
+      flash_message :danger, I18n.t('err_ord_check_out') 
     end
     redirect_to root_path
   end
   
+  # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
     if (err = current_customer.cart.add_item(book).errors).any?
       flash[:danger] =err.full_messages
     else
-      flash[:info] = "Book was successefully added"
+      flash[:info] = I18n.t 'suc_book_added'
       current_customer.cart.refresh_prices
     end
     redirect_to books_path
   end
 
+  # DELETE /orders/remove_item/1
   def remove_item
     current_customer.cart.order_items.find(params[:id]).destroy
     redirect_to :back
-  end
-  
-  #PATCH /orders/1/ship
-  def ship
-    @order.ship
-    redirect_to orders_path
-  end
-  
-  #PATCH /orders/1/cancel
-  def cancel
-    @order.cancel
-    redirect_to orders_path
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.state == "selecting"
+      not_found unless @order.state == 'in_progress'
     end
     
     def ship_addr_params

@@ -7,11 +7,13 @@ class Ability
     if customer
       if customer.admin?
         can :manage, :all
+        can :access, :rails_admin   # grant access to rails_admin
+        can :dashboard
       else
         can :read, :all
         can :manage, [Address, CreditCard, Customer]
         can [:rate, :add_wished, :wished, :filter], Book
-        can [:update, :add_item, :remove_item], Order
+        can [:update, :add_item, :remove_item, :recent], Order
       end
     else
       can :read, Book

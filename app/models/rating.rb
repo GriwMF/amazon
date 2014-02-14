@@ -1,10 +1,14 @@
 class Rating < ActiveRecord::Base
-  belongs_to :book
-  belongs_to :customer
+  belongs_to :book, :inverse_of => :ratings
+  belongs_to :customer, :inverse_of => :ratings
   validates_inclusion_of :rating, in: 1..5
   
   validates :book_id, uniqueness: { scope: :customer_id,
             message: "can't rate twice" }
+  
+  validates :state, inclusion: { in: %w(pending approved declined) }
+  
+  scope :approved, -> { where(state: "approved")  }
   
   # validate :rate_book_only_once
 #   

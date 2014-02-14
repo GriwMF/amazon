@@ -4,6 +4,6 @@ class Author < ActiveRecord::Base
   validates :firstname, :lastname, presence: true
   
   def full_name
-    "#{self.firstname} #{self.lastname}"
+    "#{firstname} #{lastname}"
   end
 end

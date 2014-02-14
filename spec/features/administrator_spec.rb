@@ -1,3 +1,6 @@
+# OLD tests, temporary keeped for comparing
+ 
+=begin
 require 'spec_helper'
 include Warden::Test::Helpers
 Warden.test_mode!
@@ -156,3 +159,5 @@ feature "Administrator's work" do
     end
   end
 end
+
+=end

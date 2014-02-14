@@ -46,6 +46,15 @@ body {
 .hidden {
   display: none;
 }
+
+.admin {
+  background-color: #FFD4D4;
+  outline: 0;
+  &:hover {
+    background-color: #CC7474;
+  }
+}
+
 #cart {
   background-color: #C9F0D1;
   outline: 0;

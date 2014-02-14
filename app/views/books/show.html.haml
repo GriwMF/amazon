@@ -1,29 +1,29 @@
-- provide(:title, 'Show book')
+- provide(:title, t('show_book'))
 %p
   %h2.center
     = @book.title
 %p
-  = render layout: "parse", locals: { collection: @book.authors, name: "Author" } do |author|
-    = "#{author.full_name}"
+  = render layout: "parse", locals: { collection: @book.authors, name: t('author') } do |author|
+    = link_to "#{author.full_name}", author_path(author)
 %p
-  = render layout: "parse", locals: { collection: @book.categories, name: "Category" } do |category|
+  = render layout: "parse", locals: { collection: @book.categories, name: t('category') } do |category|
     = "#{category.title}"
 %p
-  %b Descirption:
-  = @book.descirption
+  %b= t('description')
+  = @book.description
 %p
-  %b Price:
+  %b= t('price')
   = @book.price
 %p
-  %b In stock:
+  %b= t('in_stock')
   = @book.in_stock
 %p
-  %b Wished by:
+  %b= t('wished_by')
   = @book.wished
 
 - if customer_signed_in?
   - unless @book.wished_by?(current_customer)
-    = link_to 'Add to wish list', add_wished_book_path(@book), method: 'patch'
+    = link_to t('add_to_wish_list'), add_wished_book_path(@book), method: 'patch'
     %br
   - if @book.unrated?(current_customer)
     .panel.panel-default.form-group.row
@@ -31,27 +31,25 @@
         %h3 Rate the book
         = form_tag rate_book_path(@book), id: 'book_rating' do
           .form_group
-            = label_tag "Description:"
+            = label_tag t('description')
             = text_field_tag :text, "", class: 'form-control'
           .form_group
-            = label_tag "Rating (1-5):"
+            = label_tag t('rating_label')
             = number_field_tag :rating, "", class: 'form-control'
           %br
           .actions
-            = submit_tag 'Rate', class: "btn btn-default"  
+            = submit_tag t('rate'), class: "btn btn-default"  
           %br
-  - if can? :update, Book
-    = link_to 'Edit', edit_book_path(@book)
-    \|
-= link_to 'Back', books_path
 
-%h3 Book ratings:
+= link_to t('back'), books_path
+
+%h3= t('book_rating')
 
 %table.table.table-striped
   %thead
     %tr.heading
-      %th Description
-      %th Rating
+      %th= t('description')
+      %th= t('rating')
   %tbody
     -@book_ratings.each do |rating|
       %tr
