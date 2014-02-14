@@ -1,16 +1,16 @@
-- provide(:title, 'Listing books')
+- provide(:title, t('list_books'))
 .panel.panel-default
-  .panel-heading Books filtering
+  .panel-heading= t('filter')
   .panel-body.container
     = render 'filter'
 
 %table.table.table-striped
   %thead
     %tr.heading
-      %th Title
-      %th Price
-      %th Rating
-      %th In stock
+      %th= t('title')
+      %th= t('price')
+      %th= t('rating')
+      %th= t('in_stock')
       %th
   %tbody
     - if @books
@@ -18,9 +18,9 @@
         %tr
           %td= link_to book.title, book
           %td= book.price
-          %td= book.rating || "not rated"
+          %td= book.rating || t('not_rated')
           %td= book.in_stock
-          %td= link_to 'Add to cart', "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
+          %td= link_to t('add_to_cart'), "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
 
 %br
 

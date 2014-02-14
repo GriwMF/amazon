@@ -21,7 +21,7 @@ class BooksController < ApplicationController
     rating = @book.ratings.build(params.permit(:text, :rating))
     rating.customer = current_customer
     if rating.save
-      flash[:info] = "Success! Please, wait for rating confirmation"
+      flash[:info] = I18n.t 'suc_rating_add'
     else
       flash[:danger] = rating.errors
     end
@@ -31,9 +31,9 @@ class BooksController < ApplicationController
   # POST /books/1/add_wished
   def add_wished
     unless @book.wish_add(current_customer)
-      flash[:danger] = "Already rated"
+      flash[:danger] =  I18n.t 'err_wish_add'
     else
-      flash[:info] = "Successefully added"
+      flash[:info] =  I18n.t 'suc_wish_add'
     end
     redirect_to @book
   end
@@ -46,7 +46,7 @@ class BooksController < ApplicationController
   
   # POST /books/filter
   def filter
-    redirect_to root_path and return if params[:commit] == "Reset"
+    redirect_to root_path and return if params[:commit] == I18n.t('reset')
     
     @books = Book.filter(*prepare_filter).includes(:ratings)
     render "index"

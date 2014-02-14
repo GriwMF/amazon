@@ -1,18 +1,18 @@
 %nav.navbar.navbar-default
   .navbar-header
-    = link_to 'Amazon', root_path, class: 'navbar-brand', id: "logo"
+    = link_to t('store_name'), root_path, class: 'navbar-brand', id: "logo"
   - if can? :access, :rails_admin
     %ul.nav.navbar-nav
-      %li.admin= link_to 'Admin Panel', rails_admin_path
+      %li.admin= link_to t('admin_panel'), rails_admin_path
   %ul.nav.navbar-nav.pull-right
     - if customer_signed_in?
-      %li= link_to "Recent orders", orders_path
-      %li= link_to "Profile", customer_path
-      %li= link_to "Cart", order_path(current_customer.cart), id: "cart" #if something in cart
-      %li= link_to "Logout", destroy_customer_session_path, :method => :delete
+      %li= link_to t('recent_orders'), orders_path
+      %li= link_to t('profile'), customer_path
+      %li= link_to t('cart'), order_path(current_customer.cart), id: "cart" #if something in cart
+      %li= link_to t('logout'), destroy_customer_session_path, :method => :delete
     - else
-      %li= link_to "Login", new_customer_session_path
-      %li= link_to "Register", new_customer_registration_path
+      %li= link_to t('login'), new_customer_session_path
+      %li= link_to t('register'), new_customer_registration_path
 .container.center_box
   - flash.each do |key, message|
     - if message.is_a? Array

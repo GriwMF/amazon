@@ -2,9 +2,9 @@
 %table.table.table-striped
   %thead
     %tr.heading
-      %th Book
-      %th Price
-      %th Quantity
+      %th= t('book')
+      %th= t('price')
+      %th= t('quantity')
       - if can_cancel
         %th 
   %tbody
@@ -16,4 +16,4 @@
         %td= item.price
         %td= item.quantity
         - if can_cancel
-          %td= link_to 'Cancel', "#{orders_path}/remove_item/#{item.id}", :method => :delete, :data => { :confirm => 'Are you sure?' }
+          %td= link_to 'Cancel', "#{orders_path}/remove_item/#{item.id}", :method => :delete, :data => { :confirm => t('confirm') }

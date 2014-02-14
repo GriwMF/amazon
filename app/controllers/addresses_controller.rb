@@ -30,7 +30,7 @@ class AddressesController < ApplicationController
     
     respond_to do |format|
       if @address.save
-        format.html { redirect_to @address, notice: 'Address was successfully created.' }
+        format.html { redirect_to @address, notice: I18n.t('suc_addr_create') }
         format.json { render action: 'show', status: :created, location: @address }
       else
         format.html { render action: 'new' }
@@ -44,7 +44,7 @@ class AddressesController < ApplicationController
   def update
     respond_to do |format|
       if @address.update(address_params)
-        format.html { redirect_to @address, notice: 'Address was successfully updated.' }
+        format.html { redirect_to @address, notice: I18n.t('suc_addr_update') }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

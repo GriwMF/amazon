@@ -1,24 +1,24 @@
 - provide(:title, 'Show credit card')
 
 %p
-  %b Firstname:
+  %b= t('firstname')
   = @credit_card.firstname
 %p
-  %b Lastname:
+  %b= t('lastname')
   = @credit_card.lastname
 %p
-  %b Number:
+  %b= t('number')
   = @credit_card.number
 %p
-  %b Cvv:
+  %b= t('cvv')
   = @credit_card.cvv
 %p
-  %b Expiration month:
+  %b= t('expiration_month')
   = @credit_card.expiration_month
 %p
-  %b Expiration year:
+  %b= t('expiration_year')
   = @credit_card.expiration_year
 
-= link_to 'Edit', edit_credit_card_path(@credit_card)
+= link_to t('edit'), edit_credit_card_path(@credit_card)
 \|
-= link_to 'Back', credit_cards_path
+= link_to t('back'), credit_cards_path

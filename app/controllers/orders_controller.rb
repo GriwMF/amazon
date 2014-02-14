@@ -44,13 +44,13 @@ class OrdersController < ApplicationController
                                bill_addr_id: bill_addr,
                                credit_card_id: credit_card)
       @order.check_out!
-      flash_message :success, 'Success! Your order is under processing.'                               
+      flash_message :success, I18n.t('suc_ord_check_out')                             
       
     rescue ActiveRecord::RecordInvalid => ex
       flash_message :danger, ex.message
     rescue ActiveRecord::StatementInvalid => ex
       flash_message :danger, ex.message
-      flash_message :danger, "Propably not enought books left:("     
+      flash_message :danger, I18n.t('err_ord_check_out') 
     end
     redirect_to root_path
   end
@@ -61,7 +61,7 @@ class OrdersController < ApplicationController
     if (err = current_customer.cart.add_item(book).errors).any?
       flash[:danger] =err.full_messages
     else
-      flash[:info] = "Book was successefully added"
+      flash[:info] = I18n.t 'suc_book_added'
       current_customer.cart.refresh_prices
     end
     redirect_to books_path

@@ -1,61 +1,61 @@
 - unless @order.order_items.any?
-  %h1.center Add item to cart first
+  %h1.center= t('add_to_cart_first')
 - else
-  %b Order items:
+  %b= t('order_items')
   = render 'order', order: @order, can_cancel: true
   %br
   %h2
-    Total price:
+    = t('total_price')
     .label.label-info
       = @order.total_price
   
 
-  %h2.center Check out
+  %h2.center= t('check_out')
   = form_for @order do |f|
     .panel.panel-default.form-group.row
       .col-xs-12
         .form-group#check-out-ship
-          = f.label "Select shipping address:"
+          = f.label t('select_ship_addr')
           %br
           = f.collection_select(:ship_addr_id, current_customer.addresses, 
-                              :id, :full, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+                              :id, :full, { :include_blank => t('please_select') }, { class: 'selectpicker' } )
           %br
           = link_to "or add new", '#', class: "tab", id: 'check-out-ship-switch'
         .form-group.hidden#check-out-ship-hidden
           = f.fields_for(:ship_addr) do |user_form|
-            = f.label "Shipping address:"
+            = f.label t('ship_addr')
             = render 'address_fields', :f => user_form
         .checkbox
           %label
             = check_box_tag 'bill-checkbox', '1', false, { autocomplete: "off" }
-            Billing address are the same
+            = t('bill_same')
 
     .panel.panel-default.form-group.row#bill-show
       .col-xs-12    
         .form-group#check-out-bill
-          = f.label "Select billing address:"
+          = f.label t('select_bill_addr')
           %br
           = f.collection_select(:bill_addr_id, current_customer.addresses, 
-                              :id, :full, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+                              :id, :full, { :include_blank => t('please_select') }, { class: 'selectpicker' } )
           %br
           = link_to "or add new", '#', class: "tab", id: 'check-out-bill-switch'
         .form-group.hidden#check-out-bill-hidden
           = f.fields_for(:bill_addr) do |user_form|
-            = f.label "Billing address:"
+            = f.label t('bill_addr')
             = render 'address_fields', :f => user_form
                   
     .panel.panel-default.form-group.row
       .col-xs-12
         .form-group#check-out-card
-          = f.label "Select credit card information:"
+          = f.label t('select_card')
           %br
           = f.collection_select(:credit_card_id, current_customer.credit_cards,
-                              :id, :number, { :include_blank => 'Please Select' }, { class: 'selectpicker' } )
+                              :id, :number, { :include_blank => t('please_select') }, { class: 'selectpicker' } )
           %br
-          = link_to "or add new", '#', class: "tab", id: 'check-out-card-switch'
+          = link_to t('or_add_new'), '#', class: "tab", id: 'check-out-card-switch'
         .form-group.hidden#check-out-card-hidden
           = f.fields_for(:credit_card) do |user_form|
-            = f.label "Credit card information:"
+            = f.label t('card_info')
             = render 'card_fields', :f => user_form
                    
-    = f.submit "Check out", class: "btn btn-default"     
+    = f.submit t('check_out'), class: "btn btn-default"     

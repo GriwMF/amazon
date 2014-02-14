@@ -73,7 +73,7 @@ describe BooksController do
       
       it "adds successed flash message" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
-        expect(flash[:info]).to eq("Success! Please, wait for rating confirmation")
+        expect(flash[:info]).to eq(I18n.t 'suc_rating_add')
       end
       
       it "redirects to root path" do
@@ -85,7 +85,7 @@ describe BooksController do
     describe "invalid attributes" do
       it "adds error flash message" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
-        expect(flash[:info]).to_not eq("Success! Please, wait for rating confirmation")
+        expect(flash[:info]).to_not eq(I18n.t 'suc_rating_add')
         expect(flash[:danger]).to_not be_empty
       end
       
@@ -132,7 +132,7 @@ describe BooksController do
       it "adds success flash message" do
         allow_any_instance_of(Book).to receive(:wish_add).and_return(true)
         post :add_wished, {:id => book.to_param}, valid_session
-        expect(flash[:info]).to eq "Successefully added"
+        expect(flash[:info]).to eq I18n.t 'suc_wish_add'
       end
     end
     
@@ -140,8 +140,8 @@ describe BooksController do
       it "adds error flash message" do
         allow_any_instance_of(Book).to receive(:wish_add).and_return(false)
         post :add_wished, {:id => book.to_param}, valid_session
-        expect(flash[:info]).to_not eq "Successefully added"
-        expect(flash[:danger]).to eq "Already rated"
+        expect(flash[:info]).to_not eq I18n.t 'suc_wish_add'
+        expect(flash[:danger]).to eq I18n.t 'err_wish_add'
       end
     end   
   end  
@@ -149,8 +149,8 @@ describe BooksController do
   describe "POST filter" do
     let(:book) { Book.create! valid_attributes }
     
-    it "redirects to root path if params[:commit] == 'Reset'" do
-      post :filter, {:id => book.to_param, :commit => 'Reset'}, valid_session
+    it "redirects to root path if reset button was clicked" do
+      post :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
       expect(response).to redirect_to(root_path)
     end
     

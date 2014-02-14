@@ -16,7 +16,7 @@ feature "Access to admin panel" do
   
   scenario "An administrator accesses panel by entering address in browser" do
     login_as(admin, :scope => :customer)
-    visit "/admin"
+    visit rails_admin_path
     expect(page).to have_content 'Site Administration'
   end
   
@@ -28,7 +28,7 @@ feature "Access to admin panel" do
   
   scenario "A user has no accesses to panel by direct link" do
     login_as(user, :scope => :customer)
-    visit "/admin"
+    visit rails_admin_path
     expect(page).to_not have_content 'Site Administration' 
   end
 end

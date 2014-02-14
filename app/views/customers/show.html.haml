@@ -1,21 +1,21 @@
-- provide(:title, 'Profile')
+- provide(:title, t('profile'))
 %p
-  %b E-mail:
+  %b= t('email')
   = current_customer.email
 %p
-  %b Firstname:
+  %b= t('firstname')
   = current_customer.firstname
 %p
   %b Lastname:
   = current_customer.lastname
-= link_to "Addresses", addresses_path
+= link_to t('addresses'), addresses_path
 \|
-= link_to "Credit cards", credit_cards_path
+= link_to t('credit_cards'), credit_cards_path
 \|
 
-= link_to 'Edit', edit_customer_registration_path
+= link_to t('edit'), edit_customer_registration_path
 \|
-= link_to 'Back', root_path
+= link_to t('back'), root_path
 
 %br
 %br
@@ -24,12 +24,12 @@
 %table.table.table-striped
   %thead
     %tr.heading
-      %th Author
-      %th Title
+      %th= t('author')
+      %th= t('title')
       %th
   %tbody
     - current_customer.wished_books.each do |book|
       %tr
         %td= book.authors.first.full_name
         %td= book.title
-        %td= link_to "Remove from list", wished_book_path(book), method: 'delete'
+        %td= link_to t('rem_from_list'), wished_book_path(book), method: 'delete'

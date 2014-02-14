@@ -150,7 +150,7 @@ describe OrdersController do
         allow(Book).to receive(:find).and_return(book)
         
         post :add_item, {:id => book.to_param}, valid_session
-        expect(flash[:info]).to_not eq('Book was successefully added')
+        expect(flash[:info]).to_not eq(I18n.t 'suc_book_added')
         expect(flash[:danger]).to eq(['error'])
       end
     end

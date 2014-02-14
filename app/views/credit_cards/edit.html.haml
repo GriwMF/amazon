@@ -1,8 +1,8 @@
-- provide(:title, 'Editing credit card')
+- provide(:title, t('edit_card'))
 %h1 Editing credit card
 
 = render 'form'
 
-= link_to 'Show', @credit_card
+= link_to t('show'), @credit_card
 \|
-= link_to 'Back', credit_cards_path
+= link_to t('back'), credit_cards_path
