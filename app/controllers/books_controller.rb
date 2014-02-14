@@ -13,7 +13,7 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
-    @book_ratings = @book.ratings.where(approved: "true").last(10)
+    @book_ratings = @book.ratings.where(state: "approved").last(10)
   end
 
   # POST /books/1/rate

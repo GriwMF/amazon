@@ -134,11 +134,11 @@ describe Order do
       end
     end
     
-    context "shipped" do
+    context "complete delivery" do
       it "changes state from in_deliver to delivered" do
         order.check_out!
         order.ship
-        expect { order.shipped }.to change { order.state }.to("delivered")
+        expect { order.complete_delivery }.to change { order.state }.to("delivered")
       end
     end
   end

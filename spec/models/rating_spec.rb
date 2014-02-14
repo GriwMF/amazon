@@ -23,4 +23,8 @@ describe Rating do
   it "belongs to book" do
     expect(rating).to belong_to(:book)
   end
+  
+  its "state are in %w(pending approved declined)" do
+    expect(rating).to ensure_inclusion_of(:state).in_array(%w(pending approved declined))
+  end
 end

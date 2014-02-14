@@ -77,6 +77,7 @@ FirstModel::Application.routes.draw do
   
   resources :orders, except: [:destroy, :create, :new, :edit] do
     collection do
+      get 'recent'
       post "add_item/:id", action: "add_item"
       delete "remove_item/:id", action: "remove_item"
     end

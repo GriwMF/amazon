@@ -1,22 +1,22 @@
 class UnapprovedRating < Rating
-  default_scope { where(approved: :false) }
+  default_scope { where(state: "pending") }
 
-  state_machine :approved, :initial => :false do
+  state_machine :state, :initial => :pending do
     after_transition :on => :decline, :do => :destroy
     
     event :approve do
-      transition :false => :true
+      transition :pending => :approved
     end
     
     event :decline do
-      transition :false => :deleted
+      transition :pending => :declined
     end
   end
 
   rails_admin do
     list do
       field :id
-      field :approved, :state do
+      field :state, :state do
         
       end
       include_all_fields
@@ -24,12 +24,12 @@ class UnapprovedRating < Rating
     end
     
     show do
-      field :approved, :state
+      field :state, :state
       include_all_fields      
     end
     
     edit do
-      field :approved, :state
+      field :state, :state
       include_all_fields      
     end    
     state({

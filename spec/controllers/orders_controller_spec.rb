@@ -37,14 +37,20 @@ describe OrdersController do
   end
   
   describe "GET index" do
-    context "user" do
-      it "assigns completed orders of customer in last 3 month as @orders" do
-        FactoryGirl.create :order
-        order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
-        get :index, {}, valid_session
-        assigns(:orders).should eq([order])
-      end     
-    end    
+    it "assigns completed orders of customer as @orders" do
+      order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+      get :index, {}, valid_session
+      assigns(:orders).should eq([order])
+    end     
+  end
+  
+  describe "GET recent" do
+    it "assigns completed orders of customer in last 3 month as @orders" do
+      order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+      FactoryGirl.create :order, customer: customer, completed_at: Time.now - 1.year
+      get :recent, {}, valid_session
+      assigns(:orders).should eq([order])
+    end     
   end
 
   describe "GET show" do
@@ -109,11 +115,17 @@ describe OrdersController do
     end
              
     describe "with valid params" do
-      let(:book) { FactoryGirl.create :book }
-
-      it "adds book to cart" do
+      let(:book) { mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: []) }
+      
+      before do
+        allow_any_instance_of(Order).to receive(:add_item).and_return(book)
+        allow_any_instance_of(Order).to receive(:refresh_prices)
+        allow(Book).to receive(:find).and_return(book)
+      end
+      
+      it "calls add_item method of model" do
+        expect_any_instance_of(Order).to receive(:add_item)
         post :add_item, {:id => book.to_param}, valid_session
-        expect(customer.cart.order_items[0].book).to eq(book)
       end
       
       it "adds successefull flash message" do
@@ -129,18 +141,17 @@ describe OrdersController do
     end
     
     describe "with invalid params" do
-      let(:book) { FactoryGirl.create :book, in_stock: 0 }
-      
-      it "adds arror message" do
+      it "adds error message" do
+        err = ["error"]
+        allow(err).to receive(:full_messages).and_return(["error"])
+        book = mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: err)
+        allow_any_instance_of(Order).to receive(:add_item).and_return(book)
+        allow_any_instance_of(Order).to receive(:refresh_prices)
+        allow(Book).to receive(:find).and_return(book)
+        
         post :add_item, {:id => book.to_param}, valid_session
         expect(flash[:info]).to_not eq('Book was successefully added')
-        expect(flash[:danger]).to eq(['Book are not in stock'])
-      end
-      
-      it "does not change cart" do
-        expect {
-          post :add_item, {:id => book.to_param}, valid_session
-        }.to_not change { customer.cart.order_items.count }
+        expect(flash[:danger]).to eq(['error'])
       end
     end
   end

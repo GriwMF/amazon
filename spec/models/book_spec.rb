@@ -74,8 +74,8 @@ describe Book do
     
     describe "rating" do
       before do
-        book.ratings.create(text: "lalal", rating: 5, customer_id: customer1.id, approved: "true")
-        book.ratings.create(text: "lalal1", rating: 1, customer_id: customer2.id, approved: "true")
+        book.ratings.create(text: Faker::Name.title, rating: 5, customer_id: customer1.id, state: 'approved')
+        book.ratings.create(text: Faker::Name.title, rating: 1, customer_id: customer2.id, state: 'approved')
       end
 
       context "#rating" do

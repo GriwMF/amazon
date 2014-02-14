@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140207165636) do
+ActiveRecord::Schema.define(version: 20140214150321) do
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -148,7 +148,7 @@ ActiveRecord::Schema.define(version: 20140207165636) do
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "approved",              default: "false"
+    t.string   "state",                 default: "pending"
   end
 
   add_index "ratings", ["book_id"], name: "index_ratings_on_book_id"

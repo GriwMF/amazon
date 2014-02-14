@@ -6,6 +6,10 @@ describe OrdersController do
     it "routes to #index" do
       get("/orders").should route_to("orders#index")
     end
+    
+    it "routes to #recent" do
+      get("/orders/recent").should route_to("orders#recent")
+    end
 
     it "routes to #show" do
       get("/orders/1").should route_to("orders#show", :id => "1")

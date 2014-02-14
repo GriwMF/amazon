@@ -19,4 +19,10 @@ describe OrderItem do
   it "belongs to book" do
     expect(order_item).to belong_to(:book)
   end
+  
+  context "#title" do
+    it "make title for OrderItem in format: book_title + quantity" do
+      expect(order_item.title).to eq("#{order_item.book.title}, Quantity: #{order_item.quantity.to_s}")
+    end
+  end
 end

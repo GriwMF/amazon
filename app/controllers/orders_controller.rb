@@ -7,9 +7,15 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
+    @orders = current_customer.orders.order("completed_at DESC")
   end
-
+  
+  # GET /orders/recent
+  def recent
+    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
+    render :index
+  end  
+  
   # GET /orders/1
   # GET /orders/1.json
   def show
@@ -71,7 +77,7 @@ class OrdersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.state == "in_progress"
+      not_found unless @order.state == 'in_progress'
     end
     
     def ship_addr_params

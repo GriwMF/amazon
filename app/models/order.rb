@@ -20,7 +20,7 @@ class Order < ActiveRecord::Base
       transition :in_queue => :in_delivery
     end
     
-    event :shipped do
+    event :complete_delivery do
       transition :in_delivery => :delivered
     end
   end
@@ -41,7 +41,11 @@ class Order < ActiveRecord::Base
     end
     
     show do
-      field :state, :state
+      field :state, :state do
+        visible do
+          bindings[:object].state != "in_progress"
+        end
+      end
       include_all_fields      
     end
 
