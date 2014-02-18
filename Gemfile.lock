@@ -203,7 +203,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
-    sqlite3 (1.3.8)
     state_machine (1.2.0)
     subexec (0.2.3)
     therubyracer (0.12.0)
@@ -255,7 +254,6 @@ DEPENDENCIES
   sdoc
   selenium-webdriver
   shoulda-matchers
-  sqlite3
   state_machine
   therubyracer
   uglifier (>= 1.3.0)

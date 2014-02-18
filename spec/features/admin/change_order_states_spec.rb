@@ -1,10 +1,6 @@
-require 'spec_helper'
-include Warden::Test::Helpers
-Warden.test_mode!
+require 'features/features_spec_helper'
 
 feature "Changing order's states", :js => true do
-  after { Warden.test_reset! }
-  
   background do
     user = FactoryGirl.create :admin_customer
     login_as(user, :scope => :customer)

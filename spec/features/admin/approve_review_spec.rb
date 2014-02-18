@@ -1,5 +1,4 @@
-require 'spec_helper'
-include Warden::Test::Helpers
+require 'features/features_spec_helper'
 
 feature "Approve review", :js => true do
   
@@ -11,13 +10,14 @@ feature "Approve review", :js => true do
   scenario "adminitrator approves review in admin panel" do
     FactoryGirl.create :rating, text: "this is rating"
     visit rails_admin_path
-    within(".unapproved_rating_links") do
-      click_link 'Unapproved ratings'
+    within(".rating_links") do
+      click_link 'Ratings'
     end
+
     expect(page).to have_content 'this is rating' 
     click_link 'approve'
-    expect(page).to_not have_content 'this is rating' 
-    click_link 'Ratings'
+    # click_link 'Ratings'
+    expect(page).to have_content 'approved' 
     expect(page).to have_content 'this is rating' 
   end
   

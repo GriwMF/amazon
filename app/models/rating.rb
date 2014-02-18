@@ -10,10 +10,40 @@ class Rating < ActiveRecord::Base
   
   scope :approved, -> { where(state: "approved")  }
   
-  # validate :rate_book_only_once
-#   
-  # def rate_book_only_once
-    # rate = Rating.find_by(book_id: book_id, customer_id: customer_id)
-    # errors.add(:book_id, "already rated") if rate
-  # end
+  state_machine :state, :initial => :pending do
+    after_transition :on => :decline, :do => :destroy
+    
+    event :approve do
+      transition :pending => :approved
+    end
+    
+    event :decline do
+      transition :pending => :declined
+    end
+  end
+
+  rails_admin do
+    list do
+      sort_by :state
+      field :id
+      field :state, :state do
+        sort_reverse true
+      end
+      include_all_fields
+      # exclude_fields :id
+    end
+    
+    show do
+      field :state, :state
+      include_all_fields
+    end
+    
+    edit do
+      field :state, :state
+      include_all_fields      
+    end    
+    state({
+     events: {decline: 'btn-danger', approve: 'btn-success'},
+    })
+  end
 end

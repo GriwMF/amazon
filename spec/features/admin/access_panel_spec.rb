@@ -1,9 +1,6 @@
-require 'spec_helper'
-include Warden::Test::Helpers
-Warden.test_mode!
+require 'features/features_spec_helper'
 
 feature "Access to admin panel" do
-  after { Warden.test_reset! }
   let(:admin) { FactoryGirl.create :admin_customer }
   let(:user) { FactoryGirl.create :customer }
   
