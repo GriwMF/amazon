@@ -38,7 +38,8 @@ describe OrdersController do
   
   describe "GET index" do
     it "assigns completed orders of customer as @orders" do
-      order = FactoryGirl.create :order, customer: customer, completed_at: Time.now
+      order = FactoryGirl.create :order, customer: customer, 
+                                 completed_at: Time.now, state: 'in_queue'
       get :index, {}, valid_session
       assigns(:orders).should eq([order])
     end     
@@ -157,22 +158,21 @@ describe OrdersController do
   end
   
   describe "DELETE remove_item" do
-    let(:book) { FactoryGirl.create :book }
-    
+    let(:item_id) { 1 }
+
     before do
       request.env["HTTP_REFERER"] = books_path
-      customer.cart.add_item(book)
     end
     
     it "redirects back" do
-      delete :remove_item, {:id => book.to_param}, valid_session
+      allow_any_instance_of(Order).to receive(:remove_item)
+      delete :remove_item, {:id => item_id}, valid_session
       expect(response).to redirect_to(books_path)
     end
     
     it "remove item from cart" do
-        expect {
-          delete :remove_item, {:id => book.to_param}, valid_session
-        }.to change { customer.cart.order_items.count }.by(-1)
+        expect_any_instance_of(Order).to receive(:remove_item).with(item_id.to_s)
+        delete :remove_item, {:id => item_id}, valid_session
     end
   end
 end

@@ -7,12 +7,12 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = current_customer.orders.order("completed_at DESC")
+    @orders = current_customer.orders.completed
   end
   
   # GET /orders/recent
   def recent
-    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
+    @orders = current_customer.orders.recent
     render :index
   end  
   
@@ -69,7 +69,7 @@ class OrdersController < ApplicationController
 
   # DELETE /orders/remove_item/1
   def remove_item
-    current_customer.cart.order_items.find(params[:id]).destroy
+    current_customer.cart.remove_item(params[:id])
     redirect_to :back
   end
 
@@ -77,7 +77,7 @@ class OrdersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.state == 'in_progress'
+      not_found unless @order.in_progress?
     end
     
     def ship_addr_params
