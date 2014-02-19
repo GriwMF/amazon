@@ -108,7 +108,7 @@ en:
   please_select: 'Please Select'
   bill_same: 'Billing address are the same'
   or_add_new: 'or add new'
-  
+  no_rated_books: 'No rated books yet, sorry'
   helpers:
     label:
       address:

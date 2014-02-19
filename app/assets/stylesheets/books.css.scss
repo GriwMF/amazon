@@ -6,3 +6,51 @@
   margin-left: 2em;
   margin-top: -0.5em;
 }
+
+.item {
+  margin-right: 50px;
+  margin-left: 50px;
+}
+
+.inline {
+	display: inline;
+}
+
+.number {
+	width: 40px;
+}
+
+.overflow {
+      overflow:hidden;
+}
+
+#myCarousel
+{
+  width:640px;
+  height: 280px;
+}
+a.carousel-control
+{
+  top: 45%;
+  left: 8px;
+  width: 40px;
+  height: 40px;
+  margin-top: 0px;
+  font-size: 48px;
+  font-weight: 100;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  background: #222;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+a.carousel-control.right
+{
+  right:0px;
+}
+
+.description {
+	margin-left: 220px;
+}

@@ -46,6 +46,16 @@ describe BooksController do
     end
   end
 
+  describe "GET home" do
+    let(:book) { mock_model(Book, id: 1, title: 'name') }
+
+    it "assigns Book.top as @books" do
+      expect(Book).to receive(:top).and_return([book])
+      get :home, {}, valid_session
+      assigns(:books).should eq([book])
+    end
+  end
+
   describe "GET show" do
     let!(:book) {  Book.create! valid_attributes }
     

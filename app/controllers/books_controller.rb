@@ -2,12 +2,17 @@ class BooksController < ApplicationController
   before_filter :authenticate_customer!, except: [:index, :show]
   
   load_and_authorize_resource
-  skip_load_resource only: [:index, :filter]
+  skip_load_resource only: [:index, :filter, :home]
 
   # GET /books
   # GET /books.json
   def index
     @books = Book.all.includes(:ratings)
+  end
+
+  # GET /books/home
+  def home
+    @books = Book.top
   end
 
   # GET /books/1

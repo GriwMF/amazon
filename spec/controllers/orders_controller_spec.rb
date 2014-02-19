@@ -109,12 +109,10 @@ describe OrdersController do
   end
 
   describe "POST add_item" do
-    it "redirects to the root path" do
-      book = FactoryGirl.create :book
-      post :add_item, {:id => book.to_param}, valid_session
-      expect(response).to redirect_to(books_path)
+    before do
+      request.env["HTTP_REFERER"] = books_path
     end
-             
+    
     describe "with valid params" do
       let(:book) { mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: []) }
       
@@ -123,10 +121,16 @@ describe OrdersController do
         allow_any_instance_of(Order).to receive(:refresh_prices)
         allow(Book).to receive(:find).and_return(book)
       end
-      
-      it "calls add_item method of model" do
-        expect_any_instance_of(Order).to receive(:add_item)
+
+      it "redirects back" do
+        book = FactoryGirl.create :book
         post :add_item, {:id => book.to_param}, valid_session
+        expect(response).to redirect_to(books_path)
+      end
+      
+      it "calls add_item method of model with book id and quantity" do
+        expect_any_instance_of(Order).to receive(:add_item).with(book, {:quantity=>"3"})
+        post :add_item, {:id => book.to_param, quantity: 3}, valid_session
       end
       
       it "adds successefull flash message" do

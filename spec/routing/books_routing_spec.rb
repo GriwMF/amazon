@@ -10,6 +10,10 @@ describe BooksController do
     it "routes to #show" do
       get("/books/1").should route_to("books#show", :id => "1")
     end
+
+    it "routes to #home" do
+      get("/books/home").should route_to("books#home")
+    end
     
     it "routes to #wished" do
       delete("/books/1/wished").should route_to("books#wished", :id => "1")

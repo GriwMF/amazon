@@ -1,9 +1,10 @@
 %nav.navbar.navbar-default
   .navbar-header
     = link_to t('store_name'), root_path, class: 'navbar-brand', id: "logo"
-  - if can? :access, :rails_admin
-    %ul.nav.navbar-nav
+  %ul.nav.navbar-nav
+    - if can? :access, :rails_admin
       %li.admin= link_to t('admin_panel'), rails_admin_path
+    %li= link_to t('list_books'), books_path  
   %ul.nav.navbar-nav.pull-right
     - if customer_signed_in?
       %li= link_to t('recent_orders'), orders_path

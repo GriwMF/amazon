@@ -58,13 +58,13 @@ class OrdersController < ApplicationController
   # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
-    if (err = current_customer.cart.add_item(book).errors).any?
+    if (err = current_customer.cart.add_item(book, quantity: params[:quantity]).errors).any?
       flash[:danger] =err.full_messages
     else
       flash[:info] = I18n.t 'suc_book_added'
       current_customer.cart.refresh_prices
     end
-    redirect_to books_path
+    redirect_to :back
   end
 
   # DELETE /orders/remove_item/1

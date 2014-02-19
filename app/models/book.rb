@@ -12,6 +12,9 @@ class Book < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  scope :top, -> { joins(:ratings).merge(Rating.approved).group('books.id')
+                     .order("avg(rating) DESC").limit(5) }
+
   rails_admin do
     show do
       field :full_description do
@@ -54,6 +57,4 @@ class Book < ActiveRecord::Base
   def unrated?(customer)
     ratings.where(customer_id: customer.id).count == 0
   end
-  
-
 end
