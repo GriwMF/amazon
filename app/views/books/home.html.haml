@@ -2,6 +2,10 @@
 .container.center_box
   - if @books.any?
     #myCarousel.carousel.slide{'data-ride' => "carousel"}
+      %ol.carousel-indicators
+        - @books.returns_count_sum.count.times do |i|
+          = content_tag :li, '',{'data-target' => "#myCarousel",
+                               'data-slide-to' => i, class: i == 0 ? 'active' : '' }
       .carousel-inner
         - @books.each_with_index do |book, i|
           - item_class = i == 0 ? 'item active' : 'item'

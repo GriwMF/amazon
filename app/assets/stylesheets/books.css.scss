@@ -1,6 +1,7 @@
 // Place all the styles related to the books controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@import "bootstrap";
 
 .padded {
   margin-left: 2em;
@@ -21,7 +22,7 @@
 }
 
 .overflow {
-      overflow:hidden;
+   overflow:hidden;
 }
 
 #myCarousel
@@ -29,6 +30,7 @@
   width:640px;
   height: 280px;
 }
+
 a.carousel-control
 {
   top: 45%;
@@ -46,11 +48,34 @@ a.carousel-control
   border-radius: 50%;
   opacity: 0.3;
 }
+
+ol.carousel-indicators {
+  top:8px;
+  height:16px;
+  text-align: right;
+}
+
 a.carousel-control.right
 {
   right:0px;
 }
 
+.carousel-indicators li {
+  background-color: #999;
+  background-color: rgba(70,70,70,.25);
+  border-width:2px;
+}
+
+.carousel-indicators .active {
+  background-color: #444;
+}
+
 .description {
 	margin-left: 220px;
+}
+
+.image-wrapper{
+  width: 200px;
+  height: 160px;
+  float: left;
 }

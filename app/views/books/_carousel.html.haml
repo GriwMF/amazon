@@ -5,8 +5,8 @@
 %br
 %br
 %div.overflow
-  %img{ 'src' => book.shot.url, 'align' => 'left', 
-        'height' => '160', 'wigth' => '200' }
+  .image-wrapper
+    = image_tag book.shot.url
   %p.description
     = book.description
 %br
