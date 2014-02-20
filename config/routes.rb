@@ -66,7 +66,7 @@ FirstModel::Application.routes.draw do
       patch "add_wished"
     end
     collection do
-      post "filter"
+      get 'filter'
       get 'home'
     end
   end

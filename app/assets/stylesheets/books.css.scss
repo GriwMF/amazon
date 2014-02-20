@@ -1,7 +1,6 @@
 // Place all the styles related to the books controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-@import "bootstrap";
 
 .padded {
   margin-left: 2em;
@@ -28,7 +27,6 @@
 #myCarousel
 {
   width:640px;
-  height: 280px;
 }
 
 a.carousel-control
@@ -78,4 +76,15 @@ a.carousel-control.right
   width: 200px;
   height: 160px;
   float: left;
+}
+
+.thumb-image-wrapper{
+  height: 80px;
+}
+
+.squad {
+  width: 200px;
+  height: 160px;
+  float: left;
+  overflow-y: auto;
 }

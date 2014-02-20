@@ -159,9 +159,9 @@ describe BooksController do
   describe "POST filter" do
     let(:book) { Book.create! valid_attributes }
     
-    it "redirects to root path if reset button was clicked" do
+    it "redirects to books path if reset button was clicked" do
       post :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(books_path)
     end
     
     before do

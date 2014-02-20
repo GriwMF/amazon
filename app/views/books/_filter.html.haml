@@ -1,4 +1,4 @@
-= form_tag "/books/filter", id: "filter", class: "form-inline" do
+= form_tag "/books/filter", id: "filter", class: "form-inline", method: :get do
 
   = collection_select(nil, "authors_id", Author.all, :id, :full_name, {:selected => params[:authors_id]},
                       { class: 'selectpicker', multiple: true, "data-selected-text-format" => "count",

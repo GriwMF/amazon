@@ -7,7 +7,7 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
-    @books = Book.all.includes(:ratings)
+    @books = Book.includes(:ratings).page(params[:page]).per(20)
   end
 
   # GET /books/home
@@ -51,16 +51,16 @@ class BooksController < ApplicationController
   
   # POST /books/filter
   def filter
-    redirect_to root_path and return if params[:commit] == I18n.t('reset')
+    redirect_to books_path and return if params[:commit] == I18n.t('reset')
     
-    @books = Book.filter(*prepare_filter).includes(:ratings)
+    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(20)
     render "index"
   end
   
   private
     def prepare_filter
-      filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
-      filter_opts.each { |item| item.shift }
+      filter_opts = params[:authors_id] || [], params[:categories_id] || [], params[:books_id] || []
+      filter_opts.each { |item| item.delete_if { |x| x.empty? } }
       filter_opts
     end
 end

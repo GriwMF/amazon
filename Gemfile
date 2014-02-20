@@ -43,6 +43,8 @@ gem 'active_record_group_count'
 gem 'carrierwave'
 gem 'mini_magick'
 
+gem 'kaminari'
+
 #markup tool
 gem 'redcarpet'
 

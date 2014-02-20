@@ -4,24 +4,17 @@
   .panel-body.container
     = render 'filter'
 
-%table.table.table-striped
-  %thead
-    %tr.heading
-      %th= t('title')
-      %th= t('price')
-      %th= t('rating')
-      %th= t('in_stock')
-      %th
-  %tbody
-    - if @books
-      - @books.each do |book|
-        %tr
-          %td= link_to book.title, book
-          %td= book.price
-          %td= book.rating || t('not_rated')
-          %td= book.in_stock
-          %td= link_to t('add_to_cart'), "#{orders_path}/add_item/#{book.id}", :method => :post if book.in_stock > 0
-
-%br
+.container
+  .row
+    - @books.each do |book|
+      .squad
+        .center
+          .thumb-image-wrapper
+            = link_to image_tag(book.shot.thumb.url), book_path(book)
+          %h5
+            = link_to book.title, book_path(book)
+          %h4= "$#{book.price}"
+.center
+  = paginate @books
 
 

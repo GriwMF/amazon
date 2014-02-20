@@ -246,6 +246,7 @@ DEPENDENCIES
   haml-rails
   jbuilder (~> 1.2)
   jquery-rails
+  kaminari
   mini_magick
   pg
   rails (= 4.0.2)
