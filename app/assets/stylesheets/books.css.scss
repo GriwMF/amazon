@@ -88,3 +88,18 @@ a.carousel-control.right
   float: left;
   overflow-y: auto;
 }
+
+.right {
+  float: right;
+}
+
+.price {
+  font-size: 2em;
+  float: left;
+}
+
+.form-description {
+  @extend .description;
+  display: block;
+  overflow:hidden;
+}

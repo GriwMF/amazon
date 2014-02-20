@@ -19,6 +19,9 @@ class BooksController < ApplicationController
   # GET /books/1.json
   def show
     @book_ratings = @book.ratings.approved.last(10)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html => true, :hard_wrap => true),
+                                             :autolink => true, :space_after_headers => true, :strikethrough => true)
+    @full_description = markdown.render(@book.full_description).html_safe
   end
 
   # POST /books/1/rate
