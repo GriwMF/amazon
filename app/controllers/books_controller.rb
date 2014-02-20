@@ -53,7 +53,7 @@ class BooksController < ApplicationController
   def filter
     redirect_to books_path and return if params[:commit] == I18n.t('reset')
     
-    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(20)
+    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(2)
     render "index"
   end
   

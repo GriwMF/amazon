@@ -28,7 +28,7 @@ describe BooksController do
     end 
     
     it "routes to #filter" do
-      post("/books/filter").should route_to("books#filter")
+      get("/books/filter").should route_to("books#filter")
     end
  
   end

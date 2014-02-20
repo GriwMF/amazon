@@ -156,11 +156,11 @@ describe BooksController do
     end   
   end  
   
-  describe "POST filter" do
+  describe "GET filter" do
     let(:book) { Book.create! valid_attributes }
     
     it "redirects to books path if reset button was clicked" do
-      post :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
+      get :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
       expect(response).to redirect_to(books_path)
     end
     
@@ -171,12 +171,12 @@ describe BooksController do
     it "filtering books by parameters" do
       expect(Book).to receive(:filter)
       expect(Book.filter).to receive(:includes)
-      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
       expect(assigns(:books)).to eq([book])
     end
     
     it "renders index template" do
-      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
       expect(response).to render_template("index")
     end
   end
