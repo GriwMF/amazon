@@ -7,11 +7,12 @@
     %li= link_to t('list_books'), books_path  
   %ul.nav.navbar-nav.pull-right
     - if customer_signed_in?
-      %li= link_to t('history'), orders_path
+      %li= link_to t('history'), recent_orders_path
       %li= link_to t('profile'), customer_path
       %li= link_to t('cart'), order_path(current_customer.cart), id: "cart" #if something in cart
       %li= link_to t('logout'), destroy_customer_session_path, :method => :delete
     - else
+      %li= link_to t('facebook'), customer_omniauth_authorize_path(:facebook)
       %li= link_to t('login'), new_customer_session_path
       %li= link_to t('register'), new_customer_registration_path
 .container.center_box

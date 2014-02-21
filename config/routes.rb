@@ -1,5 +1,5 @@
 FirstModel::Application.routes.draw do
-  devise_for :customers
+  devise_for :customers, :controllers => { :omniauth_callbacks => "customers/omniauth_callbacks" }
   
   root 'books#home'
   mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'

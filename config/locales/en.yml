@@ -20,6 +20,8 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  facebook: 'Sign in with Facebook'
+  succ_facebook: 'Successefully signed in with Facebook'
   store_name: 'Amazon'
   admin_panel: 'Admin Panel'
   recent_orders: 'Recent orders'
