@@ -62,8 +62,8 @@ class BooksController < ApplicationController
   
   private
     def prepare_filter
-      filter_opts = params[:authors_id] || [], params[:categories_id] || [], params[:books_id] || []
-      filter_opts.each { |item| item.delete_if { |x| x.empty? } }
+      filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
+      filter_opts.each { |item| item.delete_if(&:empty?) }
       filter_opts
     end
 end

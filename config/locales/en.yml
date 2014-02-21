@@ -109,6 +109,10 @@ en:
   bill_same: 'Billing address are the same'
   or_add_new: 'or add new'
   no_rated_books: 'No rated books yet, sorry'
+  books:
+    show:
+      rate: 'Rate the book >>'
+      customer: 'Customer'
   helpers:
     label:
       address:

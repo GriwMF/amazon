@@ -31,9 +31,9 @@ class Book < ActiveRecord::Base
   def self.filter(authors_id, categories_id, books_id)
     relation = Book.includes(:authors, :categories)
     
-    relation = relation.where(id: books_id) if books_id.any?
-    relation = relation.where(authors: { id: authors_id } ) if authors_id.any?
-    relation = relation.where(categories: { id: categories_id} ) if categories_id.any?
+    relation = relation.where(id: books_id) unless books_id.blank?
+    relation = relation.where(authors: { id: authors_id } ) unless authors_id.blank?
+    relation = relation.where(categories: { id: categories_id} ) unless categories_id.blank?
     relation
   end
       
