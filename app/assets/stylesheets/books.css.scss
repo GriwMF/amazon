@@ -49,10 +49,12 @@ a.carousel-control
   opacity: 0.3;
 }
 
+.carousel-inner {
+   margin-bottom:50px;
+}
+
 ol.carousel-indicators {
-  top:8px;
-  height:16px;
-  text-align: right;
+  bottom:-50px;
 }
 
 a.carousel-control.right
@@ -62,7 +64,6 @@ a.carousel-control.right
 
 .carousel-indicators li {
   background-color: #999;
-  background-color: rgba(70,70,70,.25);
   border-width:2px;
 }
 

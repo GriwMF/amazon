@@ -6,7 +6,7 @@
 %br
 %div.overflow
   .image-wrapper
-    = image_tag book.shot.url
+    = link_to image_tag(book.shot.url), book_path(book)
   %p.description
     = book.description
 %br
