@@ -1,18 +1,18 @@
 class OrdersController < ApplicationController
   before_filter :authenticate_customer!
   authorize_resource
-    
+  
   before_action :set_order, only: [:show, :update]
   
   # GET /orders
   # GET /orders.json
   def index
-    @orders = current_customer.orders.completed
+    @orders = current_customer.orders.completed.page(params[:page])
   end
   
   # GET /orders/recent
   def recent
-    @orders = current_customer.orders.recent
+    @orders = current_customer.orders.recent.page(params[:page])
     render :index
   end  
   
@@ -58,7 +58,7 @@ class OrdersController < ApplicationController
   # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
-    if (err = current_customer.cart.add_item(book, quantity: params[:quantity]).errors).any?
+    if (err = current_customer.cart.add_item(book, quantity: params[:quantity].to_i).errors).any?
       flash[:danger] =err.full_messages
     else
       flash[:info] = I18n.t 'suc_book_added'

@@ -129,7 +129,7 @@ describe OrdersController do
       end
       
       it "calls add_item method of model with book id and quantity" do
-        expect_any_instance_of(Order).to receive(:add_item).with(book, {:quantity=>"3"})
+        expect_any_instance_of(Order).to receive(:add_item).with(book, {:quantity=> 3})
         post :add_item, {:id => book.to_param, quantity: 3}, valid_session
       end
       

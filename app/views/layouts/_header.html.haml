@@ -7,7 +7,7 @@
     %li= link_to t('list_books'), books_path  
   %ul.nav.navbar-nav.pull-right
     - if customer_signed_in?
-      %li= link_to t('recent_orders'), orders_path
+      %li= link_to t('history'), orders_path
       %li= link_to t('profile'), customer_path
       %li= link_to t('cart'), order_path(current_customer.cart), id: "cart" #if something in cart
       %li= link_to t('logout'), destroy_customer_session_path, :method => :delete

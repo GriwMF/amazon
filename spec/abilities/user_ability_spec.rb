@@ -8,13 +8,14 @@ describe "Customer" do
 
     context "when is an unauthorized customer" do
       it{ should be_able_to(:read, Book.new) }
+      it{ should be_able_to(:home, Book.new) }
       it{ should_not be_able_to(:manage, :all) }
       it{ should_not be_able_to(:access, :rails_admin) }
     end
 
     context "when is a regular customer" do
       let(:customer){ FactoryGirl.create :customer }
-      
+      it{ should be_able_to(:home, Book.new) }
       it{ should be_able_to(:read, :all) }
       it{ should be_able_to(:manage, Address.new) }
       it{ should be_able_to(:manage, CreditCard.new) }

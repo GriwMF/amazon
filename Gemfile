@@ -34,6 +34,7 @@ end
 
 gem 'devise'
 gem 'cancan'
+gem 'omniauth-facebook'
 gem 'state_machine'
 gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
 gem 'rails_admin_state'

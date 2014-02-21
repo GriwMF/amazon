@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_filter :authenticate_customer!, except: [:index, :show]
+  before_filter :authenticate_customer!, except: [:index, :show, :home]
   
   load_and_authorize_resource
   skip_load_resource only: [:index, :filter, :home]
