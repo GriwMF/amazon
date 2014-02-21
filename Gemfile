@@ -52,6 +52,8 @@ gem 'redcarpet'
 gem "haml" 
 gem 'haml-rails', :group => :development
 
+gem 'rails_12factor', :group => :production
+
 gem "erb2haml", :group => :development
 
 gem 'bootstrap-sass'
