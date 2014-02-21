@@ -73,6 +73,10 @@ describe BooksController do
   
   describe "POST rate" do
     let(:book) { Book.create! valid_attributes }
+
+    before do
+      request.env["HTTP_REFERER"] = books_path
+    end
     
     describe "valid attributes" do
       it "adds new rating" do
@@ -86,9 +90,9 @@ describe BooksController do
         expect(flash[:info]).to eq(I18n.t 'suc_rating_add')
       end
       
-      it "redirects to root path" do
+      it "redirects back" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
-         response.should redirect_to(root_url)
+         response.should redirect_to(books_path)
       end
     end
     
@@ -99,9 +103,9 @@ describe BooksController do
         expect(flash[:danger]).to_not be_empty
       end
       
-      it "redirects to root path" do
+      it "redirects back" do
        post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
-       response.should redirect_to(root_url)
+       response.should redirect_to(books_path)
       end
     end
   end

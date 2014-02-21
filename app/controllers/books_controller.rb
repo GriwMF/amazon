@@ -33,7 +33,7 @@ class BooksController < ApplicationController
     else
       flash[:danger] = rating.errors
     end
-    redirect_to root_path
+    redirect_to :back
   end
   
   # POST /books/1/add_wished
