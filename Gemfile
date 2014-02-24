@@ -39,6 +39,7 @@ gem 'state_machine'
 gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
 gem 'rails_admin_state'
 gem 'active_record_group_count'
+gem 'draper'
 
 #images processing
 gem 'carrierwave'

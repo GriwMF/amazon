@@ -1,4 +1,6 @@
 language: ruby
+bundler_args: --without production
+cache: bundler
 rvm:
   - 2.1.0
 env:
@@ -8,5 +10,6 @@ script:
   - export RAILS_ENV=test
   - bundle exec rake db:create db:migrate
   - bundle exec rake db:test:prepare
+  - bundle exec rspec spec
 before_script:
   - psql -c 'create database strano_test' -U postgres

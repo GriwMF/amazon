@@ -63,6 +63,11 @@ describe BooksController do
       get :show, {:id => book.to_param}, valid_session
       assigns(:book).should eq(book)
     end
+
+    it "decorate assigned @book" do
+      get :show, {:id => book.to_param}, valid_session
+      assigns(:book).should be_decorated
+    end
     
     it "assigns last 10 approved ratings as @book_ratings" do
       rating = book.ratings.create!(text: "good book", rating: "3", state: 'approved')
@@ -170,6 +175,8 @@ describe BooksController do
     
     before do
       Book.stub_chain("filter.includes").and_return([book])
+      allow_any_instance_of(Array).to receive('page').and_return([book])
+      allow_any_instance_of(Array).to receive('per').and_return([book])
     end
     
     it "filtering books by parameters" do
