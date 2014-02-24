@@ -31,6 +31,8 @@ describe OrdersController do
   # in order to pass any filters (e.g. authentication) defined in
   # OrdersController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+
+  let(:ability) { Object.new.extend(CanCan::Ability) }
   
   before do
     sign_in customer
@@ -42,7 +44,14 @@ describe OrdersController do
                                  completed_at: Time.now, state: 'in_queue'
       get :index, {}, valid_session
       assigns(:orders).should eq([order])
-    end     
+    end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Order
+      get :index
+      response.should redirect_to(root_url)
+    end  
   end
   
   describe "GET recent" do
@@ -51,10 +60,24 @@ describe OrdersController do
       FactoryGirl.create :order, customer: customer, completed_at: Time.now - 1.year
       get :recent, {}, valid_session
       assigns(:orders).should eq([order])
-    end     
+    end
+
+    it 'redirect to root if havent recent ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :recent, Order
+      get :recent
+      response.should redirect_to(root_url)
+    end  
   end
 
   describe "GET show" do
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Order
+      get :show, { id: '1' }
+      response.should redirect_to(root_url)
+    end  
+
     it "assigns the requested order as @order" do
       order = FactoryGirl.create :order, customer: customer, state: "in_progress"
       get :show, {:id => order.to_param}, valid_session
@@ -70,7 +93,13 @@ describe OrdersController do
   end
 
   describe "PUT update" do
-    
+    it 'redirect to root if havent update ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :update, Order
+      put :update, { id: '1' }
+      response.should redirect_to(root_url)
+    end  
+
     it "assigns the requested order as @order" do
       order = customer.cart
       put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
@@ -112,6 +141,13 @@ describe OrdersController do
     before do
       request.env["HTTP_REFERER"] = books_path
     end
+
+    it 'redirect to root if havent add_item ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :add_item, Order
+      post :add_item, { id: '1' }
+      response.should redirect_to(root_url)
+    end  
     
     describe "with valid params" do
       let(:book) { mock_model(Book, id: 1, title: 'post name', description: 'description text', save: true, errors: []) }
@@ -167,6 +203,13 @@ describe OrdersController do
     before do
       request.env["HTTP_REFERER"] = books_path
     end
+    
+    it 'redirect to root if havent remove_item ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :remove_item, Order
+      delete :remove_item, { id: '1' }
+      response.should redirect_to(root_url)
+    end  
     
     it "redirects back" do
       allow_any_instance_of(Order).to receive(:remove_item)

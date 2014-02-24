@@ -43,5 +43,14 @@ describe AuthorsController do
       get :show, {:id => author.to_param}, valid_session
       assigns(:author).should eq(author)
     end
+
+    it 'redirect to root if havent read ability' do
+      ability = Object.new.extend(CanCan::Ability)
+      ability.cannot :read, Author
+      @controller.instance_variable_set('@author', true) # to skip load_resource
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      get :show, {:id => '1'}, valid_session
+      response.should redirect_to(root_url)
+    end
   end
 end

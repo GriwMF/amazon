@@ -1,7 +1,8 @@
 class AddressesController < ApplicationController
+  authorize_resource
   before_action :set_address, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_customer!
-  authorize_resource
+
 
   # GET /addresses
   # GET /addresses.json

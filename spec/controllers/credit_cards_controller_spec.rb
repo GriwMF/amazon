@@ -36,6 +36,7 @@ describe CreditCardsController do
   # CreditCardsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
+  let(:ability) { Object.new.extend(CanCan::Ability) }
   
   before do
     sign_in customer
@@ -47,6 +48,13 @@ describe CreditCardsController do
       get :index, {}, valid_session
       assigns(:credit_cards).should eq([credit_card])
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, CreditCard
+      get :index
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "GET show" do
@@ -55,12 +63,26 @@ describe CreditCardsController do
       get :show, {:id => credit_card.to_param}, valid_session
       assigns(:credit_card).should eq(credit_card)
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, CreditCard
+      get :show, {id: '1'}
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "GET new" do
     it "assigns a new credit_card as @credit_card" do
       get :new, {}, valid_session
       assigns(:credit_card).should be_a_new(CreditCard)
+    end
+
+    it 'redirect to root if havent create ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :create, CreditCard
+      get :new
+      response.should redirect_to(root_url)
     end
   end
 
@@ -70,9 +92,23 @@ describe CreditCardsController do
       get :edit, {:id => credit_card.to_param}, valid_session
       assigns(:credit_card).should eq(credit_card)
     end
+
+    it 'redirect to root if havent update ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :update, CreditCard
+      get :edit, {id: '1'}
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "POST create" do
+    it 'redirect to root if havent create ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :create, CreditCard
+      post :create
+      response.should redirect_to(root_url)
+    end
+
     describe "with valid params" do
       it "creates a new CreditCard" do
         expect {
@@ -110,6 +146,13 @@ describe CreditCardsController do
   end
 
   describe "PUT update" do
+    it 'redirect to root if havent update ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :update, CreditCard
+      put :update, {id: '1'}
+      response.should redirect_to(root_url)
+    end
+
     describe "with valid params" do
       it "updates the requested credit_card" do
         credit_card = CreditCard.create! valid_attributes
@@ -165,6 +208,13 @@ describe CreditCardsController do
       credit_card = CreditCard.create! valid_attributes
       delete :destroy, {:id => credit_card.to_param}, valid_session
       response.should redirect_to(credit_cards_url)
+    end
+
+    it 'redirect to root if havent destroy ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :destroy, CreditCard
+      delete :destroy, {id: '1'}
+      response.should redirect_to(root_url)
     end
   end
 

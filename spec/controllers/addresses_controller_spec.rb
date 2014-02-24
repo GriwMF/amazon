@@ -32,7 +32,7 @@ describe AddressesController do
   # in order to pass any filters (e.g. authentication) defined in
   # AddressesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
- 
+  let(:ability) { Object.new.extend(CanCan::Ability) }
   
   before do
     sign_in customer
@@ -44,6 +44,24 @@ describe AddressesController do
       get :index, {}, valid_session
       assigns(:addresses).should eq([address])
     end
+
+    context "CanCan" do
+      before do
+        allow(@controller).to receive(:current_ability).and_return(ability)
+      end
+
+      it 'render index if have read ability' do
+        ability.can :read, Address
+        get :index
+        assert_template :index
+      end
+
+      it 'redirect to root if havent read ability' do
+        ability.cannot :read, Address
+        get :index
+        response.should redirect_to(root_url)
+      end
+    end
   end
 
   describe "GET show" do
@@ -52,12 +70,38 @@ describe AddressesController do
       get :show, {:id => address.to_param}, valid_session
       assigns(:address).should eq(address)
     end
+
+    context "CanCan" do
+      before do
+        allow(@controller).to receive(:current_ability).and_return(ability)
+        allow(@controller).to receive(:set_address).and_return(true)
+      end
+
+      it 'render show if have read ability' do
+        ability.can :read, Address
+        get :show, {:id => '1'}, valid_session
+        assert_template :show
+      end
+
+      it 'redirect to root if havent read ability' do
+        ability.cannot :read, Address
+        get :show, {:id => '1'}, valid_session
+        response.should redirect_to(root_url)
+      end
+    end
   end
 
   describe "GET new" do
     it "assigns a new address as @address" do
       get :new, {}, valid_session
       assigns(:address).should be_a_new(Address)
+    end
+
+    it 'redirect to root if havent create ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :create, Address
+      get :new
+      response.should redirect_to(root_url)
     end
   end
 
@@ -67,9 +111,23 @@ describe AddressesController do
       get :edit, {:id => address.to_param}, valid_session
       assigns(:address).should eq(address)
     end
+
+    it 'redirect to root if havent update ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :update, Address
+      get :edit, {:id => '1'}
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "POST create" do
+    it 'redirect to root if havent create ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :create, Address
+      post :create
+      response.should redirect_to(root_url)
+    end
+
     describe "with valid params" do
       it "creates a new Address" do
         expect {
@@ -107,6 +165,13 @@ describe AddressesController do
   end
 
   describe "PUT update" do
+    it 'redirect to root if havent update ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :update, Address
+      put :update, {:id => '1'}
+      response.should redirect_to(root_url)
+    end
+
     describe "with valid params" do
       it "updates the requested address" do
         address = Address.create! valid_attributes
@@ -151,6 +216,13 @@ describe AddressesController do
   end
 
   describe "DELETE destroy" do
+    it 'redirect to root if havent delete ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :destroy, Address
+      delete :destroy, {:id => '1'}
+      response.should redirect_to(root_url)
+    end
+
     it "destroys the requested address" do
       address = Address.create! valid_attributes
       expect {

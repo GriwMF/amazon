@@ -34,6 +34,8 @@ describe BooksController do
   # BooksController. Be sure to keep this updated too.
   let(:valid_session) { {} }
   
+  let(:ability) { Object.new.extend(CanCan::Ability) }
+
   before do
     sign_in customer
   end
@@ -44,6 +46,13 @@ describe BooksController do
       get :index, {}, valid_session
       assigns(:books).should eq([book])
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Book
+      get :index
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "GET home" do
@@ -53,6 +62,13 @@ describe BooksController do
       expect(Book).to receive(:top).and_return([book])
       get :home, {}, valid_session
       assigns(:books).should eq([book])
+    end
+
+    it 'redirect to root if havent home ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :home, Book
+      get :home
+      response.should redirect_to(root_url)
     end
   end
 
@@ -74,6 +90,14 @@ describe BooksController do
       get :show, {:id => book.to_param}, valid_session
       assigns(:book_ratings).should eq([rating])
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Book
+      @controller.instance_variable_set('@book', true) # to skip load_resource
+      get :show, { id: '1'}
+      response.should redirect_to(root_url)
+    end
   end
   
   describe "POST rate" do
@@ -81,6 +105,14 @@ describe BooksController do
 
     before do
       request.env["HTTP_REFERER"] = books_path
+    end
+
+    it 'redirect to root if havent rate ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :rate, Book
+      @controller.instance_variable_set('@book', true) # to skip load_resource
+      post :rate, { id: '1' }
+      response.should redirect_to(root_url)
     end
     
     describe "valid attributes" do
@@ -118,6 +150,14 @@ describe BooksController do
   describe "DELETE wished" do
     let(:book) { Book.create! valid_attributes }
 
+    it 'redirect to root if havent wished ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :wished, Book
+      @controller.instance_variable_set('@book', true) # to skip load_resource
+      delete :wished, { id: '1' }
+      response.should redirect_to(root_url)
+    end
+
     it "delete book from wished list" do
       book.wish_add(customer)
       expect {
@@ -135,6 +175,14 @@ describe BooksController do
     let(:book) { Book.create! valid_attributes }
     before do
       allow_any_instance_of(Book).to receive(:wish_add)
+    end
+
+    it 'redirect to root if havent add_wished ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :add_wished, Book
+      @controller.instance_variable_set('@book', true) # to skip load_resource
+      post :add_wished, { id: '1' }
+      response.should redirect_to(root_url)
     end
     
     it "calls wish_add" do
@@ -168,6 +216,13 @@ describe BooksController do
   describe "GET filter" do
     let(:book) { Book.create! valid_attributes }
     
+    it 'redirect to root if havent filter ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :filter, Book
+      get :filter, { id: '1' }
+      response.should redirect_to(root_url)
+    end
+
     it "redirects to books path if reset button was clicked" do
       get :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
       expect(response).to redirect_to(books_path)
