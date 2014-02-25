@@ -58,18 +58,19 @@ class OrdersController < ApplicationController
   # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
-    if (err = current_customer.cart.add_item(book, quantity: params[:quantity].to_i).errors).any?
-      flash[:danger] =err.full_messages
+    item = current_cart.add_item(book, quantity: params[:quantity].to_i)
+    if item.errors.any?
+      flash[:danger] =item.errors.full_messages
     else
       flash[:info] = I18n.t 'suc_book_added'
-      current_customer.cart.refresh_prices
+      current_cart.refresh_prices
     end
     redirect_to :back
   end
 
   # DELETE /orders/remove_item/1
   def remove_item
-    current_customer.cart.remove_item(params[:id])
+    current_cart.remove_item(params[:id])
     redirect_to :back
   end
 
@@ -79,7 +80,11 @@ class OrdersController < ApplicationController
       @order = current_customer.orders.find(params[:id])
       not_found unless @order.in_progress?
     end
-    
+
+    def current_cart
+      current_customer.cart
+    end
+
     def ship_addr_params
       params.require(:order).require(:ship_addr).permit(:country, :address, :zipcode, :city, :phone)
     end
