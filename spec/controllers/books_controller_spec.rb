@@ -34,6 +34,8 @@ describe BooksController do
   # BooksController. Be sure to keep this updated too.
   let(:valid_session) { {} }
   
+  let(:ability) { Object.new.extend(CanCan::Ability) }
+
   before do
     sign_in customer
   end
@@ -44,6 +46,30 @@ describe BooksController do
       get :index, {}, valid_session
       assigns(:books).should eq([book])
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Book
+      get :index
+      response.should redirect_to(root_url)
+    end
+  end
+
+  describe "GET home" do
+    let(:book) { mock_model(Book, id: 1, title: 'name') }
+
+    it "assigns Book.top as @books" do
+      expect(Book).to receive(:top).and_return([book])
+      get :home, {}, valid_session
+      assigns(:books).should eq([book])
+    end
+
+    it 'redirect to root if havent home ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :home, Book
+      get :home
+      response.should redirect_to(root_url)
+    end
   end
 
   describe "GET show" do
@@ -53,16 +79,41 @@ describe BooksController do
       get :show, {:id => book.to_param}, valid_session
       assigns(:book).should eq(book)
     end
+
+    it "decorate assigned @book" do
+      get :show, {:id => book.to_param}, valid_session
+      assigns(:book).should be_decorated
+    end
     
     it "assigns last 10 approved ratings as @book_ratings" do
       rating = book.ratings.create!(text: "good book", rating: "3", state: 'approved')
       get :show, {:id => book.to_param}, valid_session
       assigns(:book_ratings).should eq([rating])
     end
+
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :read, Book
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
+      get :show, { id: '1'}
+      response.should redirect_to(root_url)
+    end
   end
   
   describe "POST rate" do
     let(:book) { Book.create! valid_attributes }
+
+    before do
+      request.env["HTTP_REFERER"] = books_path
+    end
+
+    it 'redirect to root if havent rate ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :rate, Book
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
+      post :rate, { id: '1' }
+      response.should redirect_to(root_url)
+    end
     
     describe "valid attributes" do
       it "adds new rating" do
@@ -76,9 +127,9 @@ describe BooksController do
         expect(flash[:info]).to eq(I18n.t 'suc_rating_add')
       end
       
-      it "redirects to root path" do
+      it "redirects back" do
         post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
-         response.should redirect_to(root_url)
+         response.should redirect_to(books_path)
       end
     end
     
@@ -89,15 +140,23 @@ describe BooksController do
         expect(flash[:danger]).to_not be_empty
       end
       
-      it "redirects to root path" do
+      it "redirects back" do
        post :rate, {:id => book.to_param, text: "text rating", rating: "8"}, valid_session
-       response.should redirect_to(root_url)
+       response.should redirect_to(books_path)
       end
     end
   end
   
   describe "DELETE wished" do
     let(:book) { Book.create! valid_attributes }
+
+    it 'redirect to root if havent wished ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :wished, Book
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
+      delete :wished, { id: '1' }
+      response.should redirect_to(root_url)
+    end
 
     it "delete book from wished list" do
       book.wish_add(customer)
@@ -116,6 +175,14 @@ describe BooksController do
     let(:book) { Book.create! valid_attributes }
     before do
       allow_any_instance_of(Book).to receive(:wish_add)
+    end
+
+    it 'redirect to root if havent add_wished ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :add_wished, Book
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
+      post :add_wished, { id: '1' }
+      response.should redirect_to(root_url)
     end
     
     it "calls wish_add" do
@@ -146,27 +213,36 @@ describe BooksController do
     end   
   end  
   
-  describe "POST filter" do
+  describe "GET filter" do
     let(:book) { Book.create! valid_attributes }
     
-    it "redirects to root path if reset button was clicked" do
-      post :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
-      expect(response).to redirect_to(root_path)
+    it 'redirect to root if havent filter ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :filter, Book
+      get :filter, { id: '1' }
+      response.should redirect_to(root_url)
+    end
+
+    it "redirects to books path if reset button was clicked" do
+      get :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
+      expect(response).to redirect_to(books_path)
     end
     
     before do
       Book.stub_chain("filter.includes").and_return([book])
+      allow_any_instance_of(Array).to receive('page').and_return([book])
+      allow_any_instance_of(Array).to receive('per').and_return([book])
     end
     
     it "filtering books by parameters" do
       expect(Book).to receive(:filter)
       expect(Book.filter).to receive(:includes)
-      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
       expect(assigns(:books)).to eq([book])
     end
     
     it "renders index template" do
-      post :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
+      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
       expect(response).to render_template("index")
     end
   end

@@ -18,6 +18,16 @@ RailsAdmin.config do |config|
 
   config.label_methods |= [:full_name, :number, :email, :full]
 
+  config.model 'OrderItem' do
+    object_label_method do
+      :custom_label_method
+    end
+  end
+
+  def custom_label_method
+    "#{book.title}, Quantity: #{quantity.to_s}"
+  end
+
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory

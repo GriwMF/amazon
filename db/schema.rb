@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214150321) do
+ActiveRecord::Schema.define(version: 20140221143300) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "addresses", force: true do |t|
     t.string   "address"
@@ -24,8 +27,8 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.integer  "customer_id"
   end
 
-  add_index "addresses", ["country"], name: "index_addresses_on_country"
-  add_index "addresses", ["customer_id"], name: "index_addresses_on_customer_id"
+  add_index "addresses", ["country"], name: "index_addresses_on_country", using: :btree
+  add_index "addresses", ["customer_id"], name: "index_addresses_on_customer_id", using: :btree
 
   create_table "authors", force: true do |t|
     t.string   "firstname"
@@ -35,15 +38,15 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.text     "description"
   end
 
-  add_index "authors", ["firstname", "lastname"], name: "index_authors_on_firstname_and_lastname"
+  add_index "authors", ["firstname", "lastname"], name: "index_authors_on_firstname_and_lastname", using: :btree
 
   create_table "authors_books", id: false, force: true do |t|
     t.integer "book_id",   null: false
     t.integer "author_id", null: false
   end
 
-  add_index "authors_books", ["author_id", "book_id"], name: "index_authors_books_on_author_id_and_book_id"
-  add_index "authors_books", ["book_id", "author_id"], name: "index_authors_books_on_book_id_and_author_id"
+  add_index "authors_books", ["author_id", "book_id"], name: "index_authors_books_on_author_id_and_book_id", using: :btree
+  add_index "authors_books", ["book_id", "author_id"], name: "index_authors_books_on_book_id_and_author_id", using: :btree
 
   create_table "books", force: true do |t|
     t.string   "title"
@@ -61,16 +64,16 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.integer "category_id", null: false
   end
 
-  add_index "books_categories", ["book_id", "category_id"], name: "index_books_categories_on_book_id_and_category_id"
-  add_index "books_categories", ["category_id", "book_id"], name: "index_books_categories_on_category_id_and_book_id"
+  add_index "books_categories", ["book_id", "category_id"], name: "index_books_categories_on_book_id_and_category_id", using: :btree
+  add_index "books_categories", ["category_id", "book_id"], name: "index_books_categories_on_category_id_and_book_id", using: :btree
 
   create_table "books_customers", id: false, force: true do |t|
     t.integer "book_id",     null: false
     t.integer "customer_id", null: false
   end
 
-  add_index "books_customers", ["book_id", "customer_id"], name: "index_books_customers_on_book_id_and_customer_id"
-  add_index "books_customers", ["customer_id", "book_id"], name: "index_books_customers_on_customer_id_and_book_id"
+  add_index "books_customers", ["book_id", "customer_id"], name: "index_books_customers_on_book_id_and_customer_id", using: :btree
+  add_index "books_customers", ["customer_id", "book_id"], name: "index_books_customers_on_customer_id_and_book_id", using: :btree
 
   create_table "categories", force: true do |t|
     t.string   "title"
@@ -90,7 +93,7 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.datetime "updated_at"
   end
 
-  add_index "credit_cards", ["customer_id"], name: "index_credit_cards_on_customer_id"
+  add_index "credit_cards", ["customer_id"], name: "index_credit_cards_on_customer_id", using: :btree
 
   create_table "customers", force: true do |t|
     t.string   "email",                  default: "",    null: false
@@ -108,11 +111,13 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.string   "provider"
+    t.string   "uid"
   end
 
-  add_index "customers", ["email"], name: "index_customers_on_email", unique: true
-  add_index "customers", ["firstname", "lastname"], name: "index_customers_on_firstname_and_lastname"
-  add_index "customers", ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
+  add_index "customers", ["email"], name: "index_customers_on_email", unique: true, using: :btree
+  add_index "customers", ["firstname", "lastname"], name: "index_customers_on_firstname_and_lastname", using: :btree
+  add_index "customers", ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true, using: :btree
 
   create_table "order_items", force: true do |t|
     t.decimal  "price",      precision: 8, scale: 2
@@ -123,8 +128,8 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.datetime "updated_at"
   end
 
-  add_index "order_items", ["book_id"], name: "index_order_items_on_book_id"
-  add_index "order_items", ["order_id"], name: "index_order_items_on_order_id"
+  add_index "order_items", ["book_id"], name: "index_order_items_on_book_id", using: :btree
+  add_index "order_items", ["order_id"], name: "index_order_items_on_order_id", using: :btree
 
   create_table "orders", force: true do |t|
     t.decimal  "total_price",    precision: 8, scale: 2
@@ -138,11 +143,11 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.integer  "credit_card_id"
   end
 
-  add_index "orders", ["credit_card_id"], name: "index_orders_on_credit_card_id"
-  add_index "orders", ["customer_id"], name: "index_orders_on_customer_id"
+  add_index "orders", ["credit_card_id"], name: "index_orders_on_credit_card_id", using: :btree
+  add_index "orders", ["customer_id"], name: "index_orders_on_customer_id", using: :btree
 
   create_table "ratings", force: true do |t|
-    t.integer  "rating",      limit: 1
+    t.integer  "rating",      limit: 2
     t.string   "text"
     t.integer  "book_id"
     t.integer  "customer_id"
@@ -151,7 +156,7 @@ ActiveRecord::Schema.define(version: 20140214150321) do
     t.string   "state",                 default: "pending"
   end
 
-  add_index "ratings", ["book_id"], name: "index_ratings_on_book_id"
-  add_index "ratings", ["customer_id"], name: "index_ratings_on_customer_id"
+  add_index "ratings", ["book_id"], name: "index_ratings_on_book_id", using: :btree
+  add_index "ratings", ["customer_id"], name: "index_ratings_on_customer_id", using: :btree
 
 end

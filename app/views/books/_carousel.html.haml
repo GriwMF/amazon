@@ -1,0 +1,18 @@
+%h3.inline= link_to book.title, book_path(book)
+.tab.inline
+  by
+  = link_to book.authors[0].full_name, author_path(book.authors[0])
+%br
+%br
+%div.overflow
+  .image-wrapper
+    = link_to image_tag(book.shot.url), book_path(book)
+  %p.description
+    = book.description
+%br
+.center
+  = form_tag "/orders/add_item/#{book.id}", class: "form-inline" do
+    = label_tag "$#{book.price}"
+    .form-group.number
+      = number_field_tag :quantity, 1, min: 1, class: "form-control"
+    = submit_tag t('add_to_cart'), class: "btn btn-default"

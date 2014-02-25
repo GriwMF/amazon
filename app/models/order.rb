@@ -1,11 +1,14 @@
 class Order < ActiveRecord::Base
   belongs_to :customer, :inverse_of => :orders
   belongs_to :credit_card, :inverse_of => :orders
-  belongs_to :bill_addr, class_name: "Address", :inverse_of => :bill_orders
-  belongs_to :ship_addr, class_name: "Address", :inverse_of => :ship_orders
+  belongs_to :bill_addr, class_name: "Address"
+  belongs_to :ship_addr, class_name: "Address"
   has_many :order_items, dependent: :destroy, :inverse_of => :order
   
   has_many :books, through: :order_items
+
+  scope :recent, -> { where("completed_at > ?", 3.month.ago).order("completed_at DESC") }
+  scope :completed, -> { where.not(state: 'in_progress').order("completed_at DESC") }
   
   validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   
@@ -59,6 +62,10 @@ class Order < ActiveRecord::Base
     else
       order_items.create(book: book, quantity: quantity)
     end
+  end
+
+  def remove_item(item_id)
+    order_items.find(item_id).destroy
   end
   
   def refresh_prices

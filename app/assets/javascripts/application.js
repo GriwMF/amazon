@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require silviomoreto-bootstrap-select/bootstrap-select
+//= require bootstrap
 //= require bootstrap/alert
 //= require bootstrap/dropdown
 //= require_tree .

@@ -18,7 +18,7 @@ describe Book do
   
   it "has and belongs to many categories" do
     expect(book).to have_and_belong_to_many(:categories)
-  end  
+  end
   
   it "has and belongs to many authors" do
     expect(book).to have_and_belong_to_many(:authors)
@@ -35,7 +35,26 @@ describe Book do
   it "has many ratings" do
     expect(book).to have_many(:ratings)
   end
-  
+
+  context "top scope" do
+    it "includes 5 books with bigest rating" do
+      FactoryGirl.create :rating, state: 'approved', book: book
+      expect(Book.top).to include book      
+    end
+
+    it "does not include more than 5 books" do
+      5.times do
+        tmp_book = FactoryGirl.create :book
+        FactoryGirl.create :rating, state: 'approved', book: tmp_book, rating: 4
+      end
+      FactoryGirl.create :rating, state: 'approved', book: book, rating: 3
+      expect(Book.top).to_not include book
+    end
+    
+    it "excludes books without rating" do
+      expect(Book.top).to_not include book      
+    end
+  end
   describe "book's methods" do
     let(:customer1) { FactoryGirl.create :customer }
     let(:customer2) { FactoryGirl.create :customer }

@@ -4,9 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 
-group :production do
-  gem 'pg'
-end
+gem 'pg'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -36,19 +34,26 @@ end
 
 gem 'devise'
 gem 'cancan'
+gem 'omniauth-facebook'
 gem 'state_machine'
 gem 'rails_admin', :git => 'git://github.com/sferik/rails_admin.git'
 gem 'rails_admin_state'
+gem 'active_record_group_count'
+gem 'draper'
 
 #images processing
 gem 'carrierwave'
 gem 'mini_magick'
+
+gem 'kaminari'
 
 #markup tool
 gem 'redcarpet'
 
 gem "haml" 
 gem 'haml-rails', :group => :development
+
+gem 'rails_12factor', :group => :production
 
 gem "erb2haml", :group => :development
 
@@ -67,7 +72,6 @@ gem 'bootstrap-sass'
 # gem 'debugger', group: [:development, :test]
 
 group :development, :test do
-  gem 'sqlite3'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'faker'

@@ -1,7 +1,23 @@
 - provide(:title, t('show_book'))
-%p
-  %h2.center
-    = @book.title
+%br
+%h3.inline= @book.title
+%br
+%br
+%div.overflow
+  .image-wrapper
+    = image_tag @book.shot.url
+  .form-description
+    = form_tag "/orders/add_item/#{@book.id}", class: "form-inline pagination-centered" do
+      .price= "$#{@book.price}"
+      .right
+        .form-group.number
+          = number_field_tag :quantity, 1, min: 1, class: "form-control"
+        = submit_tag t('add_to_cart'), class: "btn btn-default"  
+  %br
+  %p.description
+    = @book.description
+%br
+
 %p
   = render layout: "parse", locals: { collection: @book.authors, name: t('author') } do |author|
     = link_to "#{author.full_name}", author_path(author)
@@ -10,10 +26,8 @@
     = "#{category.title}"
 %p
   %b= t('description')
-  = @book.description
-%p
-  %b= t('price')
-  = @book.price
+  .tab
+    = @book.full_description
 %p
   %b= t('in_stock')
   = @book.in_stock
@@ -26,8 +40,10 @@
     = link_to t('add_to_wish_list'), add_wished_book_path(@book), method: 'patch'
     %br
   - if @book.unrated?(current_customer)
-    .panel.panel-default.form-group.row
-      .col-xs-12
+    = link_to t('.rate'), '#', id: 'rating-switch'
+    %br
+    .panel.panel-default.form-group.row.hidden#rating-panel
+      .col-xs-4
         %h3 Rate the book
         = form_tag rate_book_path(@book), id: 'book_rating' do
           .form_group
@@ -43,15 +59,20 @@
 
 = link_to t('back'), books_path
 
-%h3= t('book_rating')
+%h3
+  = t('book_rating')
+  = @book.rating ? "(average #{@book.rating})" : '(not rated yet)'
 
-%table.table.table-striped
-  %thead
-    %tr.heading
-      %th= t('description')
-      %th= t('rating')
-  %tbody
-    -@book_ratings.each do |rating|
-      %tr
-        %td= rating.text
-        %td= rating.rating
+- if @book.rating
+  %table.table.table-striped
+    %thead
+      %tr.heading
+        %th= t('.customer')
+        %th= t('description')
+        %th= t('rating')
+    %tbody
+      - @book_ratings.each do |rating|
+        %tr
+          %td= rating.customer.firstname
+          %td= rating.text
+          %td= rating.rating

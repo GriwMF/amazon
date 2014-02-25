@@ -1,19 +1,25 @@
 class BooksController < ApplicationController
-  before_filter :authenticate_customer!, except: [:index, :show]
+  before_filter :authenticate_customer!, except: [:index, :show, :home]
   
   load_and_authorize_resource
-  skip_load_resource only: [:index, :filter]
+  skip_load_resource only: [:index, :filter, :home]
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.all.includes(:ratings)
+    @books = Book.includes(:ratings).page(params[:page]).per(20)
+  end
+
+  # GET /books/home
+  def home
+    @books = Book.top
   end
 
   # GET /books/1
   # GET /books/1.json
   def show
     @book_ratings = @book.ratings.approved.last(10)
+    @book = @book.decorate
   end
 
   # POST /books/1/rate
@@ -25,7 +31,7 @@ class BooksController < ApplicationController
     else
       flash[:danger] = rating.errors
     end
-    redirect_to root_path
+    redirect_to :back
   end
   
   # POST /books/1/add_wished
@@ -46,16 +52,16 @@ class BooksController < ApplicationController
   
   # POST /books/filter
   def filter
-    redirect_to root_path and return if params[:commit] == I18n.t('reset')
+    redirect_to books_path and return if params[:commit] == I18n.t('reset')
     
-    @books = Book.filter(*prepare_filter).includes(:ratings)
+    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(2)
     render "index"
   end
   
   private
     def prepare_filter
       filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
-      filter_opts.each { |item| item.shift }
+      filter_opts.each { |item| item.delete_if(&:empty?) }
       filter_opts
     end
 end

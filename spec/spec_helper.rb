@@ -22,9 +22,6 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -35,7 +32,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
   
-  config.before(:each) do
+  config.before(:each, :type => :feature) do
     if Capybara.current_driver == :rack_test
       DatabaseCleaner.strategy = :transaction
     else
@@ -43,10 +40,19 @@ RSpec.configure do |config|
     end
     DatabaseCleaner.start
   end
+
+  config.before(:each, :type => :model) do
+    DatabaseCleaner.start
+  end
+
+  config.before(:each, :type => :controller) do
+    DatabaseCleaner.start
+  end
    
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.

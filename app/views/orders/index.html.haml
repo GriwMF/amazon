@@ -1,6 +1,10 @@
 %h1= t('list_orders')
 
-%h3= t('order_items')
+= link_to t('recent_orders'), recent_orders_path
+\|
+= link_to t('all_orders'), orders_path
+
+%h3= @orders.blank? ? t('no_orders') : t('order_items')
 - @orders.each do |order|
   .panel.panel-default.row
     .col-xs-12
@@ -10,7 +14,7 @@
       %b= t('ship_addr')
       = order.ship_addr.full
       %br
-      %b= t(bill_addr')
+      %b= t('bill_addr')
       = order.bill_addr.full
       %br
       %b= t('state')
@@ -19,7 +23,8 @@
       %b= t('completed_at')
       = order.completed_at
       %br
-
+.center
+  = paginate @orders
 %br
 
-= link_to t('continue_shopping'), root_path
+= link_to t('continue_shopping'), books_path

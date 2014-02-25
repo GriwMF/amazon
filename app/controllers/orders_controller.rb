@@ -1,18 +1,18 @@
 class OrdersController < ApplicationController
   before_filter :authenticate_customer!
   authorize_resource
-    
+  
   before_action :set_order, only: [:show, :update]
   
   # GET /orders
   # GET /orders.json
   def index
-    @orders = current_customer.orders.order("completed_at DESC")
+    @orders = current_customer.orders.completed.page(params[:page])
   end
   
   # GET /orders/recent
   def recent
-    @orders = current_customer.orders.where("completed_at > ?", 3.month.ago).order("completed_at DESC")
+    @orders = current_customer.orders.recent.page(params[:page])
     render :index
   end  
   
@@ -58,18 +58,19 @@ class OrdersController < ApplicationController
   # POST /orders/add_item/1
   def add_item
     book = Book.find(params[:id])
-    if (err = current_customer.cart.add_item(book).errors).any?
-      flash[:danger] =err.full_messages
+    item = current_cart.add_item(book, quantity: params[:quantity].to_i)
+    if item.errors.any?
+      flash[:danger] =item.errors.full_messages
     else
       flash[:info] = I18n.t 'suc_book_added'
-      current_customer.cart.refresh_prices
+      current_cart.refresh_prices
     end
-    redirect_to books_path
+    redirect_to :back
   end
 
   # DELETE /orders/remove_item/1
   def remove_item
-    current_customer.cart.order_items.find(params[:id]).destroy
+    current_cart.remove_item(params[:id])
     redirect_to :back
   end
 
@@ -77,9 +78,13 @@ class OrdersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.state == 'in_progress'
+      not_found unless @order.in_progress?
     end
-    
+
+    def current_cart
+      current_customer.cart
+    end
+
     def ship_addr_params
       params.require(:order).require(:ship_addr).permit(:country, :address, :zipcode, :city, :phone)
     end

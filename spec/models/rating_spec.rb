@@ -30,8 +30,8 @@ describe Rating do
   
   context "approved scope" do
     it "includes approved rating" do
-      rating = FactoryGirl.create :rating, state: 'approved'
-      expect(Rating.approved).to include rating
+      approved_rating = FactoryGirl.create :rating, state: 'approved'
+      expect(Rating.approved).to include approved_rating
     end
     
     it "excludes ratings with state not equal approved" do

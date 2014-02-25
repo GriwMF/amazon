@@ -30,7 +30,31 @@ describe Order do
   its "state are in %w(in_queue in_progress in_delivery delivered)" do
     expect(order).to ensure_inclusion_of(:state).in_array(%w(in_queue in_progress in_delivery delivered))
   end
-  
+
+  context "recent scope" do
+    it "includes order completed in last 3 months" do
+      order = FactoryGirl.create :order, completed_at: 1.month.ago
+      expect(Order.recent).to include order
+    end
+    
+    it "excludes orders, completed earlier than 3 months ago" do
+      order = FactoryGirl.create :order, completed_at: 4.month.ago
+      expect(Order.completed).to_not include order      
+    end
+  end
+ 
+   context "completed scope" do
+    it "includes orders that are not in_progress" do
+      order = FactoryGirl.create :order, state: 'delivered'
+      expect(Order.completed).to include order
+    end
+    
+    it "excludes orders which are in_progress" do
+      order = FactoryGirl.create :order, state: 'in_progress'
+      expect(Order.recent).to_not include order      
+    end
+  end
+
   describe "order_items methods" do
     let(:order) { FactoryGirl.create(:order_with_book_price_5_and_quantity_3) }
     let(:book) { FactoryGirl.create(:book, price: 7, in_stock: 50) }
@@ -69,6 +93,13 @@ describe Order do
         order.add_item(book)
         expect { order.add_item(book, quantity: 5) }.to change { order.order_items.find_by(book_id: book.id).quantity }.by(5)
       end
+    end
+
+    context "#remove_item" do
+       it "removes item from order" do
+        item = order.add_item(book)
+        expect { order.remove_item(item) }.to change { order.order_items.count}.by(-1)
+      end     
     end
     
     context "#refresh_in_stock!" do

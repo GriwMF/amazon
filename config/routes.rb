@@ -1,7 +1,7 @@
 FirstModel::Application.routes.draw do
-  devise_for :customers
+  devise_for :customers, :controllers => { :omniauth_callbacks => "customers/omniauth_callbacks" }
   
-  root 'books#index'
+  root 'books#home'
   mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -66,7 +66,8 @@ FirstModel::Application.routes.draw do
       patch "add_wished"
     end
     collection do
-      post "filter"
+      get 'filter'
+      get 'home'
     end
   end
 

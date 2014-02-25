@@ -1,5 +1,4 @@
-require 'spec_helper'
-include Warden::Test::Helpers
+require 'features/features_spec_helper'
 
 feature "Creating books", :js => true do
   background do

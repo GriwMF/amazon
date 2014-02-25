@@ -12,6 +12,9 @@ class Book < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  scope :top, -> { joins(:ratings).merge(Rating.approved).group('books.id')
+                     .order("avg(rating) DESC").limit(5) }
+
   rails_admin do
     show do
       field :full_description do
@@ -28,9 +31,9 @@ class Book < ActiveRecord::Base
   def self.filter(authors_id, categories_id, books_id)
     relation = Book.includes(:authors, :categories)
     
-    relation = relation.where(id: books_id) if books_id.any?
-    relation = relation.where(authors: { id: authors_id } ) if authors_id.any?
-    relation = relation.where(categories: { id: categories_id} ) if categories_id.any?
+    relation = relation.where(id: books_id) unless books_id.blank?
+    relation = relation.where(authors: { id: authors_id } ) unless authors_id.blank?
+    relation = relation.where(categories: { id: categories_id} ) unless categories_id.blank?
     relation
   end
       
@@ -54,6 +57,4 @@ class Book < ActiveRecord::Base
   def unrated?(customer)
     ratings.where(customer_id: customer.id).count == 0
   end
-  
-
 end

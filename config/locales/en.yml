@@ -20,9 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  facebook: 'Sign in with Facebook'
+  succ_facebook: 'Successefully signed in with Facebook'
   store_name: 'Amazon'
   admin_panel: 'Admin Panel'
   recent_orders: 'Recent orders'
+  all_orders: 'All orders history'
+  no_orders: 'No orders found'
   cart: 'Cart'
   logout: 'Logout'
   login: 'Login'
@@ -108,7 +112,12 @@ en:
   please_select: 'Please Select'
   bill_same: 'Billing address are the same'
   or_add_new: 'or add new'
-  
+  no_rated_books: 'No rated books yet, sorry'
+  history: 'History'
+  books:
+    show:
+      rate: 'Rate the book >>'
+      customer: 'Customer'
   helpers:
     label:
       address:
