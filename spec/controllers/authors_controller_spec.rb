@@ -47,7 +47,7 @@ describe AuthorsController do
     it 'redirect to root if havent read ability' do
       ability = Object.new.extend(CanCan::Ability)
       ability.cannot :read, Author
-      @controller.instance_variable_set('@author', true) # to skip load_resource
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
       allow(@controller).to receive(:current_ability).and_return(ability)
       get :show, {:id => '1'}, valid_session
       response.should redirect_to(root_url)

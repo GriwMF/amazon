@@ -94,7 +94,7 @@ describe BooksController do
     it 'redirect to root if havent read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Book
-      @controller.instance_variable_set('@book', true) # to skip load_resource
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
       get :show, { id: '1'}
       response.should redirect_to(root_url)
     end
@@ -110,7 +110,7 @@ describe BooksController do
     it 'redirect to root if havent rate ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :rate, Book
-      @controller.instance_variable_set('@book', true) # to skip load_resource
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
       post :rate, { id: '1' }
       response.should redirect_to(root_url)
     end
@@ -153,7 +153,7 @@ describe BooksController do
     it 'redirect to root if havent wished ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :wished, Book
-      @controller.instance_variable_set('@book', true) # to skip load_resource
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
       delete :wished, { id: '1' }
       response.should redirect_to(root_url)
     end
@@ -180,7 +180,7 @@ describe BooksController do
     it 'redirect to root if havent add_wished ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :add_wished, Book
-      @controller.instance_variable_set('@book', true) # to skip load_resource
+      allow_any_instance_of(CanCan::ControllerResource).to receive(:load_resource)
       post :add_wished, { id: '1' }
       response.should redirect_to(root_url)
     end

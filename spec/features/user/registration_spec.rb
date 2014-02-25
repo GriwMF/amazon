@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'features/features_spec_helper'
 
 feature "account registration" do
   scenario "User establishes a new account" do
