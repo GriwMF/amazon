@@ -1,8 +1,12 @@
-require 'features/user_features_spec_helper'
+require 'features/features_spec_helper'
 
 feature "check out", js: true do
   given!(:book) { FactoryGirl.create :book }
 
+  background do
+    login_as(FactoryGirl.create(:customer), :scope => :customer)
+  end
+  
   scenario "User complete purchase with entering all information manually" do
     visit books_path
     click_link book.title

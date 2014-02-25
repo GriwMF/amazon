@@ -1,7 +1,11 @@
-require 'features/user_features_spec_helper'
+require 'features/features_spec_helper'
 
 feature "cart management" do
   given!(:book) { FactoryGirl.create :book }
+
+  background do
+    login_as(FactoryGirl.create(:customer), :scope => :customer)
+  end
 
   scenario "User removes book from his cart" do
     visit books_path

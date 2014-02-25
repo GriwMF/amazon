@@ -1,6 +1,9 @@
-require 'features/user_features_spec_helper'
+require 'features/features_spec_helper'
 
 feature "detailed information" do
+  background do
+    login_as(FactoryGirl.create(:customer), :scope => :customer)
+  end
 
   scenario "An user viewing detailed information of a book" do
     book = FactoryGirl.create :book

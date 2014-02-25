@@ -1,6 +1,10 @@
-require 'features/user_features_spec_helper'
+require 'features/features_spec_helper'
 
 feature "Edit profile" do
+  background do
+    login_as(FactoryGirl.create(:customer), :scope => :customer)
+  end
+  
   scenario "User edits his first and last name" do
       visit books_path
       click_link I18n.t 'profile'
