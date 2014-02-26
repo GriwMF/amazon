@@ -1,4 +1,4 @@
-class OrderItemDecorator < Draper::Decorator
+class OrderItemDecorator < ApplicationDecorator
   delegate_all
   decorates_association :book
   # Define presentation-specific methods here. Helpers are accessed through

@@ -59,6 +59,7 @@ describe BooksController do
     let(:book) { mock_model(Book, id: 1, title: 'name') }
 
     it "assigns Book.top as @books" do
+      allow_any_instance_of(Array).to receive(:decorate).and_return([book])
       expect(Book).to receive(:top).and_return([book])
       get :home, {}, valid_session
       assigns(:books).should eq([book])
@@ -232,6 +233,7 @@ describe BooksController do
       Book.stub_chain("filter.includes").and_return([book])
       allow_any_instance_of(Array).to receive('page').and_return([book])
       allow_any_instance_of(Array).to receive('per').and_return([book])
+      allow_any_instance_of(Array).to receive(:decorate).and_return([book])
     end
     
     it "filtering books by parameters" do

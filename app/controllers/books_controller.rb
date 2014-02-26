@@ -4,7 +4,7 @@ class BooksController < ApplicationController
   load_and_authorize_resource
   skip_load_resource only: [:index, :filter, :home]
 
-  after_filter :decorate_book, only: [:home, :index, :filter]
+  after_filter :decorate_book, only: [:home, :index]
 
   # GET /books
   # GET /books.json
@@ -57,6 +57,7 @@ class BooksController < ApplicationController
     redirect_to books_path and return if params[:commit] == I18n.t('reset')
     
     @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(2)
+    @books = @books.decorate
     render "index"
   end
   

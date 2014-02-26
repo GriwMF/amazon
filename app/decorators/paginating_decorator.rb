@@ -1,8 +1,5 @@
-class OrderDecorator < ApplicationDecorator
-  delegate_all
-  decorates_association :order_items
-  decorates_association :ship_addr
-  decorates_association :bill_addr
+class PaginatingDecorator < Draper::CollectionDecorator
+  delegate :current_page, :total_pages, :limit_value
 
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:
@@ -12,5 +9,4 @@ class OrderDecorator < ApplicationDecorator
   #       object.created_at.strftime("%a %m/%d/%y")
   #     end
   #   end
-
 end
