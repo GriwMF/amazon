@@ -83,7 +83,16 @@ describe OrdersController do
       get :show, {:id => order.to_param}, valid_session
       assigns(:order).should eq(order)
     end
-    
+
+    it "assigns customer's addresses as @addresses" do
+      order = FactoryGirl.create :order, customer: customer, state: "in_progress"
+      allow(@controller).to receive(:current_customer).and_return(customer)
+      address = mock_model(Address)
+      customer.stub_chain('addresses.decorate').and_return(address)
+      get :show, {:id => order.to_param}, valid_session
+      assigns(:addresses).should eq(address)
+    end
+
     it "raises routing error if state is not in_progress" do
       order = FactoryGirl.create :order, customer: customer, state: "in_queue"
       expect {

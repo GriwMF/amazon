@@ -17,7 +17,7 @@
         .form-group#check-out-ship
           = f.label t('select_ship_addr')
           %br
-          = f.collection_select(:ship_addr_id, current_customer.addresses, 
+          = f.collection_select(:ship_addr_id, @addresses, 
                               :id, :full, { :include_blank => t('please_select') }, { class: 'selectpicker' } )
           %br
           = link_to "or add new", '#', class: "tab", id: 'check-out-ship-switch'
@@ -35,7 +35,7 @@
         .form-group#check-out-bill
           = f.label t('select_bill_addr')
           %br
-          = f.collection_select(:bill_addr_id, current_customer.addresses, 
+          = f.collection_select(:bill_addr_id, @addresses, 
                               :id, :full, { :include_blank => t('please_select') }, { class: 'selectpicker' } )
           %br
           = link_to "or add new", '#', class: "tab", id: 'check-out-bill-switch'

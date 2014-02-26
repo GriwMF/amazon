@@ -14,10 +14,4 @@ describe Author do
   it "has many books through authors_books" do
     expect(author).to have_and_belong_to_many(:books)
   end
-  
-  context "#full_name" do
-    it "returns full name" do
-      expect(author.full_name).to eq(author.firstname + " " + author.lastname)
-    end
-  end
 end

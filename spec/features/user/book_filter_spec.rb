@@ -21,7 +21,7 @@ feature "Book's filter" do
   end
   
   scenario "User is filtering books by author" do
-    select author.full_name, :from => '[authors_id][]'
+    select author.decorate.full_name, :from => '[authors_id][]'
     click_button I18n.t('apply')
     expect(page).to have_content good_book.title
     expect(page).not_to have_content bad_book.title 
