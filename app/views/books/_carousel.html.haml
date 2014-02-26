@@ -2,9 +2,7 @@
 .tab.inline
   by
   = link_to book.authors[0].full_name, author_path(book.authors[0])
-%br
-%br
-%div.overflow
+%div.overflow.space
   .image-wrapper
     = link_to image_tag(book.shot.url), book_path(book)
   %p.description
