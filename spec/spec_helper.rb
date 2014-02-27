@@ -28,6 +28,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before(:suite) do
+    Draper::ViewContext.test_strategy :fast
     DatabaseCleaner.clean_with(:truncation)
   end
   

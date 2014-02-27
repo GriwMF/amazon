@@ -53,6 +53,11 @@ describe BooksController do
       get :index
       response.should redirect_to(root_url)
     end
+    
+    it "decorates @books" do
+      get :index, {}, valid_session
+      expect(assigns(:books)).to be_decorated
+    end
   end
 
   describe "GET home" do
@@ -70,6 +75,11 @@ describe BooksController do
       ability.cannot :home, Book
       get :home
       response.should redirect_to(root_url)
+    end
+    
+    it "decorates @books" do
+      get :home
+      expect(assigns(:books)).to be_decorated
     end
   end
 
@@ -99,6 +109,11 @@ describe BooksController do
       get :show, { id: '1'}
       response.should redirect_to(root_url)
     end
+    
+    it "decorates @book" do
+      get :show, {:id => book.to_param}, valid_session
+      expect(assigns(:book)).to be_decorated
+    end 
   end
   
   describe "POST rate" do
@@ -217,6 +232,12 @@ describe BooksController do
   describe "GET filter" do
     let(:book) { Book.create! valid_attributes }
     
+    it "decorates @books" do
+      allow(@controller).to receive(:prepare_filter)
+      get :filter, {:id => book.to_param}
+      expect(assigns(:books)).to be_decorated
+    end
+    
     it 'redirect to root if havent filter ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :filter, Book
@@ -232,15 +253,14 @@ describe BooksController do
     before do
       Book.stub_chain("filter.includes").and_return([book])
       allow_any_instance_of(Array).to receive('page').and_return([book])
-      allow_any_instance_of(Array).to receive('per').and_return([book])
-      allow_any_instance_of(Array).to receive(:decorate).and_return([book])
+      allow_any_instance_of(Array).to receive('per').and_return(book)
     end
     
     it "filtering books by parameters" do
       expect(Book).to receive(:filter)
       expect(Book.filter).to receive(:includes)
       get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
-      expect(assigns(:books)).to eq([book])
+      expect(assigns(:books)).to eq(book)
     end
     
     it "renders index template" do

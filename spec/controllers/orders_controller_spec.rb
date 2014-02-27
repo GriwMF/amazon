@@ -52,6 +52,11 @@ describe OrdersController do
       get :index
       response.should redirect_to(root_url)
     end  
+    
+    it "decorates @orders" do
+      get :index, {}, valid_session
+      expect(assigns(:orders)).to be_decorated
+    end
   end
   
   describe "GET recent" do
@@ -67,10 +72,16 @@ describe OrdersController do
       ability.cannot :recent, Order
       get :recent
       response.should redirect_to(root_url)
-    end  
+    end
+    
+    it "decorates @orders" do
+      get :recent
+      expect(assigns(:orders)).to be_decorated
+    end
   end
 
   describe "GET show" do
+    let(:simple_order) { FactoryGirl.create :order, customer: customer, state: "in_progress" }
     it 'redirect to root if havent read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Order
@@ -79,17 +90,15 @@ describe OrdersController do
     end  
 
     it "assigns the requested order as @order" do
-      order = FactoryGirl.create :order, customer: customer, state: "in_progress"
-      get :show, {:id => order.to_param}, valid_session
-      assigns(:order).should eq(order)
+      get :show, {:id => simple_order.to_param}, valid_session
+      assigns(:order).should eq(simple_order)
     end
 
     it "assigns customer's addresses as @addresses" do
-      order = FactoryGirl.create :order, customer: customer, state: "in_progress"
       allow(@controller).to receive(:current_customer).and_return(customer)
       address = mock_model(Address)
       customer.stub_chain('addresses.decorate').and_return(address)
-      get :show, {:id => order.to_param}, valid_session
+      get :show, {:id => simple_order.to_param}, valid_session
       assigns(:addresses).should eq(address)
     end
 
@@ -98,6 +107,16 @@ describe OrdersController do
       expect {
         get :show, {:id => order.to_param}, valid_session
       }.to raise_error ActionController::RoutingError
+    end
+    
+    it "decorates @order" do
+      get :show, {:id => simple_order.to_param}, valid_session
+      expect(assigns(:order)).to be_decorated
+    end
+    
+    it "decorates @addresses" do
+      get :show, {:id => simple_order.to_param}, valid_session
+      expect(assigns(:addresses)).to be_decorated
     end
   end
 

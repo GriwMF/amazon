@@ -26,5 +26,10 @@ describe CustomersController do
       get :show
       response.should redirect_to(root_url)
     end
+    
+    it 'decorates @wished_books' do
+      get :show
+      expect(assigns(:wished_books)).to be_decorated
+    end
   end
 end
