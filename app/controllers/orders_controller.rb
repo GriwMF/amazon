@@ -7,18 +7,20 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = current_customer.orders.completed.page(params[:page])
+    @orders = current_customer.orders.completed.page(params[:page]).decorate
   end
   
   # GET /orders/recent
   def recent
-    @orders = current_customer.orders.recent.page(params[:page])
+    @orders = current_customer.orders.recent.page(params[:page]).decorate
     render :index
   end  
   
   # GET /orders/1
   # GET /orders/1.json
   def show
+    @order = @order.decorate
+    @addresses = current_customer.addresses.decorate
   end
 
   #PATCH /orders/1

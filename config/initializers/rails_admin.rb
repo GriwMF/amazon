@@ -16,7 +16,7 @@ RailsAdmin.config do |config|
 
   ### More at https://github.com/sferik/rails_admin/wiki/Base-configuration
 
-  config.label_methods |= [:full_name, :number, :email, :full]
+  config.label_methods |= [:number, :email]
 
   config.model 'OrderItem' do
     object_label_method do
@@ -24,8 +24,28 @@ RailsAdmin.config do |config|
     end
   end
 
+  config.model 'Author' do
+    object_label_method do
+      :author_full_name
+    end    
+  end
+
+  config.model 'Address' do
+    object_label_method do
+      :full_address
+    end    
+  end
+
   def custom_label_method
     "#{book.title}, Quantity: #{quantity.to_s}"
+  end
+
+  def author_full_name
+    decorate.full_name
+  end
+
+  def full_address
+    decorate.full
   end
 
   config.actions do

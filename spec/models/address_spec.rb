@@ -19,9 +19,4 @@ describe Address do
     expect(address).to validate_presence_of(:phone)
   end
 
-  context "#full" do
-    it "returns full address" do
-      expect(address.full).to eq(address.country + " " + address.city + " " + address.address)
-    end
-  end 
 end

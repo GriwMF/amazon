@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   authorize_resource
   
   def show
-    
+    @wished_books = current_customer.wished_books.decorate
   end
   
 end

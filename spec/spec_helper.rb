@@ -28,7 +28,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
+    Draper::ViewContext.test_strategy :fast
     DatabaseCleaner.clean_with(:truncation)
   end
   
@@ -42,10 +42,12 @@ RSpec.configure do |config|
   end
 
   config.before(:each, :type => :model) do
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
   end
 
   config.before(:each, :type => :controller) do
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
   end
    

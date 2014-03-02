@@ -1,5 +1,6 @@
-class BookDecorator < Draper::Decorator
+class BookDecorator < ApplicationDecorator
   delegate_all
+  decorates_association :authors
 
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:

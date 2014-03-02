@@ -1,9 +1,8 @@
 - provide(:title, t('show_book'))
 %br
 %h3.inline= @book.title
-%br
-%br
-%div.overflow
+
+%div.overflow.space
   .image-wrapper
     = image_tag @book.shot.url
   .form-description

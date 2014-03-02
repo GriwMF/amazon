@@ -17,8 +17,7 @@
 \|
 = link_to t('back'), root_path
 
-%br
-%br
+.space
 %b Wish list:
 
 %table.table.table-striped
@@ -28,7 +27,7 @@
       %th= t('title')
       %th
   %tbody
-    - current_customer.wished_books.each do |book|
+    - @wished_books.each do |book|
       %tr
         %td= book.authors.first.full_name
         %td= book.title
