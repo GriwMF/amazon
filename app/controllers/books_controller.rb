@@ -4,17 +4,16 @@ class BooksController < ApplicationController
   load_and_authorize_resource
   skip_load_resource only: [:index, :filter, :home]
 
-  after_filter :decorate_book, only: [:home, :index]
-
   # GET /books
   # GET /books.json
   def index
-    @books = Book.includes(:ratings).page(params[:page]).per(20)
+    @books = Book.includes(:ratings).page(params[:page]).per(20).decorate
   end
 
   # GET /books/home
   def home
-    @books = Book.top
+    @books = Book.top.decorate
+    @count = @books.returns_count_sum.count
   end
 
   # GET /books/1
@@ -66,9 +65,5 @@ class BooksController < ApplicationController
       filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
       filter_opts.each { |item| item.delete_if(&:empty?) }
       filter_opts
-    end
-
-    def decorate_book
-      @books = @books.decorate
     end
 end

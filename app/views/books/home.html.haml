@@ -1,9 +1,10 @@
 - provide(:title, t('list_books'))
+= current_customer.inspect
 .container.center_box
   - if @books.any?
     #myCarousel.carousel.slide{'data-ride' => "carousel"}
       %ol.carousel-indicators
-        - @books.returns_count_sum.count.times do |i|
+        - @count.times do |i|
           = content_tag :li, '',{'data-target' => "#myCarousel",
                                'data-slide-to' => i, class: i == 0 ? 'active' : '' }
       .carousel-inner

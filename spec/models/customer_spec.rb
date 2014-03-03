@@ -26,6 +26,10 @@ describe Customer do
   it "has and belongs to many wished_books" do
     expect(customer).to have_and_belong_to_many(:wished_books)
   end
+
+  it { expect(customer).to validate_presence_of(:firstname) }
+
+  it { expect(customer).to validate_presence_of(:lastname) }
   
   context ".cart" do
     it "creates or returns cart" do

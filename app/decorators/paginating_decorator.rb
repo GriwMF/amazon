@@ -1,5 +1,5 @@
 class PaginatingDecorator < Draper::CollectionDecorator
-  delegate :current_page, :total_pages, :limit_value
+  delegate :current_page, :total_pages, :limit_value, :returns_count_sum
 
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:
