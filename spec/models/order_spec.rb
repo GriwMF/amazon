@@ -78,6 +78,11 @@ describe Order do
       it "add one item" do
         expect { order.add_item(book) }.to change { order.order_items.count}.by(1)
       end
+
+      it 'calls refresh_prices' do
+        expect(order).to receive(:refresh_prices)
+        order.add_item(book)
+      end
       
       it "saves proper quantity" do
         item = order.add_item(book, quantity: 21)

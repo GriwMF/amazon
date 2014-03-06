@@ -61,13 +61,14 @@ FirstModel::Application.routes.draw do
   resource :customer, only: [:show]
   resources :books, only: [:show, :index] do
     member do
-      delete "wished"
-      post "rate"
-      patch "add_wished"
+      delete 'wished'
+      post 'rate'
+      patch 'add_wished'
     end
     collection do
       get 'filter'
       get 'home'
+      get 'category/:category_id', action: 'index'
     end
   end
 
@@ -76,11 +77,12 @@ FirstModel::Application.routes.draw do
   resources :addresses
   resources :credit_cards
   
-  resources :orders, except: [:destroy, :create, :new, :edit] do
+  resources :orders, only: [:update] do
     collection do
+      get 'show'
       get 'recent'
-      post "add_item/:id", action: "add_item"
-      delete "remove_item/:id", action: "remove_item"
+      post 'add_item/:id', action: 'add_item'
+      delete 'remove_item/:id', action: 'remove_item'
     end
   end
 

@@ -133,3 +133,4 @@ en:
         cvv: 'CVV:'
         expiration_month: 'Expiration month:'
         expiration_year: 'Expiration year:'
+  empty_cart: "(empty)"

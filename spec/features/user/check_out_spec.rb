@@ -11,7 +11,7 @@ feature "check out", js: true do
     visit books_path
     click_link book.title
     click_button I18n.t 'add_to_cart'
-    click_link 'Cart'
+    click_link 'cart'
 
     within("#check-out-ship") do
       click_link I18n.t 'or_add_new'

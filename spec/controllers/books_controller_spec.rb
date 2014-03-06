@@ -27,7 +27,7 @@ describe BooksController do
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { { title: Faker::Name.title, description: Faker::Lorem.sentence,
-                           price: "9.99", in_stock: "24" } }
+                           price: '9.99', in_stock: '24'} }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -40,14 +40,26 @@ describe BooksController do
     sign_in customer
   end
 
-  describe "GET index" do
-    it "assigns all books as @books" do
+  describe 'GET index' do
+    it 'assigns all books as @books' do
       book = Book.create! valid_attributes
       get :index, {}, valid_session
       assigns(:books).should eq([book])
     end
 
-    it 'redirect to root if havent read ability' do
+    it 'filter books by category if params[:category_id]' do
+      book = Book.create! valid_attributes
+      get :index, {category_id: 23}, valid_session
+      assigns(:books).should be_empty
+    end
+
+    it 'assigns all categories as @categories' do
+      category = FactoryGirl.create :category
+      get :index, {}, valid_session
+      assigns(:categories).should eq([category])
+    end
+
+    it 'redirect to root if have not read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Book
       get :index
@@ -61,16 +73,27 @@ describe BooksController do
   end
 
   describe "GET home" do
-    let(:book) { mock_model(Book, id: 1, title: 'name') }
+    let(:book) { mock_model(Book, id: 1, title: 'name', count: 5) }
 
-    it "assigns Book.top as @books" do
-      allow_any_instance_of(Array).to receive(:decorate).and_return([book])
-      expect(Book).to receive(:top).and_return([book])
-      get :home, {}, valid_session
-      assigns(:books).should eq([book])
+    context 'assigns' do
+      before do
+        allow(book).to receive(:decorate).and_return(book)
+        allow(book).to receive(:returns_count_sum).and_return(book)
+        expect(Book).to receive(:top).and_return(book)
+      end
+
+      it "assigns Book.top as @books" do
+        get :home, {}, valid_session
+        assigns(:books).should eq(book)
+      end
+
+      it 'assigns number of books as @count' do
+        get :home, {}, valid_session
+        assigns(:count).should eq(book.count)
+      end
     end
 
-    it 'redirect to root if havent home ability' do
+    it 'redirect to root if does not have home ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :home, Book
       get :home
@@ -228,45 +251,4 @@ describe BooksController do
       end
     end   
   end  
-  
-  describe "GET filter" do
-    let(:book) { Book.create! valid_attributes }
-    
-    it "decorates @books" do
-      allow(@controller).to receive(:prepare_filter)
-      get :filter, {:id => book.to_param}
-      expect(assigns(:books)).to be_decorated
-    end
-    
-    it 'redirect to root if havent filter ability' do
-      allow(@controller).to receive(:current_ability).and_return(ability)
-      ability.cannot :filter, Book
-      get :filter, { id: '1' }
-      response.should redirect_to(root_url)
-    end
-
-    it "redirects to books path if reset button was clicked" do
-      get :filter, {:id => book.to_param, :commit => I18n.t('reset')}, valid_session
-      expect(response).to redirect_to(books_path)
-    end
-    
-    before do
-      Book.stub_chain("filter.includes").and_return([book])
-      allow_any_instance_of(Array).to receive('page').and_return([book])
-      allow_any_instance_of(Array).to receive('per').and_return(book)
-    end
-    
-    it "filtering books by parameters" do
-      expect(Book).to receive(:filter)
-      expect(Book.filter).to receive(:includes)
-      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
-      expect(assigns(:books)).to eq(book)
-    end
-    
-    it "renders index template" do
-      get :filter, {:id => book.to_param, :authors_id => [""], :categories_id => [""], :books_id => [book.id]}, valid_session
-      expect(response).to render_template("index")
-    end
-  end
-  
 end

@@ -28,16 +28,6 @@ class Book < ActiveRecord::Base
     end
   end
 
-  def self.filter(authors_id, categories_id, books_id)
-    relation = Book.includes(:authors, :categories)
-    
-    relation = relation.where(id: books_id) unless books_id.blank?
-    relation = relation.where(authors: { id: authors_id } ) unless authors_id.blank?
-    relation = relation.where(categories: { id: categories_id} ) unless categories_id.blank?
-    relation
-  end
-      
-            
   def wished
     wished_customers.count
   end

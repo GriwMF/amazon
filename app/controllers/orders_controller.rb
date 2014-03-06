@@ -1,8 +1,10 @@
 class OrdersController < ApplicationController
-  before_filter :authenticate_customer!
+  before_filter :authenticate_customer!, except: [:show, :add_item, :remove_item]
   authorize_resource
   
-  before_action :set_order, only: [:show, :update]
+  before_action :set_order, only: [:update]
+
+  include CustomerCart
   
   # GET /orders
   # GET /orders.json
@@ -16,11 +18,9 @@ class OrdersController < ApplicationController
     render :index
   end  
   
-  # GET /orders/1
-  # GET /orders/1.json
+  # GET /orders/show
   def show
-    @order = @order.decorate
-    @addresses = current_customer.addresses.decorate
+    @order = current_cart.decorate
   end
 
   #PATCH /orders/1
@@ -67,7 +67,7 @@ class OrdersController < ApplicationController
       flash[:info] = I18n.t 'suc_book_added'
       current_cart.refresh_prices
     end
-    redirect_to :back
+    redirect_to orders_path
   end
 
   # DELETE /orders/remove_item/1
@@ -81,10 +81,6 @@ class OrdersController < ApplicationController
     def set_order
       @order = current_customer.orders.find(params[:id])
       not_found unless @order.in_progress?
-    end
-
-    def current_cart
-      current_customer.cart
     end
 
     def ship_addr_params

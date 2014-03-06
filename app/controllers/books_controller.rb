@@ -2,12 +2,14 @@ class BooksController < ApplicationController
   before_filter :authenticate_customer!, except: [:index, :show, :home]
   
   load_and_authorize_resource
-  skip_load_resource only: [:index, :filter, :home]
+  skip_load_resource only: [:index, :home]
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.includes(:ratings).page(params[:page]).per(20).decorate
+    @books = Book.includes(:ratings, :categories).where(categories: { id: params[:category_id] } )
+                  .page(params[:page]).per(20).decorate
+    @categories = Category.all
   end
 
   # GET /books/home
@@ -50,20 +52,4 @@ class BooksController < ApplicationController
     @book.wished_customers.delete(current_customer)
     redirect_to current_customer
   end
-  
-  # POST /books/filter
-  def filter
-    redirect_to books_path and return if params[:commit] == I18n.t('reset')
-    
-    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(2)
-    @books = @books.decorate
-    render "index"
-  end
-  
-  private
-    def prepare_filter
-      filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
-      filter_opts.each { |item| item.delete_if(&:empty?) }
-      filter_opts
-    end
 end

@@ -37,7 +37,7 @@ describe OrdersController do
   before do
     sign_in customer
   end
-  
+
   describe "GET index" do
     it "assigns completed orders of customer as @orders" do
       order = FactoryGirl.create :order, customer: customer, 
@@ -81,42 +81,21 @@ describe OrdersController do
   end
 
   describe "GET show" do
-    let(:simple_order) { FactoryGirl.create :order, customer: customer, state: "in_progress" }
     it 'redirect to root if havent read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Order
-      get :show, { id: '1' }
+      get :show
       response.should redirect_to(root_url)
     end  
 
     it "assigns the requested order as @order" do
-      get :show, {:id => simple_order.to_param}, valid_session
-      assigns(:order).should eq(simple_order)
+      get :show
+      assigns(:order).should eq(customer.cart)
     end
 
-    it "assigns customer's addresses as @addresses" do
-      allow(@controller).to receive(:current_customer).and_return(customer)
-      address = mock_model(Address)
-      customer.stub_chain('addresses.decorate').and_return(address)
-      get :show, {:id => simple_order.to_param}, valid_session
-      assigns(:addresses).should eq(address)
-    end
-
-    it "raises routing error if state is not in_progress" do
-      order = FactoryGirl.create :order, customer: customer, state: "in_queue"
-      expect {
-        get :show, {:id => order.to_param}, valid_session
-      }.to raise_error ActionController::RoutingError
-    end
-    
     it "decorates @order" do
-      get :show, {:id => simple_order.to_param}, valid_session
+      get :show
       expect(assigns(:order)).to be_decorated
-    end
-    
-    it "decorates @addresses" do
-      get :show, {:id => simple_order.to_param}, valid_session
-      expect(assigns(:addresses)).to be_decorated
     end
   end
 
@@ -186,10 +165,10 @@ describe OrdersController do
         allow(Book).to receive(:find).and_return(book)
       end
 
-      it "redirects back" do
+      it "redirects to cart" do
         book = FactoryGirl.create :book
         post :add_item, {:id => book.to_param}, valid_session
-        expect(response).to redirect_to(books_path)
+        expect(response).to redirect_to(orders_path)
       end
       
       it "calls add_item method of model with book id and quantity" do

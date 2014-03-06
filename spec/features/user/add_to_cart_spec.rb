@@ -12,7 +12,7 @@ feature "cart management" do
     click_link book.title
     click_button I18n.t 'add_to_cart'
     expect(page).to have_content 'Book was successefully added'
-    click_link I18n.t 'cart'
+    click_link 'cart'
     expect(page).to have_content book.title
   end
 end

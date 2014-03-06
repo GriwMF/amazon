@@ -114,19 +114,4 @@ describe Book do
       end  
     end      
   end
-  
-  context ".filter" do
-    before do
-      book.authors << (FactoryGirl.create :author)
-      book.categories << (FactoryGirl.create :category)
-    end
-    
-    it "return books with attributes authors_id, categories_id, books_id" do
-      expect(Book.filter([book.authors[0].id], [book.categories[0].id], [book.id])).to match_array([book])
-    end
-    
-    it "can be called with skipped attributes (use [])" do
-      expect(Book.filter([], [], [book.id])).to match_array([book])
-    end
-  end
 end

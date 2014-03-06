@@ -12,7 +12,7 @@ class Customer < ActiveRecord::Base
   validates_presence_of :firstname, :lastname
 
   def cart
-    orders.find_or_create_by(state: "in_progress")
+    orders.find_or_create_by(state: 'in_progress')
   end
 
   def self.find_for_facebook_oauth(auth)

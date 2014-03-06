@@ -58,10 +58,11 @@ class Order < ActiveRecord::Base
     if order_item = order_items.find_by(book_id: book.id)
       order_item.quantity += quantity
       order_item.save
-      order_item
     else
-      order_items.create(book: book, quantity: quantity)
+      order_item = order_items.create(book: book, quantity: quantity)
     end
+    refresh_prices
+    order_item
   end
 
   def remove_item(item_id)
