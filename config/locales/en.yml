@@ -82,7 +82,8 @@ en:
   category: 'Category'
   rating_label: 'Rating (1-5):'
   rate: 'Rate'
-  book_rating: 'Book ratings:'
+  book_rating: "Book's rating:"
+  unrated: 'not rated yet'
   rating: 'Rating'
   number: 'Number'
   cvv: 'CVV'

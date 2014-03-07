@@ -76,6 +76,11 @@ class OrdersController < ApplicationController
     redirect_to :back
   end
 
+  # GET /orders/check_out_1
+  def check_out_1
+    
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order

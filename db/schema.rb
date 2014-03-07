@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140221143300) do
+ActiveRecord::Schema.define(version: 20140307150419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,11 +24,9 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "country"
-    t.integer  "customer_id"
   end
 
   add_index "addresses", ["country"], name: "index_addresses_on_country", using: :btree
-  add_index "addresses", ["customer_id"], name: "index_addresses_on_customer_id", using: :btree
 
   create_table "authors", force: true do |t|
     t.string   "firstname"
@@ -113,6 +111,8 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.string   "last_sign_in_ip"
     t.string   "provider"
     t.string   "uid"
+    t.integer  "bill_addr_id"
+    t.integer  "ship_addr_id"
   end
 
   add_index "customers", ["email"], name: "index_customers_on_email", unique: true, using: :btree
@@ -135,8 +135,6 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.decimal  "total_price",    precision: 8, scale: 2
     t.string   "state"
     t.datetime "completed_at"
-    t.integer  "bill_addr_id"
-    t.integer  "ship_addr_id"
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"

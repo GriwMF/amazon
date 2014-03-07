@@ -60,7 +60,7 @@
 
 %h3
   = t('book_rating')
-  = @book.rating ? "(average #{@book.rating})" : '(not rated yet)'
+  = @book.rating ? render_rating(@book.rating) : t('unrated')
 
 - if @book.rating
   %table.table.table-striped

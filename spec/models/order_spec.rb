@@ -11,14 +11,6 @@ describe Order do
     expect(order).to belong_to(:customer)
   end
 
-  it "billing address belongs to address" do
-    expect(order).to belong_to(:bill_addr).class_name("Address")
-  end  
-  
-  it "shipping address belongs to address" do
-    expect(order).to belong_to(:ship_addr).class_name("Address")
-  end  
-
   it "belongs to credit card" do
     expect(order).to belong_to(:credit_card)
   end    

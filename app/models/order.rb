@@ -1,8 +1,7 @@
 class Order < ActiveRecord::Base
   belongs_to :customer, :inverse_of => :orders
   belongs_to :credit_card, :inverse_of => :orders
-  belongs_to :bill_addr, class_name: "Address"
-  belongs_to :ship_addr, class_name: "Address"
+
   has_many :order_items, dependent: :destroy, :inverse_of => :order
   
   has_many :books, through: :order_items

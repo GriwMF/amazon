@@ -1,6 +1,6 @@
 - if current_customer
   .center
-    = link_to t('check_out'), '#', class: 'btn btn-success'
+    = link_to t('check_out'), check_out_1_orders_path, class: 'btn btn-success'
 - else
   %br/
   %h3.center You need to sign in before check out

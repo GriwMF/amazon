@@ -6,6 +6,8 @@ class Customer < ActiveRecord::Base
   has_many :ratings, :inverse_of => :customer
   has_many :credit_cards, dependent: :destroy, :inverse_of => :customer
   has_many :addresses, dependent: :destroy
+  belongs_to :bill_addr, class_name: "Address", dependent: :destroy
+  belongs_to :ship_addr, class_name: "Address", dependent: :destroy
   has_many :orders, dependent: :destroy, :inverse_of => :customer
   has_and_belongs_to_many :wished_books, class_name: "Book"
  
