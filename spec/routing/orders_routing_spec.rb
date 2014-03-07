@@ -12,7 +12,7 @@ describe OrdersController do
     end
 
     it "routes to #show" do
-      get("/orders/1").should route_to("orders#show", :id => "1")
+      get("/orders/show").should route_to("orders#show")
     end
 
     it "routes to #update" do

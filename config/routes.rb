@@ -77,7 +77,7 @@ FirstModel::Application.routes.draw do
   resources :addresses
   resources :credit_cards
   
-  resources :orders, only: [:update] do
+  resources :orders, only: [:update, :index] do
     collection do
       get 'show'
       get 'recent'

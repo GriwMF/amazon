@@ -29,8 +29,6 @@ GEM
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    active_record_group_count (0.0.1)
-      rails (>= 3.1.0)
     activemodel (4.0.2)
       activesupport (= 4.0.2)
       builder (~> 3.1.0)
@@ -265,7 +263,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_record_group_count
   bootstrap-sass
   cancan
   capybara
