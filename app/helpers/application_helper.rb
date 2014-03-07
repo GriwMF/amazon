@@ -4,7 +4,7 @@ module ApplicationHelper
   def render_cart
     order = current_cart
     if order.order_items.any?
-      number = "(#{order.order_items.count})"
+      number = "(#{order.order_items.sum(:quantity)})"
       price = "$#{order.total_price}"
     else
       number = ''

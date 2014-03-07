@@ -3,7 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
-  
+  after_filter :store_location
+
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to main_app.root_url, :alert => exception.message
   end
@@ -13,10 +14,26 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-   root_path
+    process_order
+    session[:previous_url] || root_path
   end
   
   protected
+
+  def store_location
+    # store last url as long as it isn't a /customers path
+    session[:previous_url] = request.fullpath unless request.fullpath =~ /\/customers/
+  end
+
+  def process_order
+    order = Order.where(id: cookies[:cart_name]).first
+    if order && order.order_items.any? && !order.customer
+      current_customer.orders.where(:state => 'in_progress').destroy_all
+      order.customer = current_customer
+      cookies.delete :cart_name
+      order.save
+    end 
+  end
   
   def flash_message(type, text)
     flash[type] ||= []

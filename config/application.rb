@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'active_record_group_count'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -21,7 +20,7 @@ module FirstModel
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     I18n.enforce_available_locales = true
-    
+
     config.generators do |g|
       g.test_framework :rspec
       g.fixture_replacement :factory_girl, dir: 'spec/factories'

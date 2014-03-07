@@ -16,4 +16,4 @@
         %td= item.price
         %td= item.quantity
         - if can_cancel
-          %td= link_to 'Cancel', "#{orders_path}/remove_item/#{item.id}", :method => :delete, :data => { :confirm => t('confirm') }
+          %td= link_to 'Cancel', "/orders/remove_item/#{item.id}", :method => :delete, :data => { :confirm => t('confirm') }

@@ -7,8 +7,10 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
-    @books = Book.includes(:ratings, :categories).where(categories: { id: params[:category_id] } )
-                  .page(params[:page]).per(20).decorate
+    @books = Book.includes(:ratings)
+    @books = @books.includes(:categories)
+             .where(categories: { id: params[:category_id] } ) if params[:category_id]
+    @books = @books.page(params[:page]).per(20).decorate
     @categories = Category.all
   end
 

@@ -79,6 +79,7 @@ FirstModel::Application.routes.draw do
   
   resources :orders, only: [:update, :index] do
     collection do
+      get 'check_out_1'
       get 'show'
       get 'recent'
       post 'add_item/:id', action: 'add_item'

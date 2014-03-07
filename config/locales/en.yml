@@ -22,6 +22,7 @@
 en:
   facebook: 'Sign in with Facebook'
   succ_facebook: 'Successefully signed in with Facebook'
+  err_facebook: 'Can not login. Probably your e-mail already in use'
   store_name: 'Amazon'
   admin_panel: 'Admin Panel'
   recent_orders: 'Recent orders'
