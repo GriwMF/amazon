@@ -1,0 +1,11 @@
+- unless @order.order_items.any?
+  %h1.center= t('add_to_cart_first')
+- else
+  %b= t('order_items')
+  = render 'order', order: @order, can_cancel: true
+  .text-right
+    %h2
+      = t('total_price')
+      .label.label-info
+        = "$#{@order.total_price}"
+  = render 'check_out'

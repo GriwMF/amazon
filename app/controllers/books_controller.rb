@@ -29,12 +29,17 @@ class BooksController < ApplicationController
 
   # POST /books/1/rate
   def rate
-    rating = @book.ratings.build(params.permit(:text, :rating))
+    if params[:rating].blank?
+      flash[:danger] = t('no_rating_err')
+      redirect_to @book
+      return
+    end
+    rating = @book.ratings.build(params.permit(:text, :rating, :title))
     rating.customer = current_customer
     if rating.save
       flash[:info] = I18n.t 'suc_rating_add'
     else
-      flash[:danger] = rating.errors
+      flash[:danger] = rating.errors.full_messages
     end
     redirect_to :back
   end

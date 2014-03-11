@@ -77,10 +77,10 @@ FirstModel::Application.routes.draw do
   resources :addresses
   resources :credit_cards
   
-  resources :orders, only: [:update, :index] do
+  resources :orders, only: [:update, :index, :show] do
     collection do
       get 'check_out_1'
-      get 'show'
+      get 'cart'
       get 'recent'
       post 'add_item/:id', action: 'add_item'
       delete 'remove_item/:id', action: 'remove_item'

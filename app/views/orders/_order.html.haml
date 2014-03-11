@@ -1,19 +1,27 @@
 - can_cancel ||= false
-%table.table.table-striped
+%table.table.table-hover
   %thead
-    %tr.heading
+    %tr
+      %th
       %th= t('book')
       %th= t('price')
       %th= t('quantity')
+      %th= t('total')
       - if can_cancel
         %th 
   %tbody
     - order.order_items.each do |item|
       %tr
         %td
+          .thumb-image-wrapper.left
+            = link_to image_tag(item.book.shot.thumb.url), book_path(item.book)
+        %td.vertical-center
           = item.book.title
           = "(#{item.book.authors[0].full_name})" if item.book.authors.any?
-        %td= item.price
-        %td= item.quantity
+        %td.vertical-center= "$#{item.price}"
+        %td.vertical-center= item.quantity
+        %td.vertical-center= "$#{item.quantity * item.price}"
         - if can_cancel
-          %td= link_to 'Cancel', "/orders/remove_item/#{item.id}", :method => :delete, :data => { :confirm => t('confirm') }
+          %td.vertical-center= link_to "<span class='glyphicon glyphicon-remove'></span>".html_safe,
+                                        "/orders/remove_item/#{item.id}", :method => :delete,
+                                        :data => { :confirm => t('confirm') }

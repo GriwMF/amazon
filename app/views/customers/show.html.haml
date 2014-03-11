@@ -18,17 +18,19 @@
 = link_to t('back'), root_path
 
 .space
-%b Wish list:
+%h4 Wish list:
 
-%table.table.table-striped
-  %thead
-    %tr.heading
-      %th= t('author')
-      %th= t('title')
-      %th
-  %tbody
-    - @wished_books.each do |book|
-      %tr
-        %td= book.authors.first.full_name
-        %td= book.title
-        %td= link_to t('rem_from_list'), wished_book_path(book), method: 'delete'
+- @wished_books.each do |book|
+  %hr
+  = link_to book.authors.first.full_name, author_path(book.authors.first)
+  \-
+  = link_to book.title, book_path(book)
+  .container
+    .thumb-image-wrapper.left
+      = link_to image_tag(book.shot.thumb.url), book_path(book)
+    .space-thumb
+      = book.authors.first.full_name
+      = book.title
+
+  = link_to t('rem_from_list'), wished_book_path(book), method: 'delete'
+

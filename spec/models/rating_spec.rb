@@ -27,6 +27,8 @@ describe Rating do
   its "state are in %w(pending approved declined)" do
     expect(rating).to ensure_inclusion_of(:state).in_array(%w(pending approved declined))
   end
+
+  it { expect(rating).to validate_presence_of :title}
   
   context "approved scope" do
     it "includes approved rating" do

@@ -168,7 +168,7 @@ describe OrdersController do
       it "redirects to cart" do
         book = FactoryGirl.create :book
         post :add_item, {:id => book.to_param}, valid_session
-        expect(response).to redirect_to(orders_path)
+        expect(response).to redirect_to(cart_orders_path)
       end
       
       it "calls add_item method of model with book id and quantity" do

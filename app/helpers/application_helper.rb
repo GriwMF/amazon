@@ -12,6 +12,6 @@ module ApplicationHelper
     end
 
     link_to "<span class='glyphicon glyphicon-shopping-cart'></span>#{number} <br> #{price}".html_safe,
-            orders_path, id: 'cart'
+            cart_orders_path, id: 'cart'
   end
 end

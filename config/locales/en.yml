@@ -136,3 +136,7 @@ en:
         expiration_month: 'Expiration month:'
         expiration_year: 'Expiration year:'
   empty_cart: "(empty)"
+  rate_book: "Rate the book"
+  no_rating_err: "Select rating first"
+  by: "by"
+  total: "Total"

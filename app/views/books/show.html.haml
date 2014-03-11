@@ -28,7 +28,7 @@
   .tab
     = @book.full_description
 %p
-  %b= t('in_stock')
+  %b= "#{t('in_stock')}:"
   = @book.in_stock
 %p
   %b= t('wished_by')
@@ -43,35 +43,36 @@
     %br
     .panel.panel-default.form-group.row.hidden#rating-panel
       .col-xs-4
-        %h3 Rate the book
+        %h3= t('rate_book')
         = form_tag rate_book_path(@book), id: 'book_rating' do
           .form_group
-            = label_tag t('description')
-            = text_field_tag :text, "", class: 'form-control'
+            = label_tag :rating
+            %span.star-rating
+              - 5.times do |i|
+                = radio_button_tag :rating, i + 1
+                <i></i>
           .form_group
-            = label_tag t('rating_label')
-            = number_field_tag :rating, "", class: 'form-control'
+            = label_tag :title
+            = text_field_tag :title, "", class: 'form-control'
+          .form_group
+            = label_tag :text
+            = text_area_tag :text, "", class: 'form-control'
+            = hidden_field_tag :rating, "", class: 'form-control'
           %br
           .actions
             = submit_tag t('rate'), class: "btn btn-default"  
           %br
 
-= link_to t('back'), books_path
-
 %h3
   = t('book_rating')
   = @book.rating ? render_rating(@book.rating) : t('unrated')
 
-- if @book.rating
-  %table.table.table-striped
-    %thead
-      %tr.heading
-        %th= t('.customer')
-        %th= t('description')
-        %th= t('rating')
-    %tbody
-      - @book_ratings.each do |rating|
-        %tr
-          %td= rating.customer.firstname
-          %td= rating.text
-          %td= rating.rating
+- @book_ratings.each do |rating|
+  %hr
+  = render_rating(rating.rating)
+  %span.space-left= rating.title
+  %i.space-left= rating.created_at.strftime('%B %d, %Y')
+  %br
+  = t('by')
+  = rating.customer.firstname
+  %p= simple_format(rating.text)

@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :rating do
     rating 3
+    title Faker::Lorem.sentence
     text Faker::Lorem.sentence
     book
     customer

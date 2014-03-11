@@ -16,4 +16,5 @@
     .col-xs-3
       SHOP BY CATEGORIES
       - @categories.each do |category|
+        %br
         = link_to category.title, "/books/category/#{category.id}"
