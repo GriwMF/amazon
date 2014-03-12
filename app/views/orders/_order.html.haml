@@ -19,7 +19,12 @@
           = item.book.title
           = "(#{item.book.authors[0].full_name})" if item.book.authors.any?
         %td.vertical-center= "$#{item.price}"
-        %td.vertical-center= item.quantity
+        - if can_cancel
+          %td.vertical-center
+            .number
+              = f.number_field :quantity, min: 1, class: "form-control"
+        - else
+          %td.vertical-center= item.quantity
         %td.vertical-center= "$#{item.quantity * item.price}"
         - if can_cancel
           %td.vertical-center= link_to "<span class='glyphicon glyphicon-remove'></span>".html_safe,

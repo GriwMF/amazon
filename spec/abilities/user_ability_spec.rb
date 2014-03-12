@@ -11,6 +11,8 @@ describe "Customer" do
       it{ should be_able_to(:read, :all) }
       it{ should be_able_to(:add_item, Order.new) }
       it{ should be_able_to(:remove_item, Order.new) }
+      it{ should be_able_to(:cart, Order.new) }
+      it{ should be_able_to(:update, Order.new) }
 
       it{ should_not be_able_to(:manage, :all) }
       it{ should_not be_able_to(:access, :rails_admin) }

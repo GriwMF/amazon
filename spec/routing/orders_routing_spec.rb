@@ -16,7 +16,7 @@ describe OrdersController do
     end
 
     it "routes to #update" do
-      put("/orders/1").should route_to("orders#update", :id => "1")
+      put("/orders/update").should route_to("orders#update")
     end
 
     it "routes to #add_item" do

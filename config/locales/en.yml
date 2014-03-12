@@ -143,3 +143,6 @@ en:
   not_in_stock: 'not in stock'
   empty_cart: 'empty cart'
   continue_shopping: 'continue shopping'
+  wrong_coupon: 'No coupon with this code found'
+  discount: 'Your discount'
+  cart_cleaned: 'Cart has been cleaned'

@@ -1,8 +1,9 @@
 class OrdersController < ApplicationController
-  before_filter :authenticate_customer!, except: [:cart, :add_item, :remove_item]
+  before_filter :authenticate_customer!, 
+                except: [:cart, :add_item, :remove_item, :update, :destroy]
   authorize_resource
   
-  before_action :set_order, only: [:update, :show]
+  before_action :set_order, only: [:show]
 
   include CustomerCart
   
@@ -27,38 +28,33 @@ class OrdersController < ApplicationController
     @order = current_cart.decorate
   end
 
-  #PATCH /orders/1
+  #PATCH /orders/
   def update
-    begin
-      if (ship_addr = params[:order][:ship_addr_id]).empty?
-        ship_addr = Address.create!(ship_addr_params).id
-      end
-
-      if params['bill-checkbox']
-        bill_addr = ship_addr
-      else
-        if (bill_addr = params[:order][:bill_addr_id]).empty?
-          bill_addr = Address.create!(bill_addr_params).id
-        end
-      end
-
-      if (credit_card = params[:order][:credit_card_id]).empty?
-        credit_card = CreditCard.create!(credit_card_params).id
-      end
-      
-      @order.update_attributes!(ship_addr_id: ship_addr,
-                               bill_addr_id: bill_addr,
-                               credit_card_id: credit_card)
-      @order.check_out!
-      flash_message :success, I18n.t('suc_ord_check_out')                             
-      
-    rescue ActiveRecord::RecordInvalid => ex
-      flash_message :danger, ex.message
-    rescue ActiveRecord::StatementInvalid => ex
-      flash_message :danger, ex.message
-      flash_message :danger, I18n.t('err_ord_check_out') 
+    @order = current_cart
+    unless @order.update_attributes(order_params)
+      flash[:danger] = @order.errors.full_messages
+      redirect_to cart_orders_path
+      return
     end
-    redirect_to root_path
+    @order.refresh_prices
+
+    if c = Coupon.where(code: params['coupon_code']).first
+      @order.coupon = c
+      @order.save
+    else
+      flash[:danger] = I18n.t('wrong_coupon')
+    end unless params['coupon_code'].blank?
+
+
+    redirect_to params['commit'] == I18n.t('check_out') ? check_out_1_orders_path : cart_orders_path
+  end
+
+  #DELETE /orders
+  def destroy
+    current_cart.order_items.delete_all
+    current_cart.refresh_prices
+    flash[:success] = I18n.t('cart_cleaned')
+    redirect_to books_path
   end
   
   # POST /orders/add_item/1
@@ -77,6 +73,7 @@ class OrdersController < ApplicationController
   # DELETE /orders/remove_item/1
   def remove_item
     current_cart.remove_item(params[:id])
+    current_cart.refresh_prices
     redirect_to :back
   end
 
@@ -90,6 +87,10 @@ class OrdersController < ApplicationController
     def set_order
       @order = current_customer.orders.find(params[:id])
       not_found unless @order.in_progress?
+    end
+
+    def order_params
+      params.require(:order).permit(order_items_attributes: [ :id, :quantity])
     end
 
     def ship_addr_params

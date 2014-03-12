@@ -225,8 +225,13 @@ describe OrdersController do
     end
     
     it "remove item from cart" do
-        expect_any_instance_of(Order).to receive(:remove_item).with(item_id.to_s)
-        delete :remove_item, {:id => item_id}, valid_session
+      expect_any_instance_of(Order).to receive(:remove_item).with(item_id.to_s)
+      delete :remove_item, {:id => item_id}, valid_session
+    end
+
+    it 'calls refresh_prices' do
+      expect_any_instance_of(Order).to receive(:refresh_prices)
+      delete :remove_item, {:id => item_id}, valid_session
     end
   end
 end

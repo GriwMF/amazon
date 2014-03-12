@@ -12,6 +12,8 @@ class Order < ActiveRecord::Base
   
   validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   
+  accepts_nested_attributes_for :order_items, reject_if: proc { |attributes| attributes['quantity'].blank? }
+  
   state_machine :initial => :in_progress do
     before_transition :on => :check_out!, :do => :complete_order!
     
@@ -79,6 +81,10 @@ class Order < ActiveRecord::Base
     end
     self.total_price = sum
     save
+  end
+
+  def discounted_price
+    coupon ? (total_price - total_price / 100 * coupon.discount).round(2) : total_price
   end
   
   def refresh_in_stock!

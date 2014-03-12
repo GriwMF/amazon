@@ -13,12 +13,12 @@ class Ability
         can :read, :all
         can :manage, [Address, CreditCard, Customer]
         can [:rate, :add_wished, :wished, :home], Book
-        can [:update, :add_item, :remove_item, :recent], Order
+        can [:update, :add_item, :remove_item, :recent, :cart, :update], Order
       end
     else
         can :read, :all
         can :home, Book
-        can [:add_item, :remove_item], Order
+        can [:add_item, :remove_item, :cart, :update], Order
       #customer = Customer.new # guest user (not logged in)
     end
       

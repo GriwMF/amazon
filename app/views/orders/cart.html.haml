@@ -2,16 +2,35 @@
   %h1.center= t('add_to_cart_first')
 - else
   %b= t('order_items')
-  = render 'order', order: @order, can_cancel: true
-  .text-right
-    %h2
-      = t('total_price')
-      .label.label-info
-        = "$#{@order.total_price}"
-  = link_to t('empty_cart'), check_out_1_orders_path, class: 'btn btn-default'
+  = form_for @order, :url => orders_path do |f|
+    %table.table.table-hover
+      %thead
+        %tr
+          %th
+          %th= t('book')
+          %th= t('price')
+          %th= t('quantity')
+          %th= t('total')
+          %th 
+      %tbody
+        = f.fields_for :order_items do |builder|
+          = render 'order_fields', item: builder.object, f: builder
+        %tr
+          %td
+          %td
+            %i= "#{t('discount')}: #{@order.coupon.discount}%" if @order.coupon
+          %td
+          %td
+            %b= t('total_price')
+          %td
+            %b= "$#{@order.discounted_price}"
+          %td
+    .form-inline.right
+      = f.label :coupon
+      = text_field_tag :coupon_code, '', class: "form-control coupon"
+      = f.submit class: 'btn btn-default'
+      = f.submit t('check_out'), class: 'btn btn-success' if current_customer
+
+  = link_to t('empty_cart'), '/orders/destroy', method: :delete, class: 'btn btn-default'
   = link_to t('continue_shopping'), books_path, class: 'btn btn-default'
-
-  .text-right
-    = link_to t('empty_cart'), check_out_1_orders_path, class: 'btn btn-default'
-
-  = render 'check_out'
+  = render 'check_out' unless current_customer
