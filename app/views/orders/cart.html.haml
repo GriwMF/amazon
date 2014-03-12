@@ -8,4 +8,10 @@
       = t('total_price')
       .label.label-info
         = "$#{@order.total_price}"
+  = link_to t('empty_cart'), check_out_1_orders_path, class: 'btn btn-default'
+  = link_to t('continue_shopping'), books_path, class: 'btn btn-default'
+
+  .text-right
+    = link_to t('empty_cart'), check_out_1_orders_path, class: 'btn btn-default'
+
   = render 'check_out'

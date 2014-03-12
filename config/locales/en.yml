@@ -140,3 +140,6 @@ en:
   no_rating_err: "Select rating first"
   by: "by"
   total: "Total"
+  not_in_stock: 'not in stock'
+  empty_cart: 'empty cart'
+  continue_shopping: 'continue shopping'

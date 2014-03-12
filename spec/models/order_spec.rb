@@ -14,10 +14,14 @@ describe Order do
   it "belongs to credit card" do
     expect(order).to belong_to(:credit_card)
   end    
+
+  it "belongs to coupon" do
+    expect(order).to belong_to(:coupon)
+  end   
   
   it "has many order items, dependent destroy" do
     expect(order).to have_many(:order_items).dependent(:destroy)
-  end    
+  end
   
   its "state are in %w(in_queue in_progress in_delivery delivered)" do
     expect(order).to ensure_inclusion_of(:state).in_array(%w(in_queue in_progress in_delivery delivered))

@@ -9,9 +9,13 @@
     = form_tag "/orders/add_item/#{@book.id}", class: "form-inline pagination-centered" do
       .price= "$#{@book.price}"
       .right
-        .form-group.number
-          = number_field_tag :quantity, 1, min: 1, class: "form-control"
-        = submit_tag t('add_to_cart'), class: "btn btn-default"  
+        - if @book.in_stock > 0
+          .form-group.number
+            = number_field_tag :quantity, 1, min: 1, class: "form-control"
+          = submit_tag t('add_to_cart'), class: "btn btn-default"  
+        - else
+          %span.label.label-default
+            = t('not_in_stock')
   %br
   %p.description
     = @book.description

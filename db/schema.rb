@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311140130) do
+ActiveRecord::Schema.define(version: 20140312103940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,13 @@ ActiveRecord::Schema.define(version: 20140311140130) do
     t.datetime "updated_at"
   end
 
+  create_table "coupons", force: true do |t|
+    t.string  "code"
+    t.integer "discount", limit: 2
+  end
+
+  add_index "coupons", ["code"], name: "index_coupons_on_code", using: :btree
+
   create_table "credit_cards", force: true do |t|
     t.string   "number"
     t.integer  "cvv"
@@ -139,6 +146,7 @@ ActiveRecord::Schema.define(version: 20140311140130) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "credit_card_id"
+    t.integer  "coupon_id"
   end
 
   add_index "orders", ["credit_card_id"], name: "index_orders_on_credit_card_id", using: :btree

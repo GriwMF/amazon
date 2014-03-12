@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
   belongs_to :customer, :inverse_of => :orders
   belongs_to :credit_card, :inverse_of => :orders
+  belongs_to :coupon
 
   has_many :order_items, dependent: :destroy, :inverse_of => :order
   

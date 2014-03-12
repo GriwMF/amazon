@@ -16,6 +16,6 @@
 /tmp
 
 # Ignore site's uploads
-#/public/uploads
+/public/uploads
 
-#/.idea
+/.idea
