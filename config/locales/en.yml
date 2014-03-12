@@ -135,6 +135,13 @@ en:
         cvv: 'CVV:'
         expiration_month: 'Expiration month:'
         expiration_year: 'Expiration year:'
+  activerecord:
+    errors:
+      models:
+        order_item:
+          attributes:
+            book:
+              should_be_in_stock: "are not in stock"
   empty_cart: "(empty)"
   rate_book: "Rate the book"
   no_rating_err: "Select rating first"

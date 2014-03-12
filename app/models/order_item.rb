@@ -12,7 +12,7 @@ class OrderItem < ActiveRecord::Base
   
   def book_should_be_in_stock
     if book.in_stock < quantity
-      errors.add(:book, "are not in stock")
+      errors.add(:book, :should_be_in_stock)
     end
   end
 end
