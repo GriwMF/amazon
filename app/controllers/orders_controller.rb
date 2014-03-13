@@ -4,6 +4,7 @@ class OrdersController < ApplicationController
   authorize_resource
   
   before_action :set_order, only: [:show]
+  #before_action :set_step, only: [:addresses, :check_out_1, check_out_2, check_out_3, check_out_4]
 
   include CustomerCart
   
@@ -28,7 +29,7 @@ class OrdersController < ApplicationController
     @order = current_cart.decorate
   end
 
-  #PATCH /orders/
+  # PATCH /orders/
   def update
     @order = current_cart
     unless @order.update_attributes(order_params)
@@ -46,22 +47,62 @@ class OrdersController < ApplicationController
     end unless params['coupon_code'].blank?
 
     if params['commit'] == I18n.t('check_out')
-      @state = 1
-      
-      render :check_out_1
+      prepare_check_out
+      render 'check_out_1'
     else
       redirect_to cart_orders_path
     end
   end
- 
-  #PATCH /orders/addresses
-  def addresses
+
+  # POST /orders/check_out
+  def check_out
     @order = current_cart
-    @state = 3
-    render :check_out_1
+    if params['state']
+      @state = params['state'].to_i
+    else
+      prepare_check_out
+    end
+    #
+    #case @state
+    #  when 1
+    #    prepare_check_out
+    #end
+    render "orders/check_out/check_out_#{@state}"
   end
 
-  #DELETE /orders
+  def check_out_1
+    set_step
+  end
+
+  def check_out_2
+    set_step
+  end
+
+  # PATCH /orders/addresses
+  def addresses
+    set_step
+    unless update_addresses
+      flash.now[:danger] = @order.errors.full_messages
+      render 'check_out_1'
+      return
+    end
+    set_state(2)
+  end
+
+  # PATCH /orders/delivery
+  def delivery
+    set_step
+    unless params['delivery']
+      flash.now[:danger] = t('err_delivery')
+      render 'check_out_2'
+      return
+    end
+    @order.delivery = Delivery.find(params['delivery'])
+    @order.save
+    set_state(3)
+  end
+
+  # DELETE /orders
   def destroy
     current_cart.order_items.delete_all
     current_cart.refresh_prices
@@ -89,20 +130,48 @@ class OrdersController < ApplicationController
     redirect_to :back
   end
 
-  # GET /orders/check_out_1
-  def check_out_1
-    
-  end
-
   private
-    # Use callbacks to share common setup or constraints between actions.
+    def set_state(current)
+      @state = current if @state <= current
+      render "check_out_#{@state}"
+    end
+
+    def set_step
+      if params['state']
+        @state = params['state'].to_i
+        @order = current_cart
+      else
+        flash[:danger] = t('check_out_wrong_state')
+        redirect_to cart_orders_path
+      end
+    end
+
     def set_order
       @order = current_customer.orders.find(params[:id])
       not_found unless @order.in_progress?
     end
 
+    def prepare_check_out
+      @state = 1
+      @order.build_ship_addr(current_customer.ship_addr.try(:attributes)) unless @order.ship_addr
+      @order.build_bill_addr(current_customer.bill_addr.try(:attributes)) unless @order.bill_addr
+    end
+
+    def update_addresses
+      if params['bill-checkbox'] == '1'
+        @order.update_attributes(bill_addr_attributes: ship_addr_params, ship_addr_attributes: ship_addr_params)
+      else
+        @order.update_attributes(addresses_params)
+      end
+    end
+
     def addresses_params
-      
+      params.require(:order).permit(bill_addr_attributes: [:country, :address, :zipcode, :city, :phone],
+                                     ship_addr_attributes: [:country, :address, :zipcode, :city, :phone])
+    end
+
+    def ship_addr_params
+      params.require(:order).require(:ship_addr_attributes).permit(:country, :address, :zipcode, :city, :phone)
     end
 
     def ship_params
@@ -111,14 +180,6 @@ class OrdersController < ApplicationController
 
     def order_params
       params.require(:order).permit(order_items_attributes: [ :id, :quantity])
-    end
-
-    def ship_addr_params
-      params.require(:order).require(:ship_addr).permit(:country, :address, :zipcode, :city, :phone)
-    end
-    
-    def bill_addr_params
-      params.require(:order).require(:bill_addr).permit(:country, :address, :zipcode, :city, :phone)
     end
 
     def credit_card_params

@@ -57,3 +57,5 @@ en:
       not_saved:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
+  check_out_wrong_state: "Please, process checkout step by step!"
+  err_delivery: "Please, select one delivery method"

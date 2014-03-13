@@ -79,12 +79,16 @@ FirstModel::Application.routes.draw do
   
   resources :orders, only: [:index, :show] do
     collection do
-      get 'check_out_1'
+      post 'check_out_1'
+      post 'check_out_2'
+      post 'check_out_3'
+      post 'check_out_4'
       get 'cart'
       get 'recent'
       post 'add_item/:id', action: 'add_item'
       patch 'update'
       patch 'addresses'
+      patch 'delivery'
       delete 'remove_item/:id', action: 'remove_item'
       delete 'destroy'
     end

@@ -2,6 +2,9 @@ class Order < ActiveRecord::Base
   belongs_to :customer, :inverse_of => :orders
   belongs_to :credit_card, :inverse_of => :orders
   belongs_to :coupon
+  belongs_to :bill_addr, class_name: 'Address', dependent: :destroy
+  belongs_to :ship_addr, class_name: 'Address', dependent: :destroy
+  belongs_to :delivery
 
   has_many :order_items, dependent: :destroy, :inverse_of => :order
   
@@ -13,7 +16,9 @@ class Order < ActiveRecord::Base
   validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   
   accepts_nested_attributes_for :order_items, reject_if: proc { |attributes| attributes['quantity'].blank? }
-  
+  accepts_nested_attributes_for :bill_addr
+  accepts_nested_attributes_for :ship_addr
+
   state_machine :initial => :in_progress do
     before_transition :on => :check_out!, :do => :complete_order!
     

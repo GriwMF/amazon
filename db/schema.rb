@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140312103940) do
+ActiveRecord::Schema.define(version: 20140313215523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,13 @@ ActiveRecord::Schema.define(version: 20140312103940) do
   add_index "customers", ["firstname", "lastname"], name: "index_customers_on_firstname_and_lastname", using: :btree
   add_index "customers", ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true, using: :btree
 
+  create_table "deliveries", force: true do |t|
+    t.string   "title"
+    t.integer  "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "order_items", force: true do |t|
     t.decimal  "price",      precision: 8, scale: 2
     t.integer  "quantity"
@@ -147,6 +154,9 @@ ActiveRecord::Schema.define(version: 20140312103940) do
     t.datetime "updated_at"
     t.integer  "credit_card_id"
     t.integer  "coupon_id"
+    t.integer  "bill_addr_id"
+    t.integer  "ship_addr_id"
+    t.integer  "delivery_id"
   end
 
   add_index "orders", ["credit_card_id"], name: "index_orders_on_credit_card_id", using: :btree
