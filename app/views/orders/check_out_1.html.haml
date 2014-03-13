@@ -1,4 +1,32 @@
-%h2
-  1
-  2
-  3
+%scpipt
+  <body onload="document.getElementById(yourform').reset( )">
+= render 'menu', state: @state, current: 1
+= form_for current_customer, :url => addresses_orders_path do |f|
+  .container.check_out_addr_container
+    .row
+      .col-xs-4
+        %h4= t('ship_addr')
+      .col-xs-4
+        %h4= t('bill_addr')
+        %label
+          = check_box_tag 'bill-checkbox', '1', false
+          = t('bill_same')
+      .col-xs-4
+        %h4= t('order_sum')
+    .row
+      .col-xs-4
+        = f.fields_for :bill_addr do |builder|
+          = render 'address_fields', f: builder
+      .col-xs-4
+        #bill-show
+          = f.fields_for :ship_addr do |builder|
+            = render 'address_fields', f: builder
+      .col-xs-4
+        .text-right.space-right
+          = t('item_tot')
+          %b= number_to_currency(@order.total_price)
+          %br
+          = t('order_tot')
+          %b= number_to_currency(@order.discounted_price)
+  = hidden_field_tag :state, @state
+  = f.submit t('save_and_con'), class: 'btn btn-default'

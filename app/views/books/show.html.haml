@@ -7,7 +7,7 @@
     = image_tag @book.shot.url
   .form-description
     = form_tag "/orders/add_item/#{@book.id}", class: "form-inline pagination-centered" do
-      .price= "$#{@book.price}"
+      .price= number_to_currency(@book.price)
       .right
         - if @book.in_stock > 0
           .form-group.number

@@ -12,6 +12,9 @@ class Customer < ActiveRecord::Base
  
   validates_presence_of :firstname, :lastname
 
+  accepts_nested_attributes_for :bill_addr, :ship_addr
+
+
   def cart
     orders.find_or_create_by(state: 'in_progress')
   end

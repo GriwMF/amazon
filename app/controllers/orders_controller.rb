@@ -45,8 +45,20 @@ class OrdersController < ApplicationController
       flash[:danger] = I18n.t('wrong_coupon')
     end unless params['coupon_code'].blank?
 
-
-    redirect_to params['commit'] == I18n.t('check_out') ? check_out_1_orders_path : cart_orders_path
+    if params['commit'] == I18n.t('check_out')
+      @state = 1
+      
+      render :check_out_1
+    else
+      redirect_to cart_orders_path
+    end
+  end
+ 
+  #PATCH /orders/addresses
+  def addresses
+    @order = current_cart
+    @state = 3
+    render :check_out_1
   end
 
   #DELETE /orders
@@ -87,6 +99,14 @@ class OrdersController < ApplicationController
     def set_order
       @order = current_customer.orders.find(params[:id])
       not_found unless @order.in_progress?
+    end
+
+    def addresses_params
+      
+    end
+
+    def ship_params
+      
     end
 
     def order_params

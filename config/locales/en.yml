@@ -97,8 +97,8 @@ en:
   profile: 'Profile'
   book: 'Book'
   quantity: 'Quantity'
-  ship_addr: 'Shipping address:'
-  bill_addr: 'Billing address:'
+  ship_addr: 'SHIPPING ADDRESS'
+  bill_addr: 'BILLING ADDRESS'
   state: 'State:'
   completed_at: 'Completed at:'
   order_items: 'Order items'
@@ -106,7 +106,7 @@ en:
   continue_shopping: 'Continue shopping'
   add_to_cart_first: 'Add item to cart first'
   total_price: 'Total price:'
-  check_out: 'Check out'
+  check_out: 'Checkout'
   select_ship_addr: 'Select shipping address:'
   select_bill_addr: 'Select billing address:'
   select_card: 'Select credit card information:'
@@ -120,6 +120,13 @@ en:
     show:
       rate: 'Rate the book >>'
       customer: 'Customer'
+  orders:
+    menu:
+      complete: 'COMPLETE'
+      address: 'ADDRESS'
+      delivery: 'DELIVERY'
+      payment: 'PAYMENT'
+      confirm: 'CONFIRM'
   helpers:
     label:
       address:
@@ -143,13 +150,17 @@ en:
             book:
               should_be_in_stock: "are not in stock"
   empty_cart: "(empty)"
+  empty_cart_but: "empty cart"
   rate_book: "Rate the book"
   no_rating_err: "Select rating first"
   by: "by"
   total: "Total"
   not_in_stock: 'not in stock'
-  empty_cart: 'empty cart'
   continue_shopping: 'continue shopping'
   wrong_coupon: 'No coupon with this code found'
   discount: 'Your discount'
   cart_cleaned: 'Cart has been cleaned'
+  order_sum: 'ORDER SUMMARY'
+  item_tot: 'ITEM TOTAL:'
+  order_tot: 'ORDER TOTAL:'
+  save_and_con: 'SAVE AND CONTINUE'

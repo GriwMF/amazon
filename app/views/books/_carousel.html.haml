@@ -10,7 +10,7 @@
 %br
 .center
   = form_tag "/orders/add_item/#{book.id}", class: "form-inline" do
-    = label_tag "$#{book.price}"
+    = label_tag number_to_currency(book.price)
     - if book.in_stock > 0
       .form-group.number
         = number_field_tag :quantity, 1, min: 1, class: "form-control"

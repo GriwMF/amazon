@@ -84,6 +84,7 @@ FirstModel::Application.routes.draw do
       get 'recent'
       post 'add_item/:id', action: 'add_item'
       patch 'update'
+      patch 'addresses'
       delete 'remove_item/:id', action: 'remove_item'
       delete 'destroy'
     end

@@ -54,14 +54,20 @@ body {
   }
 }
 
+#empty_cart {
+  text-align: center;
+  margin-top: 5px;
+  color: #BBB
+}
+
 #cart {
   height: 60px;
-  background-color: #C9F0D1;
   outline: 0;
   margin-top: -10px;
   margin-bottom: -10px;
   padding-bottom: -10px;
   text-align: center;
+  background-color: #C9F0D1;
   &:hover {
     background-color: #A9E8B6;
   }
