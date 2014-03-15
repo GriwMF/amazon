@@ -17,13 +17,7 @@
               = "#{item.title} + #{number_to_currency(item.price)}"
             %br
         .col-xs-4
-          .text-right.space-right
-            = t('item_tot')
-            %b= number_to_currency(@order.total_price)
-            %br
-            = t('order_tot')
-            %b= number_to_currency(@order.discounted_price)
+          = render 'order_total'
       .row
         .col-xs-12
-          = hidden_field_tag :state, @state
           = submit_tag t('save_and_con'), class: 'btn btn-default'

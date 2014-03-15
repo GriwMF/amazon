@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   authorize_resource
   
   before_action :set_order, only: [:show]
-  #before_action :set_step, only: [:addresses, :check_out_1, check_out_2, check_out_3, check_out_4]
+  before_action :set_step, only: [:addresses, :check_out, :credit_card, :delivery]
 
   include CustomerCart
   
@@ -21,7 +21,6 @@ class OrdersController < ApplicationController
 
   # GET /orders/1
   def show
-    raise "NOOOOOOO~!!!"
   end
 
   # GET /orders/cart
@@ -48,58 +47,62 @@ class OrdersController < ApplicationController
 
     if params['commit'] == I18n.t('check_out')
       prepare_check_out
-      render 'check_out_1'
     else
       redirect_to cart_orders_path
     end
   end
 
-  # POST /orders/check_out
+  # POST /orders/check_out/1
   def check_out
-    @order = current_cart
-    if params['state']
-      @state = params['state'].to_i
-    else
-      prepare_check_out
-    end
-    #
-    #case @state
-    #  when 1
-    #    prepare_check_out
-    #end
-    render "orders/check_out/check_out_#{@state}"
-  end
-
-  def check_out_1
-    set_step
-  end
-
-  def check_out_2
-    set_step
+    @order.build_credit_card unless params[:step] != '3' || @order.credit_card
+    @order.refresh_prices if  params[:step] == '4'
+    render "orders/check_out/check_out_#{params[:step]}"
   end
 
   # PATCH /orders/addresses
   def addresses
-    set_step
     unless update_addresses
       flash.now[:danger] = @order.errors.full_messages
-      render 'check_out_1'
+      render 'orders/check_out/check_out_1'
       return
     end
-    set_state(2)
+    update_customer_addresses
+    set_state_and_redirect(2)
   end
 
   # PATCH /orders/delivery
   def delivery
-    set_step
     unless params['delivery']
-      flash.now[:danger] = t('err_delivery')
-      render 'check_out_2'
+      flash[:danger] = t('err_delivery')
+      redirect_to '/orders/check_out/2'
       return
     end
     @order.delivery = Delivery.find(params['delivery'])
     @order.save
-    set_state(3)
+    set_state_and_redirect(3)
+  end
+
+  # PATCH /orders/credit_card
+  def credit_card
+    unless @order.update_attributes(credit_card_params)
+      flash[:danger] = @order.errors.full_messages
+      redirect_to '/orders/check_out/3'
+      return
+    end
+    set_state_and_redirect(4)
+  end
+
+  # GET /orders/complete
+  def complete
+    unless session['state'] == 4
+      flash[:danger] = t('check_out_wrong_state')
+      redirect_to cart_orders_path
+      return
+    end
+    @order = current_cart
+    @order.check_out!
+    session.delete 'state'
+    render 'complete'
   end
 
   # DELETE /orders
@@ -131,59 +134,83 @@ class OrdersController < ApplicationController
   end
 
   private
-    def set_state(current)
+    def set_state_and_redirect(current)
       @state = current if @state <= current
-      render "check_out_#{@state}"
+      session['state'] = @state
+      redirect_to "/orders/check_out/#{@state}"
     end
 
     def set_step
-      if params['state']
-        @state = params['state'].to_i
+      if session['state']
+        @state = session['state'].to_i
         @order = current_cart
       else
         flash[:danger] = t('check_out_wrong_state')
         redirect_to cart_orders_path
+        false
       end
     end
 
     def set_order
       @order = current_customer.orders.find(params[:id])
-      not_found unless @order.in_progress?
     end
 
     def prepare_check_out
-      @state = 1
-      @order.build_ship_addr(current_customer.ship_addr.try(:attributes)) unless @order.ship_addr
-      @order.build_bill_addr(current_customer.bill_addr.try(:attributes)) unless @order.bill_addr
+      @state = session['state'] ||= 1
+      if @state > 1
+        redirect_to "/orders/check_out/#{session['state']}"
+      else
+        unless @order.ship_addr
+          if current_customer.ship_addr
+            @order.ship_addr = current_customer.ship_addr.dup
+          else
+            @order.build_ship_addr
+          end
+        end
+
+        unless @order.bill_addr
+          if current_customer.bill_addr
+            @order.bill_addr = current_customer.bill_addr.dup
+          else
+            @order.build_bill_addr
+          end
+        end
+
+        render 'orders/check_out/check_out_1'
+      end
     end
 
     def update_addresses
       if params['bill-checkbox'] == '1'
-        @order.update_attributes(bill_addr_attributes: ship_addr_params, ship_addr_attributes: ship_addr_params)
+        @order.update_attributes(ship_addr_attributes: ship_addr_params,
+                                  bill_addr_attributes: ship_addr_params.merge(
+                                                         id: params['order']['bill_addr_attributes'][:id]))
       else
         @order.update_attributes(addresses_params)
       end
     end
 
+    def update_customer_addresses
+      current_customer.ship_addr ||= @order.ship_addr.dup
+      current_customer.bill_addr ||= @order.bill_addr.dup
+      current_customer.save
+    end
+
     def addresses_params
-      params.require(:order).permit(bill_addr_attributes: [:country, :address, :zipcode, :city, :phone],
-                                     ship_addr_attributes: [:country, :address, :zipcode, :city, :phone])
+      params.require(:order).permit(bill_addr_attributes: [:id, :country, :address, :zipcode, :city, :phone],
+                                     ship_addr_attributes: [:id, :country, :address, :zipcode, :city, :phone])
     end
 
     def ship_addr_params
-      params.require(:order).require(:ship_addr_attributes).permit(:country, :address, :zipcode, :city, :phone)
-    end
-
-    def ship_params
-      
+      params.require(:order).require(:ship_addr_attributes).permit(:id, :country, :address, :zipcode, :city, :phone)
     end
 
     def order_params
-      params.require(:order).permit(order_items_attributes: [ :id, :quantity])
+      params.require(:order).permit(order_items_attributes: [:id, :quantity])
     end
 
     def credit_card_params
-      params.require(:order).require(:credit_card).permit(:firstname, :lastname, :number, :cvv, :expiration_month, :expiration_year)
+      params.require(:order).permit(credit_card_attributes: [:id, :number, :cvv, :expiration_month, :expiration_year])
     end    
 
 end

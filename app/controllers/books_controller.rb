@@ -46,10 +46,10 @@ class BooksController < ApplicationController
   
   # POST /books/1/add_wished
   def add_wished
-    unless @book.wish_add(current_customer)
-      flash[:danger] =  I18n.t 'err_wish_add'
+    if @book.wish_add(current_customer)
+      flash[:info] = I18n.t 'suc_wish_add'
     else
-      flash[:info] =  I18n.t 'suc_wish_add'
+      flash[:danger] = I18n.t 'err_wish_add'
     end
     redirect_to @book
   end

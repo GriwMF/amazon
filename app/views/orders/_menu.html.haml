@@ -8,7 +8,7 @@
         - if i == current - 1
           %u= items[i]
         - elsif i < state
-          = link_to items[i], '#'
+          = link_to items[i], "/orders/check_out/#{i + 1}"
         - else
           = items[i]
       = t('.complete')

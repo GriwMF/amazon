@@ -33,6 +33,12 @@ describe "Customer" do
       it{ should be_able_to(:rate, Book.new) }
       it{ should be_able_to(:add_wished, Book.new) }
       it{ should be_able_to(:wished, Book.new) }
+      it{ should be_able_to(:destroy, Order.new) }
+      it{ should be_able_to(:check_out, Order.new) }
+      it{ should be_able_to(:addresses, Order.new) }
+      it{ should be_able_to(:delivery, Order.new) }
+      it{ should be_able_to(:credit_card, Order.new) }
+      it{ should be_able_to(:complete, Order.new) }
 
       it{ should be_able_to(:update, Order.new) }
       it{ should be_able_to(:recent, Order.new) }

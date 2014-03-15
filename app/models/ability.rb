@@ -13,7 +13,8 @@ class Ability
         can :read, :all
         can :manage, [Address, CreditCard, Customer]
         can [:rate, :add_wished, :wished, :home], Book
-        can [:update, :add_item, :remove_item, :recent, :cart, :update], Order
+        can [:update, :add_item, :remove_item, :recent, :cart, :destroy,
+            :check_out, :addresses, :delivery, :credit_card, :complete], Order
       end
     else
         can :read, :all

@@ -58,7 +58,13 @@ FirstModel::Application.routes.draw do
   #     resources :products
   #   end
 
-  resource :customer, only: [:show]
+  resource :customer, only: [:show] do
+    post 'ship_update', action: 'ship_create'
+    patch 'ship_update'
+    post 'bill_update', action: 'bill_create'
+    patch 'bill_update'
+  end
+
   resources :books, only: [:show, :index] do
     member do
       delete 'wished'
@@ -79,16 +85,15 @@ FirstModel::Application.routes.draw do
   
   resources :orders, only: [:index, :show] do
     collection do
-      post 'check_out_1'
-      post 'check_out_2'
-      post 'check_out_3'
-      post 'check_out_4'
+      get 'check_out/:step', action: 'check_out'
       get 'cart'
       get 'recent'
+      get 'complete'
       post 'add_item/:id', action: 'add_item'
       patch 'update'
       patch 'addresses'
       patch 'delivery'
+      patch 'credit_card'
       delete 'remove_item/:id', action: 'remove_item'
       delete 'destroy'
     end

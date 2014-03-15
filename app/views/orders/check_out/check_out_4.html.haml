@@ -1,16 +1,19 @@
-%h2= "#{t('order')} R#{@order.id}"
-%h4= "#{t('state')} #{@order.state}"
+= render 'menu', state: @state, current: 4
 %br
   .container.check_out_addr_container
     .row
       .col-xs-3
         %b= t('ship_addr_short')
+        = link_to t('edit_check_out'), "/orders/check_out/1"
       .col-xs-3
         %b= t('bill_addr_short')
+        = link_to t('edit_check_out'), "/orders/check_out/1"
       .col-xs-2
         %b= t('shipment')
+        = link_to t('edit_check_out'), "/orders/check_out/2"
       .col-xs-4
         %b= t('payment_info')
+        = link_to t('edit_check_out'), "/orders/check_out/3"
     .row
       .col-xs-3
         = render '/orders/check_out/show_address', address: @order.ship_addr
@@ -26,6 +29,4 @@
       .col-xs-12= render 'order', order: @order
     .row
       .col-xs-12
-        = link_to t('continue_shopping'), books_path
-        \|
-        = link_to t('back'), :back
+        = link_to t('place_order'), complete_orders_path, class: 'btn btn-default'

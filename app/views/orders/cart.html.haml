@@ -18,13 +18,23 @@
         %tr
           %td
           %td
-            %i= "#{t('discount')}: #{@order.coupon.discount}%" if @order.coupon
           %td
           %td
-            %b= t('total_price')
+            %b= t('item_price')
           %td
-            %b= number_to_currency(@order.discounted_price)
+            %b= number_to_currency(@order.total_price)
           %td
+        - if @order.coupon
+          %tr
+            %td
+            %td.text-right
+              %i= "#{t('discount')}: #{@order.coupon.discount}%"
+            %td
+            %td
+              %b= t('total_price')
+            %td
+              %b= number_to_currency(@order.discounted_price)
+            %td
     .form-inline.right
       = f.label :coupon
       = text_field_tag :coupon_code, '', class: "form-control coupon"

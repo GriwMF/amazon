@@ -4,7 +4,6 @@ class Customer < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook]
   has_many :ratings, :inverse_of => :customer
-  has_many :credit_cards, dependent: :destroy, :inverse_of => :customer
   belongs_to :bill_addr, class_name: "Address", dependent: :destroy
   belongs_to :ship_addr, class_name: "Address", dependent: :destroy
   has_many :orders, dependent: :destroy, :inverse_of => :customer

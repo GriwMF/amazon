@@ -1,30 +1,36 @@
-%h1= t('list_orders')
+.container.check_out_addr_container
+  = link_to t('recent_orders'), recent_orders_path
+  \|
+  = link_to t('all_orders'), '/orders'
+  %h1= t('list_orders')
+  - if current_cart.order_items.any?
+    %h4= "In progress"
+    = render 'order', order: current_cart
 
-= link_to t('recent_orders'), recent_orders_path
-\|
-= link_to t('all_orders'), orders_path
 
-%h3= @orders.blank? ? t('no_orders') : t('order_items')
-- @orders.each do |order|
-  .panel.panel-default.row
-    .col-xs-12
-      %br
-      = render 'order', order: order
-      %br
-      %b= t('ship_addr')
-      = order.ship_addr.full
-      %br
-      %b= t('bill_addr')
-      = order.bill_addr.full
-      %br
-      %b= t('state')
-      = order.state
-      %br
-      %b= t('completed_at')
-      = order.completed_at
-      %br
-.center
-  = paginate @orders
-%br
+  -if @orders
+    %h4= "Placed"
+    %table.table.table-striped
+      %thead
+        %tr
+          %th= t('number_c')
+          %th= t('state_c')
+          %th= t('completed_at_c')
+          %th= t('total_c')
+          %th
+      %tbody
+      - @orders.each do |order|
+        %tr
+          %td= link_to "R#{order.id}", order_path(order)
+          %td= order.state
+          %td= order.completed_at
+          %td= number_to_currency(order.discounted_price + order.delivery.price)
+          %td= link_to t('show'), order_path(order)
 
-= link_to t('continue_shopping'), books_path
+    .center
+      = paginate @orders
+  - else
+    %h3= t('no_orders')
+  %br
+
+  = link_to t('continue_shopping'), books_path
