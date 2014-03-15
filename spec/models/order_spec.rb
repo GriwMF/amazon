@@ -126,11 +126,6 @@ describe Order do
         allow(order).to receive(:refresh_prices)
       end
       
-      it "calls #refresh_prices!" do
-        expect(order).to receive(:refresh_prices)
-        order.complete_order!
-      end
-      
       it "calls #refresh_in_stock!" do
         expect(order).to receive(:refresh_in_stock!)
         order.complete_order!

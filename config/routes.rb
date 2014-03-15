@@ -72,16 +72,12 @@ FirstModel::Application.routes.draw do
       patch 'add_wished'
     end
     collection do
-      get 'filter'
       get 'home'
       get 'category/:category_id', action: 'index'
     end
   end
 
   resources :authors, only: [:show]
-  
-  resources :addresses
-  resources :credit_cards
   
   resources :orders, only: [:index, :show] do
     collection do
