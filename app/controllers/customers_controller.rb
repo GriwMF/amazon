@@ -9,7 +9,9 @@ class CustomersController < ApplicationController
 
   def ship_create
     address = current_customer.build_ship_addr(address_params)
-    if current_customer.save
+
+    if address.save
+      current_customer.save
       redirect_to customer_path
     else
       flash.now[:danger] = address.errors.full_messages
@@ -24,7 +26,8 @@ class CustomersController < ApplicationController
 
   def bill_create
     address = current_customer.build_bill_addr(address_params)
-    if current_customer.save
+    if address.save
+      current_customer.save
       redirect_to customer_path
     else
       flash.now[:danger] = address.errors.full_messages

@@ -6,7 +6,7 @@
   - if current_cart.order_items.any?
     %h4= "In progress"
     = render 'order', order: current_cart
-
+    = link_to 'GO TO CART', cart_orders_path, class: 'btn btn-default'
 
   -if @orders
     %h4= "Placed"

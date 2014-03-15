@@ -5,7 +5,7 @@
       %th= t('book')
       %th= t('price')
       %th= t('quantity')
-      %th= t('total')
+      %th= t('total_c').capitalize
   %tbody
     - order.order_items.each do |item|
       %tr

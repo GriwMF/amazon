@@ -158,7 +158,7 @@ class OrdersController < ApplicationController
     def prepare_check_out
       @state = session['state'] ||= 1
       if @state > 1
-        redirect_to "/orders/check_out/#{session['state']}"
+        redirect_to "/orders/check_out/#{@state}"
       else
         unless @order.ship_addr
           if current_customer.ship_addr

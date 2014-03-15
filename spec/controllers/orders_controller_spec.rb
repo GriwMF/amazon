@@ -84,18 +84,13 @@ describe OrdersController do
     it 'redirect to root if havent read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Order
-      get :show
+      get :show, {id: 1}
       response.should redirect_to(root_url)
     end  
 
     it "assigns the requested order as @order" do
-      get :show
+      get :show, {id: customer.cart.to_param}
       assigns(:order).should eq(customer.cart)
-    end
-
-    it "decorates @order" do
-      get :show
-      expect(assigns(:order)).to be_decorated
     end
   end
 
@@ -105,41 +100,42 @@ describe OrdersController do
       ability.cannot :update, Order
       put :update, { id: '1' }
       response.should redirect_to(root_url)
-    end  
+    end
 
     it "assigns the requested order as @order" do
       order = customer.cart
-      put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
+      put :update, {:order => valid_attributes}, valid_session
       assigns(:order).should eq(order)
     end
 
-    it "redirects to the root path" do
+    it "redirects to the cart" do
       order = customer.cart
-      put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-      response.should redirect_to(root_path)
+      put :update, {:order => valid_attributes}, valid_session
+      response.should redirect_to(cart_orders_path)
     end
 
+    it "calls prepare_check_out if commit = Checkout" do
+      order = customer.cart
+      expect(@controller).to receive(:prepare_check_out).and_call_original
+      put :update, {:order => valid_attributes, :commit => 'Checkout'}, valid_session
+    end
 
     describe "with valid params" do
       it "updates the requested order" do
         order = customer.cart
 
-        Order.any_instance.should_receive(:update_attributes!).with({ :ship_addr_id => "1", :bill_addr_id => "2", :credit_card_id => "3"})
-        Order.any_instance.should_receive(:check_out!)
-        put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-     
+        Order.any_instance.should_receive(:update_attributes).and_return(true)
+        Order.any_instance.should_receive(:refresh_prices)
+        put :update, {:order => valid_attributes}, valid_session
       end
     end
     
     describe "with invalid params" do
       it "assigns the error message to flash" do
         order = customer.cart
-        book = FactoryGirl.create :book, in_stock: 50
-        order.add_item(book, quantity: 40)
-        book.in_stock = 10
-        book.save
-        patch :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-        expect(flash[:danger]).to include("Validation failed: In stock must be greater than or equal to 0")
+        book = FactoryGirl.create :book, in_stock: 10
+        patch :update, {:order => {:order_items_attributes => { id: order.add_item(book).to_param, quantity: 40} }}
+        expect(flash[:danger]).to include("Order items book are not in stock")
       end
     end
   end
@@ -231,6 +227,7 @@ describe OrdersController do
 
     it 'calls refresh_prices' do
       expect_any_instance_of(Order).to receive(:refresh_prices)
+      expect_any_instance_of(Order).to receive(:remove_item).with('1')
       delete :remove_item, {:id => item_id}, valid_session
     end
   end

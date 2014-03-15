@@ -120,7 +120,7 @@ describe BooksController do
     end
     
     it "assigns last 10 approved ratings as @book_ratings" do
-      rating = book.ratings.create!(text: "good book", rating: "3", state: 'approved')
+      rating = book.ratings.create!(title: "some title", text: "good book", rating: "3", state: 'approved')
       get :show, {:id => book.to_param}, valid_session
       assigns(:book_ratings).should eq([rating])
     end
@@ -155,20 +155,22 @@ describe BooksController do
     end
     
     describe "valid attributes" do
+      let (:params) {{:id => book.to_param, title: "some title", text: "text rating", rating: "4"}}
+
       it "adds new rating" do
         expect {
-          post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
+          post :rate, params, valid_session
         }.to change(book.ratings, :count).by(1)
       end
       
       it "adds successed flash message" do
-        post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
+        post :rate, params, valid_session
         expect(flash[:info]).to eq(I18n.t 'suc_rating_add')
       end
       
       it "redirects back" do
-        post :rate, {:id => book.to_param, text: "text rating", rating: "4"}, valid_session
-         response.should redirect_to(books_path)
+        post :rate, params, valid_session
+        response.should redirect_to(books_path)
       end
     end
     
