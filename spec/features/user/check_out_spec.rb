@@ -4,8 +4,9 @@ feature "check out" do
   given!(:book) { FactoryGirl.create :book }
 
   background do
-    login_as(FactoryGirl.create(:customer), :scope => :customer)
     FactoryGirl.create :delivery
+    FactoryGirl.create :delivery
+    login_as(FactoryGirl.create(:customer), :scope => :customer)
   end
   
   scenario "User complete purchase with entering all information manually" do
