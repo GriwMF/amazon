@@ -8,7 +8,7 @@ class BooksController < ApplicationController
   # GET /books.json
   def index
     @books = Book.includes(:ratings)
-    @books = @books.includes(:categories)
+    @books = @books.joins(:categories)
              .where(categories: { id: params[:category_id] } ) if params[:category_id]
     @books = @books.page(params[:page]).per(20).decorate
     @categories = Category.all

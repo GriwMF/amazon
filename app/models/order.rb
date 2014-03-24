@@ -12,6 +12,7 @@ class Order < ActiveRecord::Base
 
   scope :recent, -> { where("completed_at > ?", 3.month.ago).order("completed_at DESC") }
   scope :completed, -> { where.not(state: 'in_progress').order("completed_at DESC") }
+  scope :current, -> { where(:state => 'in_progress') }
   
   validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   

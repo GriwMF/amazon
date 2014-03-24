@@ -181,3 +181,7 @@ en:
   number_c: "NUMBER"
   total_c: "TOTAL"
   state_c: "STATE"
+  sign_in_needed: "You need to sign in before check out"
+  existing_user: "Existing customer"
+  with_facebook: "With facebook"
+  new_customer: "New customer"

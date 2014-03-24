@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include ActiveRecordGroupCount
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -28,7 +30,7 @@ class ApplicationController < ActionController::Base
   def process_order
     order = Order.where(id: cookies[:cart_name]).first
     if order && order.order_items.any? && !order.customer
-      current_customer.orders.where(:state => 'in_progress').destroy_all
+      current_customer.orders.current.destroy_all
       order.customer = current_customer
       cookies.delete :cart_name
       order.save

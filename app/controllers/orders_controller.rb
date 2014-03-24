@@ -74,7 +74,7 @@ class OrdersController < ApplicationController
   def delivery
     unless params['delivery']
       flash[:danger] = t('err_delivery')
-      redirect_to '/orders/check_out/2'
+      redirect_to check_out_orders_path(2)
       return
     end
     @order.delivery = Delivery.find(params['delivery'])
@@ -86,7 +86,7 @@ class OrdersController < ApplicationController
   def credit_card
     unless @order.update_attributes(credit_card_params)
       flash[:danger] = @order.errors.full_messages
-      redirect_to '/orders/check_out/3'
+      redirect_to check_out_orders_path(3)
       return
     end
     set_state_and_redirect(4)
@@ -137,7 +137,7 @@ class OrdersController < ApplicationController
     def set_state_and_redirect(current)
       @state = current if @state <= current
       session['state'] = @state
-      redirect_to "/orders/check_out/#{@state}"
+      redirect_to check_out_orders_path(@state)
     end
 
     def set_step
@@ -158,7 +158,7 @@ class OrdersController < ApplicationController
     def prepare_check_out
       @state = session['state'] ||= 1
       if @state > 1
-        redirect_to "/orders/check_out/#{@state}"
+        redirect_to check_out_orders_path(@state)
       else
         unless @order.ship_addr
           if current_customer.ship_addr

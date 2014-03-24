@@ -81,7 +81,7 @@ FirstModel::Application.routes.draw do
   
   resources :orders, only: [:index, :show] do
     collection do
-      get 'check_out/:step', action: 'check_out'
+      get 'check_out/:step', action: 'check_out', :as => "check_out"
       get 'cart'
       get 'recent'
       get 'complete'
@@ -91,7 +91,7 @@ FirstModel::Application.routes.draw do
       patch 'delivery'
       patch 'credit_card'
       delete 'remove_item/:id', action: 'remove_item'
-      delete 'destroy'
+      delete 'destroy', :as => "delete"
     end
   end
 

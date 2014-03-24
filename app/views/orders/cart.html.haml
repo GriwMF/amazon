@@ -41,6 +41,6 @@
       = f.submit class: 'btn btn-default'
       = f.submit t('check_out'), class: 'btn btn-success' if current_customer
 
-  = link_to t('empty_cart_but'), '/orders/destroy', method: :delete, class: 'btn btn-default'
+  = link_to t('empty_cart_but'), delete_orders_path, method: :delete, class: 'btn btn-default'
   = link_to t('continue_shopping'), books_path, class: 'btn btn-default'
   = render 'check_out' unless current_customer

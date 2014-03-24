@@ -1,13 +1,13 @@
 %br/
-%h3.center You need to sign in before check out
+%h3.center= t('sign_in_needed')
 .container.check_out_container
   .row
     .col-xs-6
-      %h4.center Existing customer
+      %h4.center= t('existing_user') 
     .col-xs-3
-      %h4.center With facebook
+      %h4.center= t('with_facebook')
     .col-xs-3
-      %h4.center New customer
+      %h4.center= t('new_customer')
   .row
     .col-xs-6
       = form_for(:customer, :url => session_path(:customer)) do |f|

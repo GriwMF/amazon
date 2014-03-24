@@ -4,16 +4,16 @@
     .row
       .col-xs-3
         %b= t('ship_addr_short')
-        = link_to t('edit_check_out'), "/orders/check_out/1"
+        = link_to t('edit_check_out'), check_out_orders_path(1)
       .col-xs-3
         %b= t('bill_addr_short')
-        = link_to t('edit_check_out'), "/orders/check_out/1"
+        = link_to t('edit_check_out'), check_out_orders_path(1)
       .col-xs-2
         %b= t('shipment')
-        = link_to t('edit_check_out'), "/orders/check_out/2"
+        = link_to t('edit_check_out'), check_out_orders_path(2)
       .col-xs-4
         %b= t('payment_info')
-        = link_to t('edit_check_out'), "/orders/check_out/3"
+        = link_to t('edit_check_out'), check_out_orders_path(3)
     .row
       .col-xs-3
         = render '/orders/check_out/show_address', address: @order.ship_addr
