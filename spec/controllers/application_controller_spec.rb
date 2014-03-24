@@ -41,7 +41,7 @@ describe ApplicationController do
         let(:customer) { FactoryGirl.create :customer }
 
         before do
-          Order.stub_chain(:where, :first).and_return(order)
+          cookies[:cart_name] = order.id
           allow(@controller).to receive(:current_customer).and_return(customer)
           FactoryGirl.create :order_item, order: order
         end
@@ -58,7 +58,6 @@ describe ApplicationController do
         end
 
         it 'clears cookie' do
-          cookies[:cart_name] = '5'
           @controller.send(:process_order)
           expect(cookies[:cart_name]).to be_nil
         end
