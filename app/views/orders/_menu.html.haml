@@ -1,0 +1,14 @@
+.border
+  .h3.left
+    = t('check_out')
+  .menu
+    .center.h4
+      - items = [t('.address'), t('.delivery'), t('.payment'), t('.confirm')]
+      - 4.times do |i|
+        - if i == current - 1
+          %u= items[i]
+        - elsif i < state
+          = link_to items[i], check_out_orders_path(i + 1)
+        - else
+          = items[i]
+      = t('.complete')

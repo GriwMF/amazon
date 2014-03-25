@@ -1,9 +1,11 @@
 require 'features/features_spec_helper'
 
-feature "check out", js: true do
+feature "check out" do
   given!(:book) { FactoryGirl.create :book }
 
   background do
+    FactoryGirl.create :delivery
+    FactoryGirl.create :delivery
     login_as(FactoryGirl.create(:customer), :scope => :customer)
   end
   
@@ -11,44 +13,29 @@ feature "check out", js: true do
     visit books_path
     click_link book.title
     click_button I18n.t 'add_to_cart'
-    click_link 'Cart'
+    click_link 'cart'
+    click_button 'Checkout'
 
-    within("#check-out-ship") do
-      click_link I18n.t 'or_add_new'
-    end
-    within("#check-out-ship-hidden") do
-      fill_in 'order_ship_addr_country', :with => 'Ukraine'
-      fill_in 'order_ship_addr_address', :with => '54 blablalba st, apt 666'
-      fill_in 'order_ship_addr_zipcode', :with => '012574'
-      fill_in 'order_ship_addr_city', :with => 'Kiev'
-      fill_in 'order_ship_addr_phone', :with => '+38-097-542-36-54'
-    end
+    select('Ukraine', :from => 'order_ship_addr_attributes_country')
+    fill_in 'order_ship_addr_attributes_address', :with => '54 blablalba st, apt 666'
+    fill_in 'order_ship_addr_attributes_zipcode', :with => '012574'
+    fill_in 'order_ship_addr_attributes_city', :with => 'Kiev'
+    fill_in 'order_ship_addr_attributes_phone', :with => '+38-097-542-36-54'
 
-    within("#check-out-bill") do
-      click_link I18n.t 'or_add_new'
-    end
-    within("#check-out-bill-hidden") do
-      fill_in 'order_bill_addr_country', :with => 'Ukraine'
-      fill_in 'order_bill_addr_address', :with => '2 Kirova st, apt 3'
-      fill_in 'order_bill_addr_zipcode', :with => '04534'
-      fill_in 'order_bill_addr_city', :with => 'Kiev'
-      fill_in 'order_bill_addr_phone', :with => '+38-093-544-32-11'
-    end
+    check 'bill-checkbox'
+    click_link_or_button 'SAVE AND CONTINUE'
+    choose 'delivery_1'
+    click_link_or_button 'SAVE AND CONTINUE'
 
-    within("#check-out-card") do
-      click_link I18n.t 'or_add_new'
-    end
-    within("#check-out-card-hidden") do
-      fill_in 'order_credit_card_firstname', :with => 'Andrew'
-      fill_in 'order_credit_card_lastname', :with => 'Griw'
-      fill_in 'order_credit_card_number', :with => '1234' * 4
-      fill_in 'order_credit_card_cvv', :with => '154'
-      fill_in 'order_credit_card_expiration_month', :with => '11'
-      fill_in 'order_credit_card_expiration_year', :with => Time.now.year + 1
-    end
+    fill_in 'order_credit_card_attributes_number', :with => '1234' * 4
+    fill_in 'order_credit_card_attributes_cvv', :with => '154'
+    select('11', :from => 'order_credit_card_attributes_expiration_month')
+    select(Time.now.year + 1, :from => 'order_credit_card_attributes_expiration_year')
 
-    click_button I18n.t 'check_out'
+    click_link_or_button 'SAVE AND CONTINUE'
 
-    expect(page).to have_content(I18n.t 'suc_ord_check_out')
+    click_link_or_button 'PLACE ORDER'
+
+    expect(page).to have_content('Continue shopping')
   end
 end

@@ -1,17 +1,24 @@
 class Order < ActiveRecord::Base
   belongs_to :customer, :inverse_of => :orders
-  belongs_to :credit_card, :inverse_of => :orders
-  belongs_to :bill_addr, class_name: "Address"
-  belongs_to :ship_addr, class_name: "Address"
+  belongs_to :credit_card
+  belongs_to :coupon
+  belongs_to :bill_addr, class_name: 'Address', dependent: :destroy
+  belongs_to :ship_addr, class_name: 'Address', dependent: :destroy
+  belongs_to :delivery
+
   has_many :order_items, dependent: :destroy, :inverse_of => :order
   
   has_many :books, through: :order_items
 
   scope :recent, -> { where("completed_at > ?", 3.month.ago).order("completed_at DESC") }
   scope :completed, -> { where.not(state: 'in_progress').order("completed_at DESC") }
+  scope :current, -> { where(:state => 'in_progress') }
   
   validates :state, inclusion: { in: %w(in_queue in_progress in_delivery delivered) }
   
+  accepts_nested_attributes_for :order_items, reject_if: proc { |attributes| attributes['quantity'].blank? }
+  accepts_nested_attributes_for :bill_addr, :ship_addr, :credit_card
+
   state_machine :initial => :in_progress do
     before_transition :on => :check_out!, :do => :complete_order!
     
@@ -58,10 +65,11 @@ class Order < ActiveRecord::Base
     if order_item = order_items.find_by(book_id: book.id)
       order_item.quantity += quantity
       order_item.save
-      order_item
     else
-      order_items.create(book: book, quantity: quantity)
+      order_item = order_items.create(book: book, quantity: quantity)
     end
+    refresh_prices
+    order_item
   end
 
   def remove_item(item_id)
@@ -79,6 +87,10 @@ class Order < ActiveRecord::Base
     self.total_price = sum
     save
   end
+
+  def discounted_price
+    coupon ? (total_price - total_price / 100 * coupon.discount).round(2) : total_price
+  end
   
   def refresh_in_stock!
     Book.transaction do
@@ -91,7 +103,6 @@ class Order < ActiveRecord::Base
   
   def complete_order!
     refresh_in_stock!
-    refresh_prices
     self.completed_at = DateTime.now
     save!
   end

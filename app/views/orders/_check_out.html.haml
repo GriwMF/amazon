@@ -1,0 +1,31 @@
+%br/
+%h3.center= t('sign_in_needed')
+.container.check_out_container
+  .row
+    .col-xs-6
+      %h4.center= t('existing_user') 
+    .col-xs-3
+      %h4.center= t('with_facebook')
+    .col-xs-3
+      %h4.center= t('new_customer')
+  .row
+    .col-xs-6
+      = form_for(:customer, :url => session_path(:customer)) do |f|
+        .form-group
+          = f.label :email
+          %br/
+          = f.email_field :email, :autofocus => true, class: 'form-control'
+        .form-group
+          = f.label :password
+          %br/
+          = f.password_field :password, class: 'form-control'
+        .checkbox
+          = f.check_box :remember_me
+          = f.label :remember_me
+        %div= f.submit "Sign in", class: "btn btn-default"
+    .col-xs-3
+      .center
+        = link_to image_tag('Facebook-Circle-48.png'), customer_omniauth_authorize_path(:facebook)
+    .col-xs-3
+      .center
+        = link_to t('sign_up'), new_customer_registration_path, class: 'btn btn-default'

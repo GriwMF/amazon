@@ -26,10 +26,10 @@ describe BooksController do
     it "routes to #add_wished" do
       patch("/books/1/add_wished").should route_to("books#add_wished", :id => "1")
     end 
-    
-    it "routes to #filter" do
-      get("/books/filter").should route_to("books#filter")
+
+    it "routes to #index" do
+      get("/books/category/1").should route_to("books#index", :category_id => "1")
     end
- 
+
   end
 end

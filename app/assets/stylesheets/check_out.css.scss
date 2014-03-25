@@ -1,0 +1,24 @@
+.border
+{
+  overflow: auto;
+  display: table;
+  width: 100%;
+  .h3 {
+    line-height:2em;
+  }
+}
+
+.menu {
+  display: table-cell;
+  vertical-align:middle;
+}
+
+.space-right {
+  margin-right: 5em;
+}
+
+.check_out_addr_container {
+  width: 800px;
+  float: center;
+  display: block;
+}

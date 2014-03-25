@@ -4,13 +4,15 @@ class Customer < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook]
   has_many :ratings, :inverse_of => :customer
-  has_many :credit_cards, dependent: :destroy, :inverse_of => :customer
-  has_many :addresses, dependent: :destroy
+  belongs_to :bill_addr, class_name: "Address", dependent: :destroy
+  belongs_to :ship_addr, class_name: "Address", dependent: :destroy
   has_many :orders, dependent: :destroy, :inverse_of => :customer
   has_and_belongs_to_many :wished_books, class_name: "Book"
+ 
+  validates_presence_of :firstname, :lastname
 
   def cart
-    orders.find_or_create_by(state: "in_progress")
+    orders.find_or_create_by(state: 'in_progress')
   end
 
   def self.find_for_facebook_oauth(auth)

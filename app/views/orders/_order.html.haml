@@ -1,19 +1,55 @@
-- can_cancel ||= false
-%table.table.table-striped
+%table.table.table-hover
   %thead
-    %tr.heading
+    %tr
+      %th
       %th= t('book')
       %th= t('price')
       %th= t('quantity')
-      - if can_cancel
-        %th 
+      %th= t('total_c').capitalize
   %tbody
     - order.order_items.each do |item|
       %tr
         %td
+          .thumb-image-wrapper.left
+            = link_to image_tag(item.book.shot.thumb.url), book_path(item.book)
+        %td.vertical-center
           = item.book.title
-          = "(#{item.book.authors[0].full_name})" if item.book.authors.any?
-        %td= item.price
-        %td= item.quantity
-        - if can_cancel
-          %td= link_to 'Cancel', "#{orders_path}/remove_item/#{item.id}", :method => :delete, :data => { :confirm => t('confirm') }
+          = "(#{item.book.authors[0].firstname} #{item.book.authors[0].lastname})" if item.book.authors.any?
+        %td.vertical-center= number_to_currency(item.price)
+        %td.vertical-center.center= item.quantity
+        %td.vertical-center= number_to_currency(item.quantity * item.price)
+    %tr
+      %td
+      %td
+      %td
+      %td
+        %b= t('item_price')
+      %td
+        %b= number_to_currency(order.total_price)
+    - if order.coupon
+      %tr
+        %td
+        %td.text-right
+          %i= "#{t('discount')}: #{order.coupon.discount}%"
+        %td
+        %td
+          %b= t('total_price')
+        %td
+          %b= number_to_currency(order.discounted_price)
+    - if order.delivery
+      %tr
+        %td
+        %td
+        %td
+        %td
+          %b= t('shipping').capitalize
+        %td
+          %b= number_to_currency(order.delivery.price)
+      %tr
+        %td
+        %td
+        %td
+        %td
+          %b= t('order_tot')
+        %td
+          %b= number_to_currency(order.discounted_price + order.delivery.price)

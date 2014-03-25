@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140221143300) do
+ActiveRecord::Schema.define(version: 20140314115937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,11 +24,9 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "country"
-    t.integer  "customer_id"
   end
 
   add_index "addresses", ["country"], name: "index_addresses_on_country", using: :btree
-  add_index "addresses", ["customer_id"], name: "index_addresses_on_customer_id", using: :btree
 
   create_table "authors", force: true do |t|
     t.string   "firstname"
@@ -81,13 +79,18 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.datetime "updated_at"
   end
 
+  create_table "coupons", force: true do |t|
+    t.string  "code"
+    t.integer "discount", limit: 2
+  end
+
+  add_index "coupons", ["code"], name: "index_coupons_on_code", using: :btree
+
   create_table "credit_cards", force: true do |t|
     t.string   "number"
     t.integer  "cvv"
     t.integer  "expiration_month"
     t.integer  "expiration_year"
-    t.string   "firstname"
-    t.string   "lastname"
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -113,11 +116,20 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.string   "last_sign_in_ip"
     t.string   "provider"
     t.string   "uid"
+    t.integer  "bill_addr_id"
+    t.integer  "ship_addr_id"
   end
 
   add_index "customers", ["email"], name: "index_customers_on_email", unique: true, using: :btree
   add_index "customers", ["firstname", "lastname"], name: "index_customers_on_firstname_and_lastname", using: :btree
   add_index "customers", ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true, using: :btree
+
+  create_table "deliveries", force: true do |t|
+    t.string   "title"
+    t.integer  "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "order_items", force: true do |t|
     t.decimal  "price",      precision: 8, scale: 2
@@ -135,12 +147,14 @@ ActiveRecord::Schema.define(version: 20140221143300) do
     t.decimal  "total_price",    precision: 8, scale: 2
     t.string   "state"
     t.datetime "completed_at"
-    t.integer  "bill_addr_id"
-    t.integer  "ship_addr_id"
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "credit_card_id"
+    t.integer  "coupon_id"
+    t.integer  "bill_addr_id"
+    t.integer  "ship_addr_id"
+    t.integer  "delivery_id"
   end
 
   add_index "orders", ["credit_card_id"], name: "index_orders_on_credit_card_id", using: :btree
@@ -148,12 +162,13 @@ ActiveRecord::Schema.define(version: 20140221143300) do
 
   create_table "ratings", force: true do |t|
     t.integer  "rating",      limit: 2
-    t.string   "text"
+    t.text     "text"
     t.integer  "book_id"
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state",                 default: "pending"
+    t.string   "title"
   end
 
   add_index "ratings", ["book_id"], name: "index_ratings_on_book_id", using: :btree

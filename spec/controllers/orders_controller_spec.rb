@@ -37,7 +37,7 @@ describe OrdersController do
   before do
     sign_in customer
   end
-  
+
   describe "GET index" do
     it "assigns completed orders of customer as @orders" do
       order = FactoryGirl.create :order, customer: customer, 
@@ -81,42 +81,35 @@ describe OrdersController do
   end
 
   describe "GET show" do
-    let(:simple_order) { FactoryGirl.create :order, customer: customer, state: "in_progress" }
     it 'redirect to root if havent read ability' do
       allow(@controller).to receive(:current_ability).and_return(ability)
       ability.cannot :read, Order
-      get :show, { id: '1' }
+      get :show, {id: 1}
       response.should redirect_to(root_url)
-    end  
+    end
 
     it "assigns the requested order as @order" do
-      get :show, {:id => simple_order.to_param}, valid_session
-      assigns(:order).should eq(simple_order)
+      get :show, {id: customer.cart.to_param}
+      assigns(:order).should eq(customer.cart)
+    end
+  end
+
+  describe "GET cart" do
+    it 'redirect to root if havent read ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :cart, Order
+      get :cart
+      response.should redirect_to(root_url)
     end
 
-    it "assigns customer's addresses as @addresses" do
-      allow(@controller).to receive(:current_customer).and_return(customer)
-      address = mock_model(Address)
-      customer.stub_chain('addresses.decorate').and_return(address)
-      get :show, {:id => simple_order.to_param}, valid_session
-      assigns(:addresses).should eq(address)
+    it "assigns the requested order as @order" do
+      get :cart
+      assigns(:order).should eq(customer.cart)
     end
 
-    it "raises routing error if state is not in_progress" do
-      order = FactoryGirl.create :order, customer: customer, state: "in_queue"
-      expect {
-        get :show, {:id => order.to_param}, valid_session
-      }.to raise_error ActionController::RoutingError
-    end
-    
     it "decorates @order" do
-      get :show, {:id => simple_order.to_param}, valid_session
+      get :cart
       expect(assigns(:order)).to be_decorated
-    end
-    
-    it "decorates @addresses" do
-      get :show, {:id => simple_order.to_param}, valid_session
-      expect(assigns(:addresses)).to be_decorated
     end
   end
 
@@ -126,41 +119,55 @@ describe OrdersController do
       ability.cannot :update, Order
       put :update, { id: '1' }
       response.should redirect_to(root_url)
-    end  
+    end
 
     it "assigns the requested order as @order" do
       order = customer.cart
-      put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
+      put :update, {:order => valid_attributes}, valid_session
       assigns(:order).should eq(order)
     end
 
-    it "redirects to the root path" do
+    it "redirects to the cart" do
       order = customer.cart
-      put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-      response.should redirect_to(root_path)
+      put :update, {:order => valid_attributes}, valid_session
+      response.should redirect_to(cart_orders_path)
     end
 
+    it "calls prepare_check_out if commit = Checkout" do
+      order = customer.cart
+      expect(@controller).to receive(:prepare_check_out).and_call_original
+      put :update, {:order => valid_attributes, :commit => 'Checkout'}, valid_session
+    end
 
     describe "with valid params" do
       it "updates the requested order" do
         order = customer.cart
 
-        Order.any_instance.should_receive(:update_attributes!).with({ :ship_addr_id => "1", :bill_addr_id => "2", :credit_card_id => "3"})
-        Order.any_instance.should_receive(:check_out!)
-        put :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-     
+        Order.any_instance.should_receive(:update_attributes).and_return(true)
+        Order.any_instance.should_receive(:refresh_prices)
+        put :update, {:order => valid_attributes}, valid_session
+      end
+
+      context 'coupon' do
+        it "adds message if no coupons with requested code" do
+          put :update, {:order => valid_attributes, :coupon_code => '1234tt'}, valid_session
+          expect(flash[:danger]).to include("No coupon with this code found")
+        end
+
+        it "assigns coupon to order" do
+          coupon = FactoryGirl.create :coupon, code: 'TTDS'
+          put :update, {:order => valid_attributes, :coupon_code => 'TTDS'}, valid_session
+          expect(customer.cart.coupon).to eq coupon
+        end
       end
     end
     
     describe "with invalid params" do
       it "assigns the error message to flash" do
         order = customer.cart
-        book = FactoryGirl.create :book, in_stock: 50
-        order.add_item(book, quantity: 40)
-        book.in_stock = 10
-        book.save
-        patch :update, {:id => order.to_param, :order => valid_attributes}, valid_session
-        expect(flash[:danger]).to include("Validation failed: In stock must be greater than or equal to 0")
+        book = FactoryGirl.create :book, in_stock: 10
+        patch :update, {:order => {:order_items_attributes => { id: order.add_item(book).to_param, quantity: 40} }}
+        expect(flash[:danger]).to include("Order items book are not in stock")
       end
     end
   end
@@ -186,10 +193,10 @@ describe OrdersController do
         allow(Book).to receive(:find).and_return(book)
       end
 
-      it "redirects back" do
+      it "redirects to cart" do
         book = FactoryGirl.create :book
         post :add_item, {:id => book.to_param}, valid_session
-        expect(response).to redirect_to(books_path)
+        expect(response).to redirect_to(cart_orders_path)
       end
       
       it "calls add_item method of model with book id and quantity" do
@@ -206,7 +213,6 @@ describe OrdersController do
         expect_any_instance_of(Order).to receive(:refresh_prices)
         post :add_item, {:id => book.to_param}, valid_session
       end
-
     end
     
     describe "with invalid params" do
@@ -246,8 +252,239 @@ describe OrdersController do
     end
     
     it "remove item from cart" do
-        expect_any_instance_of(Order).to receive(:remove_item).with(item_id.to_s)
-        delete :remove_item, {:id => item_id}, valid_session
+      expect_any_instance_of(Order).to receive(:remove_item).with(item_id.to_s)
+      delete :remove_item, {:id => item_id}, valid_session
+    end
+
+    it 'calls refresh_prices' do
+      expect_any_instance_of(Order).to receive(:refresh_prices)
+      expect_any_instance_of(Order).to receive(:remove_item).with('1')
+      delete :remove_item, {:id => item_id}, valid_session
+    end
+  end
+
+  describe "GET check_out" do
+    it 'redirect to root if havent check_out ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :check_out, Order
+      get :check_out, {:step => 2}
+      response.should redirect_to(root_url)
+    end
+
+    it "renders orders/check_out/check_out_(step) template" do
+      session['state'] = 2
+      get :check_out, {:step => 2}
+      expect(response).to render_template('orders/check_out/check_out_2')
+    end
+
+    it 'calls refresh_prices if step = 4' do
+      session['state'] = 4
+      expect_any_instance_of(Order).to receive(:refresh_prices)
+      get :check_out, {:step => 4}
+    end
+
+    it 'calls build_credit_card if step = 3' do
+      session['state'] = 3
+      expect_any_instance_of(Order).to receive(:build_credit_card)
+      get :check_out, {:step => 3}
+    end
+  end
+
+  describe "PATCH addresses" do
+    before do
+      allow(@controller).to receive(:update_customer_addresses)
+      session['state'] = 5
+    end
+
+    context 'invalid params' do
+      it 'assigns error message' do
+        patch :addresses, order: {ship_addr_attributes: {address: '000'}}
+        expect(flash.now[:danger]).to be_any
+      end
+
+      it "renders  orders/check_out/check_out_1 template" do
+        patch :addresses, order: {ship_addr_attributes: {address: '000'}}
+        expect(response).to render_template('orders/check_out/check_out_1')
+      end
+    end
+
+    it 'redirect to root if havent addresses ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :addresses, Order
+      patch :addresses
+      response.should redirect_to(root_url)
+    end
+
+    it 'calls update_addresses' do
+      expect(@controller).to receive(:update_addresses).and_return(true)
+      patch :addresses
+    end
+
+    it 'calls update_customer_addresses' do
+      allow(@controller).to receive(:update_addresses).and_return(true)
+      expect(@controller).to receive(:update_customer_addresses)
+
+      patch :addresses
+    end
+
+    it 'calls set_state_and_redirect' do
+      allow(@controller).to receive(:update_addresses).and_return(true)
+      expect(@controller).to receive(:set_state_and_redirect).and_call_original
+
+      patch :addresses
+    end
+  end
+
+  describe "PATCH delivery" do
+    let(:delivery) { mock_model(Delivery) }
+
+    before do
+      session['state'] = 5
+      allow(Delivery).to receive(:find).and_return(delivery)
+    end
+
+    context 'no params' do
+      it 'assigns error message' do
+        patch :delivery
+        expect(flash.now[:danger]).to include('Please, select one delivery method')
+      end
+
+      it "redirect to delivery select" do
+        patch :delivery
+        expect(response).to redirect_to '/orders/check_out/2'
+      end
+    end
+
+    it 'redirect to root if havent addresses ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :delivery, Order
+      patch :delivery
+      response.should redirect_to(root_url)
+    end
+
+    it 'assigns delivery to @order.delivery' do
+      patch :delivery, delivery: 1
+      expect(assigns(:order).delivery).to eq delivery
+    end
+
+    it 'calls set_state_and_redirect' do
+      expect(@controller).to receive(:set_state_and_redirect).and_call_original
+
+      patch :delivery, delivery: 1
+    end
+  end
+
+  describe "PATCH credit_card" do
+    before do
+      session['state'] = 5
+    end
+
+    it 'redirect to root if havent credit_card ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :credit_card, Order
+      patch :credit_card
+      response.should redirect_to(root_url)
+    end
+
+    context 'invalid params' do
+      it 'assigns error message' do
+        patch :credit_card, order: {credit_card_attributes: {number: '000'}}
+        expect(flash.now[:danger]).to be_any
+      end
+
+      it "redirect to credit card select" do
+        patch :credit_card, order: {credit_card_attributes: {number: '000'}}
+        expect(response).to redirect_to '/orders/check_out/3'
+      end
+    end
+
+    it 'calls set_state_and_redirect' do
+      expect(@controller).to receive(:set_state_and_redirect).and_call_original
+
+      patch :credit_card, order: {credit_card_params: {}}
+    end
+
+    it "updates order's attributes" do
+      expect_any_instance_of(Order).to receive(:update_attributes)
+
+      patch :credit_card, order: {credit_card_params: {}}
+    end
+  end
+
+  describe "GET complete" do
+
+    it 'redirect to root if havent credit_card ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :complete, Order
+      get :complete
+      response.should redirect_to(root_url)
+    end
+
+    context 'invalid params' do
+      before do
+        session['state'] = 5
+      end
+
+      it 'assigns error message' do
+        get :complete
+        expect(flash.now[:danger]).to eq("Please, process checkout step by step!")
+      end
+
+      it "redirect to cart" do
+        get :complete
+        expect(response).to redirect_to cart_orders_path
+      end
+    end
+
+    it 'calls check_out! on order' do
+      session['state'] = 4
+      expect_any_instance_of(Order).to receive(:check_out!)
+
+      get :complete
+    end
+
+    it 'deletes session[state]' do
+      session['state'] = 4
+      get :complete
+      expect(session['state']).to be_nil
+    end
+
+    it "renders complete template" do
+      session['state'] = 4
+      get :complete
+      expect(response).to render_template('complete')
+    end
+  end
+
+  describe "DELETE destroy" do
+    it 'redirect to root if havent destroy ability' do
+      allow(@controller).to receive(:current_ability).and_return(ability)
+      ability.cannot :destroy, Order
+      delete :destroy
+      response.should redirect_to(root_url)
+    end
+
+    it 'assigns flash message' do
+      delete :destroy
+      expect(flash[:success]).to eq('Cart has been cleaned')
+    end
+
+    it "redirect to books" do
+      delete :destroy
+      expect(response).to redirect_to books_path
+    end
+
+    it 'calls refresh_prices on order' do
+      expect_any_instance_of(Order).to receive(:refresh_prices)
+      delete :destroy
+    end
+
+    it 'clears order_items' do
+      item = mock_model(OrderItem)
+      expect(item).to receive(:delete_all)
+      allow_any_instance_of(Order).to receive(:order_items).and_return(item)
+      allow_any_instance_of(Order).to receive(:refresh_prices)
+      delete :destroy
     end
   end
 end

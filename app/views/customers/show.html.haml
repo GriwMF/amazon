@@ -1,34 +1,44 @@
 - provide(:title, t('profile'))
-%p
-  %b= t('email')
-  = current_customer.email
-%p
-  %b= t('firstname')
-  = current_customer.firstname
-%p
-  %b= t('lastname')
-  = current_customer.lastname
-= link_to t('addresses'), addresses_path
-\|
-= link_to t('credit_cards'), credit_cards_path
-\|
+.container.check_out_addr_container
+  .row
+    .col-xs-4
+      %br
+      %p
+        %b= "#{t('email')}:"
+        = current_customer.email
+      %p
+        %b= "#{t('firstname')}:"
+        = current_customer.firstname
+      %p
+        %b= "#{t('lastname')}:"
+        = current_customer.lastname
 
-= link_to t('edit'), edit_customer_registration_path
-\|
-= link_to t('back'), root_path
+      = link_to t('edit'), edit_customer_registration_path
+    .col-xs-4
+      %h4= t('ship_addr')
+      = form_for current_customer.ship_addr || current_customer.build_ship_addr, url: ship_update_customer_path  do |f|
+        = render 'orders/address_fields', f: f
+        = f.submit t('save'), class: 'btn btn-default'
+    .col-xs-4
+      %h4= t('bill_addr')
+      = form_for current_customer.bill_addr || current_customer.build_bill_addr, url: bill_update_customer_path  do |f|
+        = render 'orders/address_fields', f: f
+        = f.submit t('save'), class: 'btn btn-default'
 
-.space
-%b Wish list:
+  .space
+  - if @wished_books.any?
+    %h4 Wish list:
 
-%table.table.table-striped
-  %thead
-    %tr.heading
-      %th= t('author')
-      %th= t('title')
-      %th
-  %tbody
-    - @wished_books.each do |book|
-      %tr
-        %td= book.authors.first.full_name
-        %td= book.title
-        %td= link_to t('rem_from_list'), wished_book_path(book), method: 'delete'
+  - @wished_books.each do |book|
+    %hr
+    = link_to book.authors.first.full_name, author_path(book.authors.first)
+    \-
+    = link_to book.title, book_path(book)
+    .container
+      .thumb-image-wrapper.left
+        = link_to image_tag(book.shot.thumb.url), book_path(book)
+      .space-thumb
+        = book.authors.first.full_name
+        = book.title
+
+    = link_to t('rem_from_list'), wished_book_path(book), method: 'delete'

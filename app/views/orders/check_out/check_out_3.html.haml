@@ -1,0 +1,19 @@
+= render 'menu', state: @state, current: 3
+%br
+  = form_for @order, :url => credit_card_orders_path do |f|
+    .container.check_out_addr_container
+      .row
+        .col-xs-4
+          %h4= t('credit_card')
+        .col-xs-4.col-xs-offset-4
+          %h4= t('order_sum')
+      .row
+        .col-xs-4
+          = f.fields_for :credit_card do |builder|
+            = render 'card_fields', f: builder
+        .col-xs-4.col-xs-offset-4
+          = render 'order_total'
+
+      .row
+        .col-xs-12
+          = submit_tag t('save_and_con'), class: 'btn btn-default'

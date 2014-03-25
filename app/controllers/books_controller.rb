@@ -2,19 +2,22 @@ class BooksController < ApplicationController
   before_filter :authenticate_customer!, except: [:index, :show, :home]
   
   load_and_authorize_resource
-  skip_load_resource only: [:index, :filter, :home]
-
-  after_filter :decorate_book, only: [:home, :index]
+  skip_load_resource only: [:index, :home]
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.includes(:ratings).page(params[:page]).per(20)
+    @books = Book.includes(:ratings)
+    @books = @books.joins(:categories)
+             .where(categories: { id: params[:category_id] } ) if params[:category_id]
+    @books = @books.page(params[:page]).per(20).decorate
+    @categories = Category.all
   end
 
   # GET /books/home
   def home
-    @books = Book.top
+    @books = Book.top.decorate
+    @count = @books.returns_count_sum.count
   end
 
   # GET /books/1
@@ -26,22 +29,27 @@ class BooksController < ApplicationController
 
   # POST /books/1/rate
   def rate
-    rating = @book.ratings.build(params.permit(:text, :rating))
+    if params[:rating].blank?
+      flash[:danger] = t('no_rating_err')
+      redirect_to @book
+      return
+    end
+    rating = @book.ratings.build(params.permit(:text, :rating, :title))
     rating.customer = current_customer
     if rating.save
       flash[:info] = I18n.t 'suc_rating_add'
     else
-      flash[:danger] = rating.errors
+      flash[:danger] = rating.errors.full_messages
     end
     redirect_to :back
   end
   
   # POST /books/1/add_wished
   def add_wished
-    unless @book.wish_add(current_customer)
-      flash[:danger] =  I18n.t 'err_wish_add'
+    if @book.wish_add(current_customer)
+      flash[:info] = I18n.t 'suc_wish_add'
     else
-      flash[:info] =  I18n.t 'suc_wish_add'
+      flash[:danger] = I18n.t 'err_wish_add'
     end
     redirect_to @book
   end
@@ -51,24 +59,4 @@ class BooksController < ApplicationController
     @book.wished_customers.delete(current_customer)
     redirect_to current_customer
   end
-  
-  # POST /books/filter
-  def filter
-    redirect_to books_path and return if params[:commit] == I18n.t('reset')
-    
-    @books = Book.filter(*prepare_filter).includes(:ratings).page(params[:page]).per(2)
-    @books = @books.decorate
-    render "index"
-  end
-  
-  private
-    def prepare_filter
-      filter_opts = params[:authors_id], params[:categories_id], params[:books_id]
-      filter_opts.each { |item| item.delete_if(&:empty?) }
-      filter_opts
-    end
-
-    def decorate_book
-      @books = @books.decorate
-    end
 end

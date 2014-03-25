@@ -1,0 +1,28 @@
+.space-right
+  %table
+    %tr
+      %td= t('item_tot')
+      %td
+        %b= number_to_currency(@order.total_price)
+
+    - if @order.coupon
+      %tr
+        %td= t('tot_discount')
+        %td
+          %b= "#{@order.coupon.discount}%"
+      %tr
+        %td= t('order_tot')
+        %td
+          %b= number_to_currency(@order.discounted_price)
+    - if @order.delivery
+      %tr
+        %td= t('shipping')
+        %td
+          %b= number_to_currency(@order.delivery.price)
+    %tr
+      %td{colspan: '2'}
+        %hr
+    %tr
+      %td= t('total')
+      %td
+        %b= number_to_currency(@order.discounted_price + (@order.delivery ? @order.delivery.price : 0))

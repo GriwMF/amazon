@@ -2,15 +2,7 @@ require 'spec_helper'
 
 describe CreditCard do
   let(:credit_card) { FactoryGirl.create :credit_card }
-  
-  it "validates presence of firstname" do
-    expect(credit_card).to validate_presence_of(:firstname)
-  end
-  
-  it "validates presence of lastname" do
-    expect(credit_card).to validate_presence_of(:lastname)
-  end
-  
+
   it "validates presence of cvv" do
     expect(credit_card).to validate_presence_of(:cvv)
   end
@@ -42,11 +34,4 @@ describe CreditCard do
     expect(credit_card).to ensure_inclusion_of(:expiration_year).in_range(year..year+20)
   end
 
-  it "belongs to customer" do
-    expect(credit_card).to belong_to(:customer)
-  end
-
-  it "has many orders" do
-    expect(credit_card).to have_many(:orders)
-  end  
 end

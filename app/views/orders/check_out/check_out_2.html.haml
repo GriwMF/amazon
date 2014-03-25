@@ -1,0 +1,23 @@
+= render 'menu', state: @state, current: 2
+%br
+  = form_tag delivery_orders_path, method: :patch do
+    .container.check_out_addr_container
+      .row
+        .col-xs-8
+        .col-xs-4
+          %h4= t('order_sum')
+      .row
+        .col-xs-8
+          - Delivery.all.each do |item|
+            %label
+              - if @order.delivery == item
+                = radio_button_tag :delivery, item.id, true, { autocomplete: 'off' }
+              - else
+                = radio_button_tag :delivery, item.id, false, { autocomplete: 'off' }
+              = "#{item.title} + #{number_to_currency(item.price)}"
+            %br
+        .col-xs-4
+          = render 'order_total'
+      .row
+        .col-xs-12
+          = submit_tag t('save_and_con'), class: 'btn btn-default'

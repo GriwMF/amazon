@@ -1,0 +1,28 @@
+%h2= "#{t('order')} R#{@order.id}"
+%br
+  .container.check_out_addr_container
+    .row
+      .col-xs-3
+        %b= t('ship_addr_short')
+      .col-xs-3
+        %b= t('bill_addr_short')
+      .col-xs-2
+        %b= t('shipment')
+      .col-xs-4
+        %b= t('payment_info')
+    .row
+      .col-xs-3
+        = render '/orders/check_out/show_address', address: @order.ship_addr
+      .col-xs-3
+        = render '/orders/check_out/show_address', address: @order.bill_addr
+      .col-xs-2
+        %p= @order.delivery.title
+      .col-xs-4
+        %p= "** ** ** #{@order.credit_card.number.last(4)}"
+        %p= "#{'%02d' % @order.credit_card.expiration_month}/#{@order.credit_card.expiration_year}"
+    .row.space
+    .row
+      .col-xs-12= render 'order', order: @order
+    .row
+      .col-xs-12
+        = link_to t('continue_shopping'), books_path, class: 'btn btn-default'

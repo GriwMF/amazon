@@ -4,8 +4,7 @@ FactoryGirl.define do
   factory :order do
     customer
     credit_card
-    bill_addr
-    ship_addr
+
     factory :order_with_book_price_5_and_quantity_3 do
       ignore do
        customer nil

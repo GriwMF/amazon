@@ -65,7 +65,9 @@ RailsAdmin.config do |config|
     delete do
       except [Order]
     end
-    show_in_app
+    show_in_app do
+      except [Order, Customer]
+    end
     state
 
     ## With an audit adapter, you can add:

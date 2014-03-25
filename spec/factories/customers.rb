@@ -10,6 +10,8 @@ FactoryGirl.define do
     password "123123123"
     firstname Faker::Name.first_name
     lastname Faker::Name.last_name
+    bill_addr
+    ship_addr
     
     factory :admin_customer do
       admin true

@@ -13,24 +13,9 @@ feature "Book's filter" do
     visit books_path
   end
 
-  scenario "User is filtering books by caterogy" do
-    select category.title, :from => '[categories_id][]'
-    click_button I18n.t('apply')
+  scenario 'User navigates site by category' do
+    click_link category.title
     expect(page).to have_content good_book.title
     expect(page).not_to have_content bad_book.title 
   end
-  
-  scenario "User is filtering books by author" do
-    select author.decorate.full_name, :from => '[authors_id][]'
-    click_button I18n.t('apply')
-    expect(page).to have_content good_book.title
-    expect(page).not_to have_content bad_book.title 
-  end
-
-  scenario "User is filtering books by title" do
-    select good_book.title, :from => '[books_id][]'
-    click_button I18n.t('apply')
-    expect(page).to have_content good_book.title
-    expect(page).not_to have_content bad_book.title 
-  end 
 end

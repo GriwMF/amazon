@@ -17,7 +17,7 @@
 }
 
 .number {
-	width: 40px;
+	width: 60px;
 }
 
 .overflow {
@@ -38,7 +38,8 @@ a.carousel-control
   width: 40px;
   height: 40px;
   margin-top: 0px;
-  font-size: 48px;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 24px;
   font-weight: 100;
   line-height: 30px;
   color: #fff;
@@ -96,6 +97,10 @@ a.carousel-control.right
   float: right;
 }
 
+.left {
+  float: left;
+}
+
 .price {
   font-size: 2em;
   float: left;
@@ -105,4 +110,12 @@ a.carousel-control.right
   @extend .description;
   display: block;
   overflow:hidden;
+}
+
+.gold-star {
+  color: #D6B031;
+}
+
+.gray-star {
+  color: #BBB;
 }

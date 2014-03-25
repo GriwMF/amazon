@@ -1,20 +1,20 @@
 - provide(:title, t('list_books'))
-.panel.panel-default
-  .panel-heading= t('filter')
-  .panel-body.container
-    = render 'filter'
-
-.container
+.container-fluid
   .row
-    - @books.each do |book|
-      .squad
-        .center
-          .thumb-image-wrapper
-            = link_to image_tag(book.shot.thumb.url), book_path(book)
-          %h5
-            = link_to book.title, book_path(book)
-          %h4= "$#{book.price}"
-.center
-  = paginate @books
-
-
+    .col-xs-9
+      .row
+        - @books.each do |book|
+          .squad
+            .center
+              .thumb-image-wrapper
+                = link_to image_tag(book.shot.thumb.url), book_path(book)
+              %h5
+                = link_to book.title, book_path(book)
+              %h4= "$#{book.price}"
+      .center
+        = paginate @books
+    .col-xs-3
+      SHOP BY CATEGORIES
+      - @categories.each do |category|
+        %br
+        = link_to category.title, "/books/category/#{category.id}"

@@ -14,3 +14,8 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore site's uploads
+/public/uploads
+
+/.idea

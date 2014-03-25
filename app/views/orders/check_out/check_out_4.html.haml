@@ -1,0 +1,32 @@
+= render 'menu', state: @state, current: 4
+%br
+  .container.check_out_addr_container
+    .row
+      .col-xs-3
+        %b= t('ship_addr_short')
+        = link_to t('edit_check_out'), check_out_orders_path(1)
+      .col-xs-3
+        %b= t('bill_addr_short')
+        = link_to t('edit_check_out'), check_out_orders_path(1)
+      .col-xs-2
+        %b= t('shipment')
+        = link_to t('edit_check_out'), check_out_orders_path(2)
+      .col-xs-4
+        %b= t('payment_info')
+        = link_to t('edit_check_out'), check_out_orders_path(3)
+    .row
+      .col-xs-3
+        = render '/orders/check_out/show_address', address: @order.ship_addr
+      .col-xs-3
+        = render '/orders/check_out/show_address', address: @order.bill_addr
+      .col-xs-2
+        %p= @order.delivery.title
+      .col-xs-4
+        %p= "** ** ** #{@order.credit_card.number.last(4)}"
+        %p= "#{'%02d' % @order.credit_card.expiration_month}/#{@order.credit_card.expiration_year}"
+    .row.space
+    .row
+      .col-xs-12= render 'order', order: @order
+    .row
+      .col-xs-12
+        = link_to t('place_order'), complete_orders_path, class: 'btn btn-default'

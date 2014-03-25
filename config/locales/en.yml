@@ -22,6 +22,7 @@
 en:
   facebook: 'Sign in with Facebook'
   succ_facebook: 'Successefully signed in with Facebook'
+  err_facebook: 'Can not login. Probably your e-mail already in use'
   store_name: 'Amazon'
   admin_panel: 'Admin Panel'
   recent_orders: 'Recent orders'
@@ -81,7 +82,8 @@ en:
   category: 'Category'
   rating_label: 'Rating (1-5):'
   rate: 'Rate'
-  book_rating: 'Book ratings:'
+  book_rating: "Book's rating:"
+  unrated: 'not rated yet'
   rating: 'Rating'
   number: 'Number'
   cvv: 'CVV'
@@ -95,8 +97,10 @@ en:
   profile: 'Profile'
   book: 'Book'
   quantity: 'Quantity'
-  ship_addr: 'Shipping address:'
-  bill_addr: 'Billing address:'
+  ship_addr: 'SHIPPING ADDRESS'
+  ship_addr_short: 'Shipping address'
+  bill_addr: 'BILLING ADDRESS'
+  bill_addr_short: 'Billing address'
   state: 'State:'
   completed_at: 'Completed at:'
   order_items: 'Order items'
@@ -104,7 +108,8 @@ en:
   continue_shopping: 'Continue shopping'
   add_to_cart_first: 'Add item to cart first'
   total_price: 'Total price:'
-  check_out: 'Check out'
+  item_price: 'Item price:'
+  check_out: 'Checkout'
   select_ship_addr: 'Select shipping address:'
   select_bill_addr: 'Select billing address:'
   select_card: 'Select credit card information:'
@@ -118,6 +123,13 @@ en:
     show:
       rate: 'Rate the book >>'
       customer: 'Customer'
+  orders:
+    menu:
+      complete: 'COMPLETE'
+      address: 'ADDRESS'
+      delivery: 'DELIVERY'
+      payment: 'PAYMENT'
+      confirm: 'CONFIRM'
   helpers:
     label:
       address:
@@ -133,3 +145,43 @@ en:
         cvv: 'CVV:'
         expiration_month: 'Expiration month:'
         expiration_year: 'Expiration year:'
+  activerecord:
+    errors:
+      models:
+        order_item:
+          attributes:
+            book:
+              should_be_in_stock: "are not in stock"
+  empty_cart: "(empty)"
+  empty_cart_but: "Empty cart"
+  rate_book: "Rate the book"
+  no_rating_err: "Select rating first"
+  by: "by"
+  total: "TOTAL:"
+  not_in_stock: 'not in stock'
+  wrong_coupon: 'No coupon with this code found'
+  discount: 'Your discount'
+  cart_cleaned: 'Cart has been cleaned'
+  order_sum: 'ORDER SUMMARY'
+  order: 'Order:'
+  item_tot: 'ITEM TOTAL:'
+  order_tot: 'ORDER TOTAL:'
+  save_and_con: 'SAVE AND CONTINUE'
+  save: 'SAVE'
+  check_out_wrong_state: "Please, process checkout step by step!"
+  err_delivery: "Please, select one delivery method"
+  credit_card: "CREDIT CARD"
+  shipping: "SHIPPING:"
+  tot_discount: "DISCOUNT:"
+  shipment: "Shipment"
+  payment_info: "Payment information"
+  edit_check_out: "(edit)"
+  place_order: "PLACE ORDER"
+  completed_at_c: "COMPLETED AT"
+  number_c: "NUMBER"
+  total_c: "TOTAL"
+  state_c: "STATE"
+  sign_in_needed: "You need to sign in before check out"
+  existing_user: "Existing customer"
+  with_facebook: "With facebook"
+  new_customer: "New customer"

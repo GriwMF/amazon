@@ -11,8 +11,8 @@ feature "cart management" do
     visit books_path
     click_link book.title
     click_button I18n.t 'add_to_cart'
-    click_link 'Cart'
-    click_link 'Cancel'
+    click_link 'cart'
+    click_link 'remove_item'
     expect(page).to_not have_content book.title
   end
 end

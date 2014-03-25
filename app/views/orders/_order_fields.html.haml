@@ -1,0 +1,15 @@
+%tr
+  %td
+    .thumb-image-wrapper.left
+      = link_to image_tag(item.book.shot.thumb.url), book_path(item.book)
+  %td.vertical-center
+    = item.book.title
+    = "(#{item.book.authors[0].full_name})" if item.book.authors.any?
+  %td.vertical-center= number_to_currency(item.price)
+  %td.vertical-center
+    .number
+      = f.number_field :quantity, min: 1, class: "form-control"
+  %td.vertical-center= number_to_currency(item.quantity * item.price)
+  %td.vertical-center= link_to "<span class='glyphicon glyphicon-remove'></span>".html_safe,
+                                  "/orders/remove_item/#{item.id}", :method => :delete,
+                                  :data => { :confirm => t('confirm') }, id: 'remove_item'
