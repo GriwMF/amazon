@@ -4,12 +4,11 @@ feature "check out" do
   given!(:book) { FactoryGirl.create :book }
 
   background do
-    FactoryGirl.create :delivery
-    FactoryGirl.create :delivery
     login_as(FactoryGirl.create(:customer), :scope => :customer)
   end
   
   scenario "User complete purchase with entering all information manually" do
+    delivery = FactoryGirl.create :delivery
     visit books_path
     click_link book.title
     click_button I18n.t 'add_to_cart'
@@ -24,7 +23,7 @@ feature "check out" do
 
     check 'bill-checkbox'
     click_link_or_button 'SAVE AND CONTINUE'
-    choose 'delivery_1'
+    choose "delivery_#{delivery.id}"
     click_link_or_button 'SAVE AND CONTINUE'
 
     fill_in 'order_credit_card_attributes_number', :with => '1234' * 4
